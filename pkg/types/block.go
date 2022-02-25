@@ -23,7 +23,7 @@ type BlockRecord struct {
 	// Transaction Block - Present if is_transaction_block
 	Timestamp                uint64  `json:"timestamp"` // @TODO time.Time ?
 	PrevTransactionBlockHash string  `json:"prev_transaction_block_hash"`
-	Fees                     Mojo    `json:"fees"`
+	Fees                     uint64  `json:"fees"`
 	RewardClaimsIncorporated []*Coin `json:"reward_claims_incorporated"`
 
 	// Slot - present if this is the first SB in sub slot
@@ -106,7 +106,7 @@ type BlockEvent struct {
 	HeaderHash                    string             `json:"header_hash"`
 	Height                        uint32             `json:"height"`
 	BlockCost                     uint64             `json:"block_cost"`
-	BlockFees                     Mojo               `json:"block_fees"`
+	BlockFees                     uint64             `json:"block_fees"`
 	TransactionGeneratorSizeBytes uint64             `json:"transaction_generator_size_bytes"`
 	TransactionGeneratorRefList   []uint32           `json:"transaction_generator_ref_list"`
 	ReceiveBlockResult            ReceiveBlockResult `json:"receive_block_result"`
