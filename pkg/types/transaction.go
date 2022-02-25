@@ -5,8 +5,8 @@ type TransactionRecord struct {
 	ConfirmedAtHeight uint32       `json:"confirmed_at_height"`
 	CreatedAtTime     uint64       `json:"created_at_time"` // @TODO time.Time?
 	ToPuzzleHash      *PuzzleHash  `json:"to_puzzle_hash"`
-	Amount            Mojo         `json:"amount"`
-	FeeAmount         Mojo         `json:"fee_amount"`
+	Amount            uint64       `json:"amount"`
+	FeeAmount         uint64       `json:"fee_amount"`
 	Confirmed         bool         `json:"confirmed"`
 	Sent              uint32       `json:"sent"`
 	SpendBundle       *SpendBundle `json:"spend_bundle"`
