@@ -22,7 +22,7 @@ type BlockchainState struct {
 
 // MempoolMinFees minimum fees to get in the mempool at varying costs
 type MempoolMinFees struct {
-	Cost5m uint64 `json:"cost_5000000"`
+	Cost5m Mojo `json:"cost_5000000"`
 }
 
 // Sync struct within blockchain state

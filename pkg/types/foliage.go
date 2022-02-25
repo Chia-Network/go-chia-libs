@@ -34,7 +34,7 @@ type TransactionsInfo struct {
 	GeneratorRoot            string     `json:"generator_root"`
 	GeneratorRefsRoot        string     `json:"generator_refs_root"`
 	AggregatedSignature      *G2Element `json:"aggregated_signature"`
-	Fees                     uint64     `json:"fees"`
+	Fees                     Mojo       `json:"fees"`
 	Cost                     uint64     `json:"cost"`
 	RewardClaimsIncorporated []*Coin    `json:"reward_claims_incorporated"`
 }
