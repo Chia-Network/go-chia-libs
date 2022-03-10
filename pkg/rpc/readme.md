@@ -21,7 +21,7 @@ func main() {
 	client, err := rpc.NewClient(rpc.ConnectionModeHTTP)
 	if err != nil {
 		// error happened
-	}	
+	}
 }
 ```
 
@@ -40,7 +40,7 @@ func main() {
 	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
 	if err != nil {
 		// error happened
-	}	
+	}
 }
 ```
 
@@ -48,7 +48,7 @@ Websockets function asynchronously and as such, there are a few implementation d
 
 #### Handler Function
 
-Handler functions must use the following signature: `func handlerFunc(data *types.WebsocketResponse, err error)`. The function will be passed the data that was received from the websocket and an error. 
+Handler functions must use the following signature: `func handlerFunc(data *types.WebsocketResponse, err error)`. The function will be passed the data that was received from the websocket and an error.
 
 Initializing a client, and defining and registering a handler function looks like the following:
 
@@ -57,19 +57,18 @@ package main
 
 import (
 	"log"
-	
 	"github.com/chia-network/go-chia-libs/pkg/rpc"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 func main() {
-    client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
-    if err != nil {
-        log.Fatalln(err.Error())
-    }
-	
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
 	client.AddHandler(gotResponse)
-	
+
 	// Other application logic here
 }
 
@@ -108,7 +107,7 @@ func gotResponse(data *types.WebsocketResponse, err error) {
 
 #### Subscribing to Events
 
-There are two helper functions to subscribe to events that come over the websocket. 
+There are two helper functions to subscribe to events that come over the websocket.
 
 `client.SubscribeSelf()` - Calling this method subscribes to response events for any requests made from this client
 
@@ -121,20 +120,20 @@ There are two helper functions to subscribe to events that come over the websock
 ```go
 client, err := rpc.NewClient(rpc.ConnectionModeHTTP)
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 transactions, _, err := client.WalletService.GetTransactions(
-    &rpc.GetWalletTransactionsOptions{
-        WalletID: 1,
-    },
+	&rpc.GetWalletTransactionsOptions{
+		WalletID: 1,
+	},
 )
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 for _, transaction := range transactions.Transactions {
-    log.Println(transaction.Name)
+	log.Println(transaction.Name)
 }
 ```
 
@@ -142,37 +141,37 @@ for _, transaction := range transactions.Transactions {
 
 ```go
 func main() {
-    client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
-    if err != nil {
-        log.Fatalln(err.Error())
-    }
-    
-    err = client.SubscribeSelf()
-    if err != nil {
-        log.Fatalln(err.Error())
-    }
-    
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	err = client.SubscribeSelf()
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
 	client.AddHandler(gotResponse)
 
 	client.WalletService.GetTransactions(
-        &rpc.GetWalletTransactionsOptions{
-            WalletID: 1,
-        },
-    )
+		&rpc.GetWalletTransactionsOptions{
+			WalletID: 1,
+		},
+	)
 }
 
 func gotResponse(data *types.WebsocketResponse, err error) {
-    log.Printf("Received a `%s` command response\n", data.Command)
-    
-    if data.Command == "get_transactions" {
-        txns := &rpc.GetWalletTransactionsResponse{}
-        err = json.Unmarshal(data.Data, txns)
-        if err != nil {
-            log.Fatalln(err.Error())
-        }
-    
-        log.Printf("%+v", txns)
-    }
+	log.Printf("Received a `%s` command response\n", data.Command)
+
+	if data.Command == "get_transactions" {
+		txns := &rpc.GetWalletTransactionsResponse{}
+		err = json.Unmarshal(data.Data, txns)
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
+
+		log.Printf("%+v", txns)
+	}
 }
 ```
 
@@ -181,7 +180,7 @@ func gotResponse(data *types.WebsocketResponse, err error) {
 ```go
 state, _, err := client.FullNodeService.GetBlockchainState()
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 log.Println(state.BlockchainState.Difficulty)
@@ -201,7 +200,7 @@ Gets the estimated network space and formats it to a readable version using Form
 
 state, _, err := client.FullNodeService.GetBlockchainState()
 if err != nil {
-    log.Fatal(err)
+	log.Fatal(err)
 }
 
 log.Println(util.FormatBytes(state.BlockchainState.Space))
