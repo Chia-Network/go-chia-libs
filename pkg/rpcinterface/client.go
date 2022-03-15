@@ -23,4 +23,8 @@ type Client interface {
 	Subscribe(service string) error
 	// ListenSync Listens for async responses over the connection in a synchronous fashion, blocking anything else
 	ListenSync(handler WebsocketResponseHandler) error
+
+	// AddDisconnectHandler adds a function to call if the connection is disconnected
+	// Applies to websocket connections
+	AddDisconnectHandler(onDisconnect DisconnectHandler)
 }

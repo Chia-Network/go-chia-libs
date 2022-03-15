@@ -355,3 +355,6 @@ func (c *HTTPClient) Subscribe(service string) error {
 func (c *HTTPClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
 	return nil
 }
+
+// AddDisconnectHandler Not applicable to the HTTP client
+func (c *HTTPClient) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandler) {}
