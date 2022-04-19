@@ -2,7 +2,7 @@ package config
 
 import (
 	"crypto/tls"
-	"path"
+	"path/filepath"
 )
 
 // LoadPrivateKeyPair loads the private key pair for the SSLConfig
@@ -12,7 +12,7 @@ func (s *SSLConfig) LoadPrivateKeyPair() (*tls.Certificate, error) {
 		return nil, err
 	}
 
-	pair, err := tls.LoadX509KeyPair(path.Join(rootPath, s.PrivateCRT), path.Join(rootPath, s.PrivateKey))
+	pair, err := tls.LoadX509KeyPair(filepath.Join(rootPath, s.PrivateCRT), filepath.Join(rootPath, s.PrivateKey))
 	return &pair, err
 }
 
@@ -23,6 +23,6 @@ func (s *SSLConfig) LoadPublicKeyPair() (*tls.Certificate, error) {
 		return nil, err
 	}
 
-	pair, err := tls.LoadX509KeyPair(path.Join(rootPath, s.PublicCRT), path.Join(rootPath, s.PublicKey))
+	pair, err := tls.LoadX509KeyPair(filepath.Join(rootPath, s.PublicCRT), filepath.Join(rootPath, s.PublicKey))
 	return &pair, err
 }
