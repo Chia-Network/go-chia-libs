@@ -186,27 +186,27 @@ func (c *HTTPClient) initialKeyPairs() error {
 
 	c.nodeKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading full node config: %w", err)
 	}
 
 	c.farmerKeyPair, err = c.config.Farmer.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading farmer config: %w", err)
 	}
 
 	c.harvesterKeyPair, err = c.config.Harvester.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading harvester config: %w", err)
 	}
 
 	c.walletKeyPair, err = c.config.Wallet.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading wallet config: %w", err)
 	}
 
 	c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return err
+		return fmt.Errorf("error loading crawler config: %w", err)
 	}
 
 	return nil
