@@ -259,7 +259,7 @@ func (s *WalletService) SendTransaction(opts *SendTransactionOptions) (*SendTran
 	return r, resp, nil
 }
 
-// CatSpendOptions represents the options for send_transaction
+// CatSpendOptions represents the options for cat_spend
 type CatSpendOptions struct {
 	WalletID uint32 `json:"wallet_id"`
 	Amount   uint64 `json:"amount"`
@@ -267,7 +267,7 @@ type CatSpendOptions struct {
 	Fee      uint64 `json:"fee"`
 }
 
-// CatSpendResponse represents the response from send_transaction
+// CatSpendResponse represents the response from cat_spend
 type CatSpendResponse struct {
 	Success       bool                    `json:"success"`
 	TransactionID string                  `json:"transaction_id"`
