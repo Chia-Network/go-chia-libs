@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 
 	"gopkg.in/yaml.v2"
 )
@@ -75,7 +75,7 @@ func GetChiaConfig() (*ChiaConfig, error) {
 		return nil, err
 	}
 
-	configPath := path.Join(rootPath, "config", "config.yaml")
+	configPath := filepath.Join(rootPath, "config", "config.yaml")
 	if _, err = os.Stat(configPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("config file not found")
 	}
@@ -106,7 +106,7 @@ func GetChiaRootPath() (string, error) {
 		return "", err
 	}
 
-	root := path.Join(home, ".chia", "mainnet")
+	root := filepath.Join(home, ".chia", "mainnet")
 
 	return root, nil
 }
