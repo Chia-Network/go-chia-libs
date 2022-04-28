@@ -259,29 +259,29 @@ func (s *WalletService) SendTransaction(opts *SendTransactionOptions) (*SendTran
 	return r, resp, nil
 }
 
-// SendCatTransactionOptions represents the options for send_transaction
-type SendCatTransactionOptions struct {
+// CatSpendOptions represents the options for send_transaction
+type CatSpendOptions struct {
 	WalletID uint32 `json:"wallet_id"`
 	Amount   uint64 `json:"amount"`
 	Address  string `json:"inner_address"`
 	Fee      uint64 `json:"fee"`
 }
 
-// SendCatTransactionResponse represents the response from send_transaction
-type SendCatTransactionResponse struct {
+// CatSpendResponse represents the response from send_transaction
+type CatSpendResponse struct {
 	Success       bool                    `json:"success"`
 	TransactionID string                  `json:"transaction_id"`
 	Transaction   types.TransactionRecord `json:"transaction"`
 }
 
-// SendCatTransaction sends a transaction
-func (s *WalletService) SendCatTransaction(opts *SendCatTransactionOptions) (*SendCatTransactionResponse, *http.Response, error) {
+// CatSpend sends a transaction
+func (s *WalletService) CatSpend(opts *CatSpendOptions) (*CatSpendResponse, *http.Response, error) {
 	request, err := s.NewRequest("cat_spend", opts)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	r := &SendCatTransactionResponse{}
+	r := &CatSpendResponse{}
 	resp, err := s.Do(request, r)
 	if err != nil {
 		return nil, resp, err
