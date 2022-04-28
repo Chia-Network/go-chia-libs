@@ -275,13 +275,13 @@ type SendCatTransactionResponse struct {
 }
 
 // SendCatTransaction sends a transaction
-func (s *WalletService) SendCatTransaction(opts *SendTransactionOptions) (*SendTransactionResponse, *http.Response, error) {
-	request, err := s.NewRequest("send_transaction", opts)
+func (s *WalletService) SendCatTransaction(opts *SendCatTransactionOptions) (*SendCatTransactionResponse, *http.Response, error) {
+	request, err := s.NewRequest("cat_spend", opts)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	r := &SendTransactionResponse{}
+	r := &SendCatTransactionResponse{}
 	resp, err := s.Do(request, r)
 	if err != nil {
 		return nil, resp, err
