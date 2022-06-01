@@ -6,5 +6,5 @@ type EventHarvesterFarmingInfo struct {
 	TotalPlots    uint64  `json:"total_plots"`
 	FoundProofs   uint64  `json:"found_proofs"`
 	EligiblePlots uint64  `json:"eligible_plots"`
-	Time          float64 `json:"found_time"`
+	Time          float64 `json:"time"`
 }
