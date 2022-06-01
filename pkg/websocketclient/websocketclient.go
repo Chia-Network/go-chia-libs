@@ -200,7 +200,7 @@ func (c *WebsocketClient) AddDisconnectHandler(onDisconnect rpcinterface.Disconn
 }
 
 func (c *WebsocketClient) reconnectLoop() {
-	for _, handler := range c.disconnectHandlers{
+	for _, handler := range c.disconnectHandlers {
 		handler()
 	}
 	for {

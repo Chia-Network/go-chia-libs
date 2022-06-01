@@ -105,6 +105,8 @@ type BlockEvent struct {
 	KSize                         uint8              `json:"k_size"`
 	HeaderHash                    string             `json:"header_hash"`
 	Height                        uint32             `json:"height"`
+	ValidationTime                float64            `json:"validation_time"`
+	PreValidationTime             float64            `json:"pre_validation_time"`
 	BlockCost                     uint64             `json:"block_cost"`
 	BlockFees                     uint64             `json:"block_fees"`
 	TransactionGeneratorSizeBytes uint64             `json:"transaction_generator_size_bytes"`
