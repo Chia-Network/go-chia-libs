@@ -4,19 +4,21 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
 
 // ChiaConfig the chia config.yaml
 type ChiaConfig struct {
-	DaemonPort uint16          `yaml:"daemon_port"`
-	DaemonSSL  SSLConfig       `yaml:"daemon_ssl"`
-	Farmer     FarmerConfig    `yaml:"farmer"`
-	FullNode   FullNodeConfig  `yaml:"full_node"`
-	Harvester  HarvesterConfig `yaml:"harvester"`
-	Wallet     WalletConfig    `yaml:"wallet"`
-	Seeder     SeederConfig    `yaml:"seeder"`
+	DaemonPort      uint16          `yaml:"daemon_port"`
+	DaemonSSL       SSLConfig       `yaml:"daemon_ssl"`
+	Farmer          FarmerConfig    `yaml:"farmer"`
+	FullNode        FullNodeConfig  `yaml:"full_node"`
+	Harvester       HarvesterConfig `yaml:"harvester"`
+	Wallet          WalletConfig    `yaml:"wallet"`
+	Seeder          SeederConfig    `yaml:"seeder"`
+	SelectedNetwork string          `yaml:"selected_network"`
 }
 
 // FarmerConfig farmer configuration section
@@ -27,8 +29,10 @@ type FarmerConfig struct {
 
 // FullNodeConfig full node configuration section
 type FullNodeConfig struct {
-	PortConfig `yaml:",inline"`
-	SSL        SSLConfig `yaml:"ssl"`
+	PortConfig      `yaml:",inline"`
+	SSL             SSLConfig `yaml:"ssl"`
+	SelectedNetwork string    `yaml:"selected_network"`
+	DatabasePath    string    `yaml:"database_path"`
 }
 
 // HarvesterConfig harvester configuration section
@@ -92,6 +96,11 @@ func GetChiaConfig() (*ChiaConfig, error) {
 		return nil, err
 	}
 
+	err = config.fillDatabasePath()
+	if err != nil {
+		return nil, err
+	}
+
 	return config, nil
 }
 
@@ -109,4 +118,20 @@ func GetChiaRootPath() (string, error) {
 	root := filepath.Join(home, ".chia", "mainnet")
 
 	return root, nil
+}
+
+// GetFullPath returns the full path to a particular filename within CHIA_ROOT
+func GetFullPath(filename string) (string, error) {
+	chiaRootPath, err := GetChiaRootPath()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(chiaRootPath, filename), nil
+}
+
+func (c *ChiaConfig) fillDatabasePath() error {
+	c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, "CHALLENGE", c.FullNode.SelectedNetwork, 1)
+
+	return nil
 }
