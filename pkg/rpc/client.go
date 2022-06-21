@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
@@ -99,7 +100,12 @@ func (c *Client) Subscribe(service string) error {
 func (c *Client) AddHandler(handler rpcinterface.WebsocketResponseHandler) error {
 	c.websocketHandlers = append(c.websocketHandlers, handler)
 
-	go c.ListenSync(c.handlerProxy)
+	go func() {
+		err := c.ListenSync(c.handlerProxy)
+		if err != nil {
+			log.Printf("Error calling ListenSync: %s\n", err.Error())
+		}
+	}()
 	return nil
 }
 

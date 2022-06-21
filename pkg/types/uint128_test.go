@@ -36,16 +36,19 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
-func randUint128() types.Uint128 {
+func randUint128(t *testing.T) types.Uint128 {
 	randBuf := make([]byte, 16)
-	rand.Read(randBuf)
+	_, err := rand.Read(randBuf)
+	if err != nil {
+		t.Fatal("Error reading random data")
+	}
 	return types.Uint128FromBytes(randBuf)
 }
 
 func TestUint128(t *testing.T) {
 	// test non-arithmetic methods
 	for i := 0; i < 1000; i++ {
-		x, y := randUint128(), randUint128()
+		x, y := randUint128(t), randUint128(t)
 		if i%3 == 0 {
 			x = x.Rsh(64)
 		} else if i%7 == 0 {
@@ -101,7 +104,10 @@ func TestArithmetic(t *testing.T) {
 	// random values
 	randBuf := make([]byte, 17)
 	randUint128 := func() types.Uint128 {
-		rand.Read(randBuf)
+		_, err := rand.Read(randBuf)
+		if err != nil {
+			t.Fatal("Error reading random data")
+		}
 		var Lo, Hi uint64
 		if randBuf[16]&1 != 0 {
 			Lo = binary.LittleEndian.Uint64(randBuf[:8])
@@ -311,7 +317,7 @@ func TestLeadingZeros(t *testing.T) {
 
 func TestString(t *testing.T) {
 	for i := 0; i < 1000; i++ {
-		x := randUint128()
+		x := randUint128(t)
 		if x.String() != x.Big().String() {
 			t.Fatalf("mismatch:\n%v !=\n%v", x.String(), x.Big().String())
 		}
@@ -329,7 +335,10 @@ func TestString(t *testing.T) {
 func BenchmarkArithmetic(b *testing.B) {
 	randBuf := make([]byte, 17)
 	randUint128 := func() types.Uint128 {
-		rand.Read(randBuf)
+		_, err := rand.Read(randBuf)
+		if err != nil {
+			b.Fatal("Error reading random data")
+		}
 		var Lo, Hi uint64
 		if randBuf[16]&1 != 0 {
 			Lo = binary.LittleEndian.Uint64(randBuf[:8])
@@ -387,7 +396,10 @@ func BenchmarkArithmetic(b *testing.B) {
 func BenchmarkDivision(b *testing.B) {
 	randBuf := make([]byte, 8)
 	randU64 := func() uint64 {
-		rand.Read(randBuf)
+		_, err := rand.Read(randBuf)
+		if err != nil {
+			b.Fatal("Error reading random data")
+		}
 		return binary.LittleEndian.Uint64(randBuf) | 3 // avoid divide-by-zero
 	}
 	x64 := types.Uint128From64(randU64())
@@ -452,7 +464,10 @@ func BenchmarkDivision(b *testing.B) {
 
 func BenchmarkString(b *testing.B) {
 	buf := make([]byte, 16)
-	rand.Read(buf)
+	_, err := rand.Read(buf)
+	if err != nil {
+		b.Fatal("Error reading random data")
+	}
 	x := types.NewUint128(
 		binary.LittleEndian.Uint64(buf[:8]),
 		binary.LittleEndian.Uint64(buf[8:]),

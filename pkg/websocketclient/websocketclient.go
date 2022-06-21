@@ -209,7 +209,10 @@ func (c *WebsocketClient) reconnectLoop() {
 		if err == nil {
 			log.Println("Reconnected!")
 			for _, topic := range c.subscriptions {
-				c.doSubscribe(topic)
+				err = c.doSubscribe(topic)
+				if err != nil {
+					log.Printf("Error subscribing to topic %s: %s\n", topic, err.Error())
+				}
 			}
 			return
 		}
