@@ -11,6 +11,7 @@ import (
 
 // ChiaConfig the chia config.yaml
 type ChiaConfig struct {
+	ChiaRoot        string
 	DaemonPort      uint16          `yaml:"daemon_port"`
 	DaemonSSL       SSLConfig       `yaml:"daemon_ssl"`
 	Farmer          FarmerConfig    `yaml:"farmer"`
@@ -96,10 +97,8 @@ func GetChiaConfig() (*ChiaConfig, error) {
 		return nil, err
 	}
 
-	err = config.fillDatabasePath()
-	if err != nil {
-		return nil, err
-	}
+	config.ChiaRoot = rootPath
+	config.fillDatabasePath()
 
 	return config, nil
 }
@@ -121,17 +120,10 @@ func GetChiaRootPath() (string, error) {
 }
 
 // GetFullPath returns the full path to a particular filename within CHIA_ROOT
-func GetFullPath(filename string) (string, error) {
-	chiaRootPath, err := GetChiaRootPath()
-	if err != nil {
-		return "", err
-	}
-
-	return filepath.Join(chiaRootPath, filename), nil
+func (c *ChiaConfig) GetFullPath(filename string) string {
+	return filepath.Join(c.ChiaRoot, filename)
 }
 
-func (c *ChiaConfig) fillDatabasePath() error {
+func (c *ChiaConfig) fillDatabasePath() {
 	c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, "CHALLENGE", c.FullNode.SelectedNetwork, 1)
-
-	return nil
 }
