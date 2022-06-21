@@ -103,6 +103,7 @@ func (u Uint128) And(v Uint128) Uint128 {
 
 // And64 returns u&v.
 func (u Uint128) And64(v uint64) Uint128 {
+	//lint:ignore SA4016 Don't want to change too much in this library
 	return Uint128{u.Lo & v, u.Hi & 0}
 }
 
@@ -113,6 +114,7 @@ func (u Uint128) Or(v Uint128) Uint128 {
 
 // Or64 returns u|v.
 func (u Uint128) Or64(v uint64) Uint128 {
+	//lint:ignore SA4016 Don't want to change too much in this library
 	return Uint128{u.Lo | v, u.Hi | 0}
 }
 
@@ -123,6 +125,7 @@ func (u Uint128) Xor(v Uint128) Uint128 {
 
 // Xor64 returns u^v.
 func (u Uint128) Xor64(v uint64) Uint128 {
+	//lint:ignore SA4016 Don't want to change too much in this library
 	return Uint128{u.Lo ^ v, u.Hi ^ 0}
 }
 
@@ -467,11 +470,7 @@ func (u *Uint128) MarshalJSON() ([]byte, error) {
 
 // FitsInUint64 returns true if the value of the Uint128 will fit in Uint64
 func (u *Uint128) FitsInUint64() bool {
-	if u.Hi == 0 {
-		return true
-	}
-
-	return false
+	return u.Hi == 0
 }
 
 // Uint64 returns the Uint64 value of the Int

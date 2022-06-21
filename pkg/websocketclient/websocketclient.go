@@ -170,7 +170,7 @@ func (c *WebsocketClient) doSubscribe(service string) error {
 // Errors returned by ReadMessage, or some other part of the websocket request/response will be
 // passed to the handler to deal with
 func (c *WebsocketClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
-	if c.listenSyncActive != true {
+	if !c.listenSyncActive {
 		c.listenSyncActive = true
 
 		for {
