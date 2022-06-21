@@ -8,3 +8,15 @@ type EventHarvesterFarmingInfo struct {
 	EligiblePlots uint64  `json:"eligible_plots"`
 	Time          float64 `json:"time"`
 }
+
+// PlotInfo contains information about a plot, as used in get_plots rpc
+type PlotInfo struct {
+	FileSize               uint64 `json:"file_size"`
+	Filename               string `json:"filename"`
+	PlotID                 string `json:"plot_id"`
+	PlotPublicKey          string `json:"plot_public_key"`
+	PoolContractPuzzleHash string `json:"pool_contract_puzzle_hash"`
+	PoolPublicKey          string `json:"pool_public_key"`
+	Size                   uint8  `json:"size"`
+	TimeModified           int    `json:"time_modified"`
+}

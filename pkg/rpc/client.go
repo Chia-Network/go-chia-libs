@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
@@ -17,9 +18,10 @@ type Client struct {
 	activeClient rpcinterface.Client
 
 	// Services for the different chia services
-	FullNodeService *FullNodeService
-	WalletService   *WalletService
-	CrawlerService  *CrawlerService
+	FullNodeService  *FullNodeService
+	WalletService    *WalletService
+	HarvesterService *HarvesterService
+	CrawlerService   *CrawlerService
 
 	websocketHandlers []rpcinterface.WebsocketResponseHandler
 }
@@ -61,6 +63,7 @@ func NewClient(connectionMode ConnectionMode, options ...rpcinterface.ClientOpti
 	// Init Services
 	c.FullNodeService = &FullNodeService{client: c}
 	c.WalletService = &WalletService{client: c}
+	c.HarvesterService = &HarvesterService{client: c}
 	c.CrawlerService = &CrawlerService{client: c}
 
 	return c, nil
@@ -97,7 +100,12 @@ func (c *Client) Subscribe(service string) error {
 func (c *Client) AddHandler(handler rpcinterface.WebsocketResponseHandler) error {
 	c.websocketHandlers = append(c.websocketHandlers, handler)
 
-	go c.ListenSync(c.handlerProxy)
+	go func() {
+		err := c.ListenSync(c.handlerProxy)
+		if err != nil {
+			log.Printf("Error calling ListenSync: %s\n", err.Error())
+		}
+	}()
 	return nil
 }
 

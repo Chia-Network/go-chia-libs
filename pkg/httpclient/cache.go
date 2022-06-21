@@ -49,7 +49,7 @@ func (c *CachedTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	cacheKey := c.key(r)
 
 	// If the response is cached, we can just respond with the cached version
-	if cached, found := c.cache.Get(cacheKey); found != false {
+	if cached, found := c.cache.Get(cacheKey); found {
 		cachedBytes := cached.([]byte)
 		return c.cachedResponse(cachedBytes, r)
 	}

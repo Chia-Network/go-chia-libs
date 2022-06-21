@@ -170,7 +170,7 @@ func (c *WebsocketClient) doSubscribe(service string) error {
 // Errors returned by ReadMessage, or some other part of the websocket request/response will be
 // passed to the handler to deal with
 func (c *WebsocketClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
-	if c.listenSyncActive != true {
+	if !c.listenSyncActive {
 		c.listenSyncActive = true
 
 		for {
@@ -209,7 +209,10 @@ func (c *WebsocketClient) reconnectLoop() {
 		if err == nil {
 			log.Println("Reconnected!")
 			for _, topic := range c.subscriptions {
-				c.doSubscribe(topic)
+				err = c.doSubscribe(topic)
+				if err != nil {
+					log.Printf("Error subscribing to topic %s: %s\n", topic, err.Error())
+				}
 			}
 			return
 		}
