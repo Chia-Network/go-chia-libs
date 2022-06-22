@@ -206,7 +206,12 @@ func (c *HTTPClient) initialKeyPairs() error {
 
 	c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair()
 	if err != nil {
-		return fmt.Errorf("error loading crawler config: %w", err)
+		// Fall back to just using the full node certs in this case
+		// This should only happen on old installations that didn't have the crawler in the config initially
+		c.crawlerKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair()
+		if err != nil {
+			return fmt.Errorf("error loading crawler config: %w", err)
+		}
 	}
 
 	return nil
