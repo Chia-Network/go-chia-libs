@@ -23,14 +23,20 @@ const (
 	// WalletTypeCustody Custody
 	WalletTypeCustody = WalletType(5)
 
-	// WalletTypeColouredCoin Coloured Coin
-	WalletTypeColouredCoin = WalletType(6)
+	// WalletTypeCAT CAT Wallet
+	WalletTypeCAT = WalletType(6)
 
 	// WalletTypeRecoverable Recoverable Wallet
 	WalletTypeRecoverable = WalletType(7)
 
-	// WalletTypeDistributedID DID Wallet
-	WalletTypeDistributedID = WalletType(8)
+	// WalletTypeDID DECENTRALIZED_ID Wallet
+	WalletTypeDID = WalletType(8)
+
+	// WalletTypePooling Pooling Wallet
+	WalletTypePooling = WalletType(9)
+
+	// WalletTypeNFT NFT Wallet
+	WalletTypeNFT = WalletType(10)
 )
 
 // WalletInfo single wallet record
