@@ -94,7 +94,7 @@ func (s *WalletService) GetNetworkInfo() (*GetWalletNetworkInfoResponse, *http.R
 // GetWalletsResponse wallet rpc -> get_wallets
 type GetWalletsResponse struct {
 	Success     bool                `json:"success"`
-	Fingerprint string              `json:"fingerprint"`
+	Fingerprint int                 `json:"fingerprint"`
 	Wallets     []*types.WalletInfo `json:"wallets"`
 }
 
