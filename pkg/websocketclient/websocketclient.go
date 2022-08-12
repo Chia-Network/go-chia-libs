@@ -35,7 +35,7 @@ type WebsocketClient struct {
 	subscriptions []string
 
 	disconnectHandlers []rpcinterface.DisconnectHandler
-	reconnectHandlers []rpcinterface.ReconnectHandler
+	reconnectHandlers  []rpcinterface.ReconnectHandler
 }
 
 // NewWebsocketClient returns a new websocket client that satisfies the rpcinterface.Client interface
