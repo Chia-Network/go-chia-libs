@@ -114,6 +114,11 @@ func (c *Client) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandle
 	c.activeClient.AddDisconnectHandler(onDisconnect)
 }
 
+// AddReconnectHandler the function to call when the client is disconnected
+func (c *Client) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {
+	c.activeClient.AddReconnectHandler(onReconnect)
+}
+
 // handlerProxy matches the websocketRespHandler signature to send requests back to any registered handlers
 // Here to support multiple handlers for a single event in the future
 func (c *Client) handlerProxy(resp *types.WebsocketResponse, err error) {

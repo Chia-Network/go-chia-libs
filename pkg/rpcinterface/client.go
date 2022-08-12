@@ -27,4 +27,8 @@ type Client interface {
 	// AddDisconnectHandler adds a function to call if the connection is disconnected
 	// Applies to websocket connections
 	AddDisconnectHandler(onDisconnect DisconnectHandler)
+
+	// AddReconnectHandler adds a function to call if the connection is reconnected
+	// Applies to websocket connections
+	AddReconnectHandler(onReconnect ReconnectHandler)
 }
