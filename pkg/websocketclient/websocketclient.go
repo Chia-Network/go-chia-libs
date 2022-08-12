@@ -35,6 +35,7 @@ type WebsocketClient struct {
 	subscriptions []string
 
 	disconnectHandlers []rpcinterface.DisconnectHandler
+	reconnectHandlers []rpcinterface.ReconnectHandler
 }
 
 // NewWebsocketClient returns a new websocket client that satisfies the rpcinterface.Client interface
@@ -199,6 +200,11 @@ func (c *WebsocketClient) AddDisconnectHandler(onDisconnect rpcinterface.Disconn
 	c.disconnectHandlers = append(c.disconnectHandlers, onDisconnect)
 }
 
+// AddReconnectHandler the function to call when the client is reconnected after a disconnect
+func (c *WebsocketClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {
+	c.reconnectHandlers = append(c.reconnectHandlers, onReconnect)
+}
+
 func (c *WebsocketClient) reconnectLoop() {
 	for _, handler := range c.disconnectHandlers {
 		handler()
@@ -213,6 +219,9 @@ func (c *WebsocketClient) reconnectLoop() {
 				if err != nil {
 					log.Printf("Error subscribing to topic %s: %s\n", topic, err.Error())
 				}
+			}
+			for _, handler := range c.reconnectHandlers {
+				handler()
 			}
 			return
 		}
