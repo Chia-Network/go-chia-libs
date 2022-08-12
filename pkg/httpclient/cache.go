@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"time"
@@ -34,7 +33,7 @@ func (c *CachedTransport) key(r *http.Request) string {
 	url := r.URL.String()
 	body := ""
 	if r.Body != nil || r.Body != http.NoBody {
-		bodyBytes, _ := ioutil.ReadAll(r.Body)
+		bodyBytes, _ := io.ReadAll(r.Body)
 		r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 		body = fmt.Sprintf("%x", sha256.Sum256(bodyBytes))
 	}
