@@ -7,3 +7,6 @@ type WebsocketResponseHandler func(*types.WebsocketResponse, error)
 
 // DisconnectHandler the function to call when the client is disconnected
 type DisconnectHandler func()
+
+// ReconnectHandler the function to call when the client is reconnected
+type ReconnectHandler func()
