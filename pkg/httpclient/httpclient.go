@@ -363,3 +363,6 @@ func (c *HTTPClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) e
 
 // AddDisconnectHandler Not applicable to the HTTP client
 func (c *HTTPClient) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandler) {}
+
+// AddReconnectHandler Not applicable to the HTTP client
+func (c *HTTPClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {}
