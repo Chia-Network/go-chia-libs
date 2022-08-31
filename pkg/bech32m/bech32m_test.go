@@ -14,9 +14,11 @@ func TestKnownAddressConversions(t *testing.T) {
 	combinations := map[string]map[string]string{
 		"xch": map[string]string{
 			"xch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ks6e8mvy": "000000000000000000000000000000000000000000000000000000000000dead",
+			"xch1arjpkq2a5kjd7t2st93wxqd0axcnfpq04xzyjespkr0xxakslcvq3wwwdh": "e8e41b015da5a4df2d505962e301afe9b134840fa984496601b0de6376d0fe18", // Random Keys
 		},
 		"txch": map[string]string{
 			"txch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ksh7qddh": "000000000000000000000000000000000000000000000000000000000000dead",
+			"txch1arjpkq2a5kjd7t2st93wxqd0axcnfpq04xzyjespkr0xxakslcvquffcvy": "e8e41b015da5a4df2d505962e301afe9b134840fa984496601b0de6376d0fe18", // Random Keys
 		},
 	}
 
