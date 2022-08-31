@@ -24,6 +24,8 @@ import (
 	"bytes"
 	"fmt"
 	"strings"
+
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 var charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
@@ -162,8 +164,8 @@ func convertbits(data []byte, frombits, tobits uint, pad bool) ([]byte, error) {
 }
 
 // EncodePuzzleHash encode to an address
-func EncodePuzzleHash(puzzleHash []byte, prefix string) (string, error) {
-	data, err := convertbits(puzzleHash, 8, 5, true)
+func EncodePuzzleHash(puzzleHash [32]byte, prefix string) (string, error) {
+	data, err := convertbits(types.Bytes32ToBytes(puzzleHash), 8, 5, true)
 	if err != nil {
 		return "", err
 	}
@@ -176,20 +178,17 @@ func EncodePuzzleHash(puzzleHash []byte, prefix string) (string, error) {
 }
 
 // DecodePuzzleHash Decodes an address to a puzzle hash
-func DecodePuzzleHash(addr string) ([]byte, error) {
+func DecodePuzzleHash(addr string) ([32]byte, error) {
 	_, data, err := Decode(addr)
 	if err != nil {
-		return nil, err
+		return [32]byte{}, err
 	}
 	if len(data) < 1 {
-		return nil, fmt.Errorf("empty data section")
+		return [32]byte{}, fmt.Errorf("empty data section")
 	}
 	res, err := convertbits(data, 5, 8, false)
 	if err != nil {
-		return nil, err
+		return [32]byte{}, err
 	}
-	if len(res) < 2 || len(res) > 40 {
-		return nil, fmt.Errorf("invalid program length (%d byte)", len(res))
-	}
-	return res, nil
+	return types.BytesToBytes32(res)
 }

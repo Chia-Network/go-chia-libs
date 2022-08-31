@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/chia-network/go-chia-libs/pkg/bech32m"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 func TestKnownAddressConversions(t *testing.T) {
@@ -26,16 +27,18 @@ func TestKnownAddressConversions(t *testing.T) {
 		for address, hexstr := range tests {
 			hexbytes, err := hex.DecodeString(hexstr)
 			assert.NoError(t, err)
+			hexbytes32, err := types.BytesToBytes32(hexbytes)
+			assert.NoError(t, err)
 
 			// Test encoding
-			generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes, prefix)
+			generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes32, prefix)
 			assert.NoError(t, err)
 			assert.Equal(t, address, generatedAddress)
 
 			// Test decoding
 			generatedBytes, err := bech32m.DecodePuzzleHash(address)
 			assert.NoError(t, err)
-			assert.Equal(t, hexbytes, generatedBytes)
+			assert.Equal(t, hexbytes32, generatedBytes)
 		}
 	}
 }
