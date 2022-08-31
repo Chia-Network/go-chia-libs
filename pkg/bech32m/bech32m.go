@@ -94,21 +94,21 @@ func Encode(hrp string, data []byte) string {
 // Decode validate a Bech32m string, and determine HRP and data.
 func Decode(bechString string) (string, []byte, error) {
 	if len(bechString) > 90 {
-		return "", nil, fmt.Errorf("Overall max length exceeded")
+		return "", nil, fmt.Errorf("overall max length exceeded")
 	}
 	if strings.ToLower(bechString) != bechString && strings.ToUpper(bechString) != bechString {
-		return "", nil, fmt.Errorf("Mixed case")
+		return "", nil, fmt.Errorf("mixed case")
 	}
 	bechString = strings.ToLower(bechString)
 	pos := strings.LastIndex(bechString, "1")
 	if pos < 0 {
-		return "", nil, fmt.Errorf("No separator character")
+		return "", nil, fmt.Errorf("no separator character")
 	}
 	if pos < 1 {
-		return "", nil, fmt.Errorf("Empty HRP")
+		return "", nil, fmt.Errorf("empty HRP")
 	}
 	if pos+7 > len(bechString) {
-		return "", nil, fmt.Errorf("Too short checksum")
+		return "", nil, fmt.Errorf("too short checksum")
 	}
 	hrp := bechString[0:pos]
 	for _, c := range hrp {
@@ -121,15 +121,15 @@ func Decode(bechString string) (string, []byte, error) {
 		d := strings.Index(charset, fmt.Sprintf("%c", bechString[p]))
 		if d == -1 {
 			if p+6 > len(bechString) {
-				return "", nil, fmt.Errorf("Invalid character in checksum")
+				return "", nil, fmt.Errorf("invalid character in checksum")
 			}
-			return "", nil, fmt.Errorf("Invalid data character")
+			return "", nil, fmt.Errorf("invalid data character")
 		}
 		data = append(data, byte(d))
 	}
 	validChecksum := verifyChecksum(hrp, data)
-	if ! validChecksum {
-		return "", nil, fmt.Errorf("Invalid checksum")
+	if !validChecksum {
+		return "", nil, fmt.Errorf("invalid checksum")
 	}
 	return hrp, data[:len(data)-6], nil
 }
@@ -154,9 +154,9 @@ func convertbits(data []byte, frombits, tobits uint, pad bool) ([]byte, error) {
 			ret = append(ret, byte((acc<<(tobits-bits))&maxv))
 		}
 	} else if bits >= frombits {
-		return nil, fmt.Errorf("More than 4 padding bits")
+		return nil, fmt.Errorf("more than 4 padding bits")
 	} else if ((acc << (tobits - bits)) & maxv) != 0 {
-		return nil, fmt.Errorf("Non-zero padding in %d-to-%d conversion", tobits, frombits)
+		return nil, fmt.Errorf("non-zero padding in %d-to-%d conversion", tobits, frombits)
 	}
 	return ret, nil
 }
@@ -182,14 +182,14 @@ func DecodePuzzleHash(addr string) ([]byte, error) {
 		return nil, err
 	}
 	if len(data) < 1 {
-		return nil, fmt.Errorf("Empty data section")
+		return nil, fmt.Errorf("empty data section")
 	}
 	res, err := convertbits(data, 5, 8, false)
 	if err != nil {
 		return nil, err
 	}
 	if len(res) < 2 || len(res) > 40 {
-		return nil, fmt.Errorf("Invalid program length (%d byte)", len(res))
+		return nil, fmt.Errorf("invalid program length (%d byte)", len(res))
 	}
 	return res, nil
 }
