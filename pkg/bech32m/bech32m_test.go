@@ -11,27 +11,29 @@ import (
 
 func TestKnownAddressConversions(t *testing.T) {
 	// Address: Hexstr
-	mainnetCombinations := map[string]string{
-		"xch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ks6e8mvy": "000000000000000000000000000000000000000000000000000000000000dead",
+	combinations := map[string]map[string]string{
+		"xch": map[string]string{
+			"xch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ks6e8mvy": "000000000000000000000000000000000000000000000000000000000000dead",
+		},
+		"txch": map[string]string{
+			"txch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ksh7qddh": "000000000000000000000000000000000000000000000000000000000000dead",
+		},
 	}
 
-	testnetCombinations := map[string]string{
-		"txch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ksh7qddh": "000000000000000000000000000000000000000000000000000000000000dead",
-	}
+	for prefix, tests := range combinations {
+		for address, hexstr := range tests {
+			hexbytes, err := hex.DecodeString(hexstr)
+			assert.NoError(t, err)
 
-	for address, hexstr := range mainnetCombinations {
-		hexbytes, err := hex.DecodeString(hexstr)
-		assert.NoError(t, err)
-		generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes, "xch")
-		assert.NoError(t, err)
-		assert.Equal(t, address, generatedAddress)
-	}
+			// Test encoding
+			generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes, prefix)
+			assert.NoError(t, err)
+			assert.Equal(t, address, generatedAddress)
 
-	for address, hexstr := range testnetCombinations {
-		hexbytes, err := hex.DecodeString(hexstr)
-		assert.NoError(t, err)
-		generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes, "txch")
-		assert.NoError(t, err)
-		assert.Equal(t, address, generatedAddress)
+			// Test decoding
+			generatedBytes, err := bech32m.DecodePuzzleHash(address)
+			assert.NoError(t, err)
+			assert.Equal(t, hexbytes, generatedBytes)
+		}
 	}
 }
