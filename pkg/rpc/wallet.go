@@ -375,7 +375,7 @@ type TransferNFTResponse struct {
 	WalletID    uint32            `json:"wallet_id"`
 }
 
-// GetNFTInfo Get info about an NFT
+// TransferNFT Get info about an NFT
 func (s *WalletService) TransferNFT(opts *TransferNFTOptions) (*TransferNFTResponse, *http.Response, error) {
 	request, err := s.NewRequest("nft_transfer_nft", opts)
 	if err != nil {

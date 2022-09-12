@@ -1,5 +1,6 @@
 package types
 
+// NFT is an NFT
 type NFT struct {
 	ChainInfo          string   `json:"chain_info"`
 	DataHash           string   `json:"data_hash"`
