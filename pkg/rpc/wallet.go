@@ -313,7 +313,7 @@ type MintNFTOptions struct {
 type MintNFTResponse struct {
 	SpendBundle types.SpendBundle `json:"spend_bundle"`
 	Success     bool              `json:"success"`
-	WalletID    int               `json:"wallet_id"`
+	WalletID    uint32            `json:"wallet_id"`
 }
 
 // MintNFT Mint a new NFT
