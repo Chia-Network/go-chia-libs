@@ -177,14 +177,16 @@ func (c *WebsocketClient) ListenSync(handler rpcinterface.WebsocketResponseHandl
 		for {
 			_, message, err := c.conn.ReadMessage()
 			if err != nil {
-				if closeErr, isCloseErr := err.(*websocket.CloseError); isCloseErr {
-					log.Println(closeErr.Error())
-					c.conn = nil
-					c.reconnectLoop()
-					continue
+				log.Println(err.Error())
+				if _, isCloseErr := err.(*websocket.CloseError); !isCloseErr {
+					closeConnErr := c.conn.Close()
+					if closeConnErr != nil {
+						log.Printf("Error closing connection after error: %s\n", closeConnErr.Error())
+					}
 				}
-				c.listenSyncActive = false
-				return err
+				c.conn = nil
+				c.reconnectLoop()
+				continue
 			}
 			resp := &types.WebsocketResponse{}
 			err = json.Unmarshal(message, resp)
