@@ -290,3 +290,163 @@ func (s *WalletService) CatSpend(opts *CatSpendOptions) (*CatSpendResponse, *htt
 
 	return r, resp, nil
 }
+
+// MintNFTOptions represents the options for nft_get_info
+type MintNFTOptions struct {
+	DidID             string   `json:"did_id"`             // not required
+	EditionNumber     uint32   `json:"edition_number"`     // not required
+	EditionCount      uint32   `json:"edition_count"`      // not required
+	Fee               uint64   `json:"fee"`                // not required
+	LicenseHash       string   `json:"license_hash"`       //not required
+	LicenseURIs       []string `json:"license_uris"`       // not required
+	MetaHash          string   `json:"meta_hash"`          // not required
+	MetaURIs          []string `json:"meta_uris"`          // not required
+	RoyaltyAddress    string   `json:"royalty_address"`    // not required
+	RoyaltyPercentage uint32   `json:"royalty_percentage"` // not required
+	TargetAddress     string   `json:"target_address"`     // not required
+	Hash              string   `json:"hash"`
+	URIs              []string `json:"uris"`
+	WalletID          uint32   `json:"wallet_id"`
+}
+
+// MintNFTResponse represents the response from nft_get_info
+type MintNFTResponse struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+	Success     bool              `json:"success"`
+	WalletID    int               `json:"wallet_id"`
+}
+
+// MintNFT Mint a new NFT
+func (s *WalletService) MintNFT(opts *MintNFTOptions) (*MintNFTResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_mint_nft", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &MintNFTResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetNFTsOptions represents the options for nft_get_nfts
+type GetNFTsOptions struct {
+	WalletID uint32 `json:"wallet_id"`
+}
+
+// GetNFTsResponse represents the response from nft_get_nfts
+type GetNFTsResponse struct {
+	Success  bool        `json:"success"`
+	WalletID uint32      `json:"wallet_id"`
+	NFTList  []types.NFT `json:"nft_list"`
+}
+
+// GetNFTs Show all NFTs in a given wallet
+func (s *WalletService) GetNFTs(opts *GetNFTsOptions) (*GetNFTsResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_get_nfts", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetNFTsResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// TransferNFTOptions represents the options for nft_get_info
+type TransferNFTOptions struct {
+	Fee           uint64 `json:"fee"` // not required
+	NFTCoinID     string `json:"nft_coin_id"`
+	TargetAddress string `json:"target_address"`
+	WalletID      uint32 `json:"wallet_id"`
+}
+
+// TransferNFTResponse represents the response from nft_get_info
+type TransferNFTResponse struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+	Success     bool              `json:"success"`
+	WalletID    uint32            `json:"wallet_id"`
+}
+
+// TransferNFT Get info about an NFT
+func (s *WalletService) TransferNFT(opts *TransferNFTOptions) (*TransferNFTResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_transfer_nft", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &TransferNFTResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetNFTInfoOptions represents the options for nft_get_info
+type GetNFTInfoOptions struct {
+	CoinID   string `json:"coin_id"`
+	WalletID uint32 `json:"wallet_id"`
+}
+
+// GetNFTInfoResponse represents the response from nft_get_info
+type GetNFTInfoResponse struct {
+	NFTInfo types.NFT `json:"nft_info"`
+	Success bool      `json:"success"`
+}
+
+// GetNFTInfo Get info about an NFT
+func (s *WalletService) GetNFTInfo(opts *GetNFTInfoOptions) (*GetNFTInfoResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_get_info", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetNFTInfoResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// NFTAddURIOptions represents the options for nft_add_uri
+type NFTAddURIOptions struct {
+	Fee       uint64 `json:"fee"` // not required
+	Key       string `json:"key"`
+	NFTCoinID string `json:"nft_coin_id"`
+	URI       string `json:"uri"`
+	WalletID  uint32 `json:"wallet_id"`
+}
+
+// NFTAddURIResponse represents the response from nft_add_uri
+type NFTAddURIResponse struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+	Success     bool              `json:"success"`
+	WalletID    uint32            `json:"wallet_id"`
+}
+
+// NFTAddURI Get info about an NFT
+func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_add_uri", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &NFTAddURIResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
