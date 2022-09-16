@@ -172,7 +172,7 @@ func (s *WalletService) GetTransactionCount(opts *GetWalletTransactionCountOptio
 // GetTransactionFromOptions options for get wallet transaction from
 type GetTransactionFromOptions struct {
 	AddressPrefix string `json:"address_prefix"`
-	PuzzleReaveal string `json:"puzzle_reveal"`
+	PuzzleReveal  string `json:"puzzle_reveal"`
 }
 
 // GetTransactionFromResponse response for get_transaction_from
