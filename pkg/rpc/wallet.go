@@ -169,6 +169,35 @@ func (s *WalletService) GetTransactionCount(opts *GetWalletTransactionCountOptio
 	return r, resp, nil
 }
 
+// GetTransactionFromOptions options for get wallet transaction from
+type GetTransactionFromOptions struct {
+	AddressPrefix string `json:"address_prefix"`
+	PuzzleReaveal string `json:"puzzle_reveal"`
+}
+
+// GetTransactionFromResponse response for get_transaction_from
+type GetTransactionFromResponse struct {
+	NotCat     bool          `json:"not cat"`
+	PuzzleHash string        `json:"puzzle_hash"`
+	Address    types.Address `json:"address"`
+}
+
+// GetTransactionFrom wallet rpc -> get_transaction_from
+func (s *WalletService) GetTransactionFrom(opts *GetTransactionFromOptions) (*GetTransactionFromResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_transaction_from", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetTransactionFromResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetWalletTransactionsOptions options for get wallet transactions
 type GetWalletTransactionsOptions struct {
 	WalletID  uint32 `json:"wallet_id"`
