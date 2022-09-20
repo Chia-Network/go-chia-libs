@@ -13,11 +13,11 @@ import (
 func TestKnownAddressConversions(t *testing.T) {
 	// Address: Hexstr
 	combinations := map[string]map[string]string{
-		"xch": map[string]string{
+		"xch": {
 			"xch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ks6e8mvy": "000000000000000000000000000000000000000000000000000000000000dead",
 			"xch1arjpkq2a5kjd7t2st93wxqd0axcnfpq04xzyjespkr0xxakslcvq3wwwdh": "e8e41b015da5a4df2d505962e301afe9b134840fa984496601b0de6376d0fe18", // Random Keys
 		},
-		"txch": map[string]string{
+		"txch": {
 			"txch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqm6ksh7qddh": "000000000000000000000000000000000000000000000000000000000000dead",
 			"txch1arjpkq2a5kjd7t2st93wxqd0axcnfpq04xzyjespkr0xxakslcvquffcvy": "e8e41b015da5a4df2d505962e301afe9b134840fa984496601b0de6376d0fe18", // Random Keys
 		},
@@ -36,7 +36,7 @@ func TestKnownAddressConversions(t *testing.T) {
 			assert.Equal(t, address, generatedAddress)
 
 			// Test decoding
-			generatedBytes, err := bech32m.DecodePuzzleHash(address)
+			_, generatedBytes, err := bech32m.DecodePuzzleHash(address)
 			assert.NoError(t, err)
 			assert.Equal(t, hexbytes32, generatedBytes)
 		}

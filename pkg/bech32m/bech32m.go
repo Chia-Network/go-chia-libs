@@ -170,7 +170,7 @@ func EncodePuzzleHash(puzzleHash [32]byte, prefix string) (string, error) {
 		return "", err
 	}
 	ret := Encode(prefix, data)
-	_, err = DecodePuzzleHash(ret)
+	_, _, err = DecodePuzzleHash(ret)
 	if err != nil {
 		return "", err
 	}
@@ -178,17 +178,21 @@ func EncodePuzzleHash(puzzleHash [32]byte, prefix string) (string, error) {
 }
 
 // DecodePuzzleHash Decodes an address to a puzzle hash
-func DecodePuzzleHash(addr string) ([32]byte, error) {
-	_, data, err := Decode(addr)
+func DecodePuzzleHash(addr string) (string, [32]byte, error) {
+	hrp, data, err := Decode(addr)
 	if err != nil {
-		return [32]byte{}, err
+		return "", [32]byte{}, err
 	}
 	if len(data) < 1 {
-		return [32]byte{}, fmt.Errorf("empty data section")
+		return "", [32]byte{}, fmt.Errorf("empty data section")
 	}
 	res, err := convertbits(data, 5, 8, false)
 	if err != nil {
-		return [32]byte{}, err
+		return "", [32]byte{}, err
 	}
-	return types.BytesToBytes32(res)
+	b, err := types.BytesToBytes32(res)
+	if err != nil {
+		return "", [32]byte{}, err
+	}
+	return hrp, b, nil
 }
