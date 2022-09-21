@@ -17,13 +17,17 @@ on:
         closed,
       ]
 
+concurrency:
+  group: "notion-sync"
+
 jobs:
   notion_job:
     runs-on: ubuntu-latest
     name: Add GitHub Issues to Notion
     steps:
-      - name: Add GitHub Issues to Notion
-        uses: instantish/notion-github-action@v1
+     - name: Notion x GitHub Action
+       uses: tryfabric/notion-github-action@v1.2.1
+
         with:
           notion-token: ${{ secrets.NOTION_TOKEN }}
           notion-db: ${{ secrets.NOTION_DATABASE }}
