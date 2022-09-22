@@ -27,7 +27,6 @@ jobs:
     steps:
       - name: Notion x GitHub Action
         uses: tryfabric/notion-github-action@v1.2.1
-
-       with:
+        with:
           notion-token: ${{ secrets.NOTION_TOKEN }}
           notion-db: ${{ secrets.NOTION_DATABASE }}
