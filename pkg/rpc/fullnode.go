@@ -214,7 +214,7 @@ type GetPuzzleAndSolutionOptions struct {
 	Height int    `json:"height"`
 }
 
-// GetBlockRecordResponse response from get_puzzle_and_solution
+// GetPuzzleAndSolutionResponse response from get_puzzle_and_solution
 type GetPuzzleAndSolutionResponse struct {
 	CoinSolution types.CoinSolution `json:"coin_solution"`
 	Success      bool               `json:"success"`
