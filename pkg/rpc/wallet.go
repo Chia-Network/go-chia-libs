@@ -91,6 +91,11 @@ func (s *WalletService) GetNetworkInfo() (*GetWalletNetworkInfoResponse, *http.R
 	return r, resp, nil
 }
 
+// GetWalletsOptions wallet rpc -> get_wallets
+type GetWalletsOptions struct {
+	Type types.WalletType `json:"type"`
+}
+
 // GetWalletsResponse wallet rpc -> get_wallets
 type GetWalletsResponse struct {
 	Success     bool                `json:"success"`
@@ -99,8 +104,8 @@ type GetWalletsResponse struct {
 }
 
 // GetWallets wallet rpc -> get_wallets
-func (s *WalletService) GetWallets() (*GetWalletsResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_wallets", nil)
+func (s *WalletService) GetWallets(opts *GetWalletsOptions) (*GetWalletsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_wallets", opts)
 	if err != nil {
 		return nil, nil, err
 	}
