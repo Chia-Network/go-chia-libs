@@ -126,12 +126,12 @@ func (c *HTTPClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rp
 
 		// Always need at least an empty json object in the body
 		if opt == nil {
-			opt = []byte(`{}`)
-		}
-
-		body, err = json.Marshal(opt)
-		if err != nil {
-			return nil, err
+			body = []byte(`{}`)
+		} else {
+			body, err = json.Marshal(opt)
+			if err != nil {
+				return nil, err
+			}
 		}
 	case opt != nil:
 		q, err := query.Values(opt)
