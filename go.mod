@@ -1,4 +1,4 @@
-module github.com/chia-network/go-chia-libs
+module github.com/hashgreen/go-chia-libs
 
 go 1.17
 
