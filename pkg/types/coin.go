@@ -7,8 +7,8 @@ type Coin struct {
 	PuzzleHash     string  `json:"puzzle_hash"`
 }
 
-// CoinSolution solution to a coin
-type CoinSolution struct {
+// CoinSpend spend to a coin
+type CoinSpend struct {
 	Coin         *Coin              `json:"coin"`
 	PuzzleReveal *SerializedProgram `json:"puzzle_reveal"`
 	Solution     *SerializedProgram `json:"solution"`
