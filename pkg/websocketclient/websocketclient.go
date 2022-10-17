@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -28,6 +29,7 @@ type WebsocketClient struct {
 	daemonDialer  *websocket.Dialer
 
 	conn *websocket.Conn
+	lock sync.Mutex
 
 	listenSyncActive bool
 
@@ -139,6 +141,8 @@ func (c *WebsocketClient) Do(req *rpcinterface.Request, v interface{}) (*http.Re
 		Data:        data,
 	}
 
+	c.lock.Lock()
+	defer c.lock.Unlock()
 	return nil, c.conn.WriteJSON(request)
 }
 
