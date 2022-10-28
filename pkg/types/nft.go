@@ -12,8 +12,10 @@ type NFT struct {
 	MetadataHash       string   `json:"metadata_hash"`
 	MetadataURIs       []string `json:"metadata_uris"`
 	MintHeight         uint32   `json:"mint_height"`
+	MinterDid          string   `json:"minter_did"`
 	NftCoinID          string   `json:"nft_coin_id"`
 	OwnerDid           string   `json:"owner_did"`
+	P2Address          string   `json:"p2_address"`
 	PendingTransaction bool     `json:"pending_transaction"`
 	RoyaltyPercentage  uint32   `json:"royalty_percentage"`
 	RoyaltyPuzzleHash  string   `json:"royalty_puzzle_hash"`
