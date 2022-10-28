@@ -207,3 +207,30 @@ func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetB
 
 	return block, resp, nil
 }
+
+// GetCoinRecordByNameOptions request options for /get_coin_record_by_name
+type GetCoinRecordByNameOptions struct {
+	Name string `json:"name"`
+}
+
+// GetCoinRecordByNameResponse response from get_coin_record_by_name endpoint
+type GetCoinRecordByNameResponse struct {
+	CoinRecord types.CoinRecord `json:"coin_record"`
+}
+
+// GetCoinRecordByName request to get_coin_record_by_name endpoint
+func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) (*GetCoinRecordByNameResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_coin_record_by_name", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetCoinRecordByNameResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
