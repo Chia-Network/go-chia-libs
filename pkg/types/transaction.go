@@ -91,6 +91,6 @@ const (
 
 // SpendBundle Spend Bundle...
 type SpendBundle struct {
-	AggregatedSignature string          `json:"aggregated_signature"`
-	CoinSolutions       []*CoinSolution `json:"coin_solutions"`
+	AggregatedSignature string       `json:"aggregated_signature"`
+	CoinSpends          []*CoinSpend `json:"coin_spends"`
 }
