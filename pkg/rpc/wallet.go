@@ -455,3 +455,53 @@ func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *
 
 	return r, resp, nil
 }
+
+// CreateSignedTransactionOptions Options for create_signed_transaction endpoint
+type CreateSignedTransactionOptions struct {
+	WalletID           *uint32       `json:"wallet_id,omitempty"`
+	Additions          []interface{} `json:"additions"`
+	Fee                *uint64       `json:"fee,omitempty"`
+	MinCoinAmount      *uint64       `json:"min_coin_amount,omitempty"`
+	MaxCoinAmount      *uint64       `json:"max_coin_amount,omitempty"`
+	ExcludeCoinAmounts []*uint64     `json:"exclude_coin_amounts,omitempty"`
+	Coins              []types.Coin  `json:"Coins,omitempty"`
+	ExcludeCoins       []types.Coin  `json:"exclude_coins,omitempty"`
+	// @TODO CoinAnnouncements
+	// @TODO PuzzleAnnouncements
+}
+
+// Addition an addition for a spend
+// @TODO move to types
+type Addition struct {
+	Amount     uint64        `json:"amount"`
+	PuzzleHash string        `json:"puzzle_hash"`
+	Memos      []interface{} `json:"memos,omitempty"`
+}
+
+// CreateSignedTransactionResponse Response from create_signed_transaction
+type CreateSignedTransactionResponse struct {
+	SignedTXs []SignedTX `json:"signed_txs"`
+	// @TODO
+	SignedTX interface{} `json:"signed_tx"`
+}
+
+// SignedTX a signed transaction ready to push to mempool
+type SignedTX struct {
+	// @TODO
+}
+
+// CreateSignedTransaction generates a signed transaction based on the specified options
+func (s *WalletService) CreateSignedTransaction(opts *CreateSignedTransactionOptions) (*CreateSignedTransactionResponse, *http.Response, error) {
+	request, err := s.NewRequest("create_signed_transaction", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &CreateSignedTransactionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
