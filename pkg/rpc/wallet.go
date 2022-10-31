@@ -511,3 +511,34 @@ func (s *WalletService) NFTGetByDid(opts *NFTGetByDidOptions) (*NFTGetByDidRespo
 
 	return r, resp, nil
 }
+
+// CreateNewWalletOptions represents the options for create_new_wallet
+type CreateNewWalletOptions struct {
+	Mode       string `json:"mode"`        // can be `existing`
+	WalletType string `json:"wallet_type"` // can be `cat_wallet`
+	AssetID    string `json:"asset_id"`
+	Name       string `json:"name"`
+}
+
+// CreateNewWalletResponse represents the response from create_new_wallet
+type CreateNewWalletResponse struct {
+	Type     types.WalletType `json:"type"`
+	AssetID  string           `json:"asset_id"`
+	WalletID uint32           `json:"wallet_id"`
+}
+
+// CreateNewWallet create a new wallet
+func (s *WalletService) CreateNewWallet(opts *CreateNewWalletOptions) (*CreateNewWalletResponse, *http.Response, error) {
+	request, err := s.NewRequest("create_new_wallet", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &CreateNewWalletResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
