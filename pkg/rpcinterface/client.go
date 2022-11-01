@@ -3,7 +3,6 @@ package rpcinterface
 import (
 	"net/http"
 	"net/url"
-	"time"
 )
 
 // Client defines the interface for a client
@@ -12,7 +11,6 @@ type Client interface {
 	NewRequest(service ServiceType, rpcEndpoint Endpoint, opt interface{}) (*Request, error)
 	Do(req *Request, v interface{}) (*http.Response, error)
 	SetBaseURL(url *url.URL) error
-	SetCacheValidTime(validTime time.Duration)
 
 	// The following are added for websocket compatibility
 	// Any implementation that these don't make sense for should just do nothing / return nil as applicable

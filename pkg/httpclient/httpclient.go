@@ -24,6 +24,9 @@ type HTTPClient struct {
 	// If set > 0, will configure http requests with a cache
 	cacheValidTime time.Duration
 
+	// Request timeout
+	Timeout time.Duration
+
 	nodePort    uint16
 	nodeKeyPair *tls.Certificate
 	nodeClient  *http.Client
@@ -49,6 +52,8 @@ type HTTPClient struct {
 func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionFunc) (*HTTPClient, error) {
 	c := &HTTPClient{
 		config: cfg,
+
+		Timeout: 10 * time.Second, // Default, overridable with client option
 
 		nodePort:      cfg.FullNode.RPCPort,
 		farmerPort:    cfg.Farmer.RPCPort,
@@ -291,7 +296,7 @@ func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceTy
 
 	client := &http.Client{
 		Transport: transport,
-		Timeout:   10 * time.Second,
+		Timeout:   c.Timeout,
 	}
 
 	return client, nil

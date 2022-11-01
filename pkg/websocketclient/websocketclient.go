@@ -87,10 +87,6 @@ func (c *WebsocketClient) SetBaseURL(url *url.URL) error {
 	return nil
 }
 
-// SetCacheValidTime sets how long cache should be valid for
-// This is not currently supported by the websocket client
-func (c *WebsocketClient) SetCacheValidTime(validTime time.Duration) {}
-
 // NewRequest creates an RPC request for the specified service
 func (c *WebsocketClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcinterface.Endpoint, opt interface{}) (*rpcinterface.Request, error) {
 	request := &rpcinterface.Request{
