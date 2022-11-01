@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/chia-network/go-chia-libs/pkg/httpclient"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 )
 
@@ -18,7 +19,22 @@ func WithBaseURL(url *url.URL) rpcinterface.ClientOptionFunc {
 // If unset, cache will not be used
 func WithCache(validTime time.Duration) rpcinterface.ClientOptionFunc {
 	return func(c rpcinterface.Client) error {
-		c.SetCacheValidTime(validTime)
+		typed, ok := c.(*httpclient.HTTPClient)
+		if ok {
+			typed.SetCacheValidTime(validTime)
+		}
+
+		return nil
+	}
+}
+
+// WithTimeout sets the timeout for the requests
+func WithTimeout(timeout time.Duration) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		typed, ok := c.(*httpclient.HTTPClient)
+		if ok {
+			typed.Timeout = timeout
+		}
 
 		return nil
 	}
