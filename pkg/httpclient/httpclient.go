@@ -291,7 +291,7 @@ func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceTy
 
 	client := &http.Client{
 		Transport: transport,
-		Timeout:   60 * time.Second,
+		Timeout:   10 * time.Second,
 	}
 
 	return client, nil
