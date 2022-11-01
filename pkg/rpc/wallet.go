@@ -22,12 +22,112 @@ func (s *WalletService) Do(req *rpcinterface.Request, v interface{}) (*http.Resp
 	return s.client.Do(req, v)
 }
 
+// GetPublicKeysResponse response from get_public_keys
+type GetPublicKeysResponse struct {
+	PublicKeyFingerprints []int `json:"public_key_fingerprints"`
+}
+
+// GetPublicKeys endpoint
+func (s *WalletService) GetPublicKeys() (*GetPublicKeysResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_public_keys", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetPublicKeysResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GenerateMnemonicResponse Random new 24 words response
+type GenerateMnemonicResponse struct {
+	Mnemonic []string `json:"mnemonic"`
+	Success  bool     `json:"success"`
+}
+
+// GenerateMnemonic Endpoint for generating a new random 24 words
+func (s *WalletService) GenerateMnemonic() (*GenerateMnemonicResponse, *http.Response, error) {
+	request, err := s.NewRequest("generate_mnemonic", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GenerateMnemonicResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// AddKeyOptions options for the add_key endpoint
+type AddKeyOptions struct {
+	Mnemonic []string `json:"mnemonic"`
+}
+
+// AddKeyResponse response from the add_key endpoint
+type AddKeyResponse struct {
+	Success     bool   `json:"success"`
+	Error       string `json:"error"`
+	Word        string `json:"word,omitempty"`
+	Fingerprint int    `json:"fingerprint,omitempty"`
+}
+
+// AddKey Adds a new key from 24 words to the keychain
+func (s *WalletService) AddKey(options *AddKeyOptions) (*AddKeyResponse, *http.Response, error) {
+	request, err := s.NewRequest("add_key", options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &AddKeyResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetWalletSyncStatusResponse Response for get_sync_status on wallet
 type GetWalletSyncStatusResponse struct {
 	Success            bool `json:"success"`
 	GenesisInitialized bool `json:"genesis_initialized"`
 	Synced             bool `json:"synced"`
 	Syncing            bool `json:"syncing"`
+}
+
+// GetNextAddressOptions options for get_next_address endpoint
+type GetNextAddressOptions struct {
+	NewAddress bool   `json:"new_address"`
+	WalletID   uint32 `json:"wallet_id"`
+}
+
+// GetNextAddressResponse response from get next address
+type GetNextAddressResponse struct {
+	WalletID uint32 `json:"wallet_id"`
+	Address  string `json:"address"`
+}
+
+// GetNextAddress returns the current address for the wallet. If NewAddress is true, it moves to the next address before responding
+func (s *WalletService) GetNextAddress(options *GetNextAddressOptions) (*GetNextAddressResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_next_address", options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetNextAddressResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
 }
 
 // GetSyncStatus wallet rpc -> get_sync_status
@@ -236,10 +336,12 @@ func (s *WalletService) GetTransaction(opts *GetWalletTransactionOptions) (*GetW
 
 // SendTransactionOptions represents the options for send_transaction
 type SendTransactionOptions struct {
-	WalletID uint32 `json:"wallet_id"`
-	Amount   uint64 `json:"amount"`
-	Address  string `json:"address"`
-	Fee      uint64 `json:"fee"`
+	WalletID uint32       `json:"wallet_id"`
+	Amount   uint64       `json:"amount"`
+	Address  string       `json:"address"`
+	Memos    []byte       `json:"memos,omitempty"`
+	Fee      uint64       `json:"fee"`
+	Coins    []types.Coin `json:"coins,omitempty"`
 }
 
 // SendTransactionResponse represents the response from send_transaction
@@ -456,38 +558,53 @@ func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *
 	return r, resp, nil
 }
 
-// CreateSignedTransactionOptions Options for create_signed_transaction endpoint
-type CreateSignedTransactionOptions struct {
-	WalletID           *uint32       `json:"wallet_id,omitempty"`
-	Additions          []interface{} `json:"additions"`
-	Fee                *uint64       `json:"fee,omitempty"`
-	MinCoinAmount      *uint64       `json:"min_coin_amount,omitempty"`
-	MaxCoinAmount      *uint64       `json:"max_coin_amount,omitempty"`
-	ExcludeCoinAmounts []*uint64     `json:"exclude_coin_amounts,omitempty"`
-	Coins              []types.Coin  `json:"Coins,omitempty"`
-	ExcludeCoins       []types.Coin  `json:"exclude_coins,omitempty"`
-	// @TODO CoinAnnouncements
-	// @TODO PuzzleAnnouncements
+// GetSpendableCoinsOptions Options for get_spendable_coins
+type GetSpendableCoinsOptions struct {
+	WalletID            uint32   `json:"wallet_id"`
+	MinCoinAmount       *uint64  `json:"min_coin_amount,omitempty"`
+	MaxCoinAmount       *uint64  `json:"max_coin_amount,omitempty"`
+	ExcludedCoinAmounts []uint64 `json:"excluded_coin_amounts,omitempty"`
 }
 
-// Addition an addition for a spend
-// @TODO move to types
-type Addition struct {
-	Amount     uint64        `json:"amount"`
-	PuzzleHash string        `json:"puzzle_hash"`
-	Memos      []interface{} `json:"memos,omitempty"`
+// GetSpendableCoinsResponse response from get_spendable_coins
+type GetSpendableCoinsResponse struct {
+	ConfirmedRecords     []types.CoinRecord `json:"confirmed_records"`
+	UnconfirmedRemovals  []types.CoinRecord `json:"unconfirmed_removals"`
+	UnconfirmedAdditions []types.CoinRecord `json:"unconfirmed_additions"`
+}
+
+// GetSpendableCoins returns information about the coins in the wallet
+func (s *WalletService) GetSpendableCoins(opts *GetSpendableCoinsOptions) (*GetSpendableCoinsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_spendable_coins", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetSpendableCoinsResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// CreateSignedTransactionOptions Options for create_signed_transaction endpoint
+type CreateSignedTransactionOptions struct {
+	WalletID           *uint32          `json:"wallet_id,omitempty"`
+	Additions          []types.Addition `json:"additions"`
+	Fee                *uint64          `json:"fee,omitempty"`
+	MinCoinAmount      *uint64          `json:"min_coin_amount,omitempty"`
+	MaxCoinAmount      *uint64          `json:"max_coin_amount,omitempty"`
+	ExcludeCoinAmounts []*uint64        `json:"exclude_coin_amounts,omitempty"`
+	Coins              []types.Coin     `json:"Coins,omitempty"`
+	ExcludeCoins       []types.Coin     `json:"exclude_coins,omitempty"`
 }
 
 // CreateSignedTransactionResponse Response from create_signed_transaction
 type CreateSignedTransactionResponse struct {
-	SignedTXs []SignedTX `json:"signed_txs"`
-	// @TODO
-	SignedTX interface{} `json:"signed_tx"`
-}
-
-// SignedTX a signed transaction ready to push to mempool
-type SignedTX struct {
-	// @TODO
+	SignedTXs []types.TransactionRecord `json:"signed_txs"`
+	SignedTX  types.TransactionRecord   `json:"signed_tx"`
 }
 
 // CreateSignedTransaction generates a signed transaction based on the specified options
@@ -498,6 +615,29 @@ func (s *WalletService) CreateSignedTransaction(opts *CreateSignedTransactionOpt
 	}
 
 	r := &CreateSignedTransactionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// SendTransactionMultiResponse Response from send_transaction_multi
+type SendTransactionMultiResponse struct {
+	Transaction   types.TransactionRecord `json:"transaction"`
+	TransactionID string                  `json:"transaction_id"`
+}
+
+// SendTransactionMulti allows sending a more detailed transaction with multiple inputs/outputs.
+// Options are the same as create signed transaction since this is ultimately just a wrapper around that in Chia
+func (s *WalletService) SendTransactionMulti(opts *CreateSignedTransactionOptions) (*SendTransactionMultiResponse, *http.Response, error) {
+	request, err := s.NewRequest("send_transaction_multi", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &SendTransactionMultiResponse{}
 	resp, err := s.Do(request, r)
 	if err != nil {
 		return nil, resp, err
