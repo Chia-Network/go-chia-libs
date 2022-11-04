@@ -234,3 +234,42 @@ func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) 
 
 	return r, resp, nil
 }
+
+// GetFeeEstimateOptions inputs to get a fee estimate
+// TargetTimes is a list of values corresponding to "seconds from now" to get a fee estimate for
+// The estimated fee is the estimate of the fee required to complete the TX by the target time seconds
+type GetFeeEstimateOptions struct {
+	SpendBundle *types.SpendBundle `json:"spend_bundle,omitempty"`
+	Cost        uint64             `json:"cost,omitempty"`
+	TargetTimes []uint64           `json:"target_times"`
+}
+
+// GetFeeEstimateResponse response for get_fee_estimate
+type GetFeeEstimateResponse struct {
+	Estimates         []uint64 `json:"estimates"`
+	TargetTimes       []uint64 `json:"target_times"`
+	CurrentFeeRate    uint64   `json:"current_fee_rate"`
+	MempoolSize       uint64   `json:"mempool_size"`
+	MempoolMaxSize    uint64   `json:"mempool_max_size"`
+	FullNodeSynced    bool     `json:"full_node_synced"`
+	PeakHeight        uint32   `json:"peak_height"`
+	LastPeakTimestamp uint64   `json:"last_peak_timestamp"`
+	NodeTimeUTC       uint64   `json:"node_time_utc"`
+}
+
+// GetFeeEstimate endpoint
+func (s *FullNodeService) GetFeeEstimate(opts *GetFeeEstimateOptions) (*GetFeeEstimateResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_fee_estimate", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetFeeEstimateResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
