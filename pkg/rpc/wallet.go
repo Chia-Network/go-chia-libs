@@ -94,6 +94,28 @@ func (s *WalletService) AddKey(options *AddKeyOptions) (*AddKeyResponse, *http.R
 	return r, resp, nil
 }
 
+// DeleteAllKeysResponse Delete keys response
+type DeleteAllKeysResponse struct {
+	Success bool   `json:"success"`
+	Error   string `json:"error"`
+}
+
+// DeleteAllKeys deletes all keys from the keychain
+func (s *WalletService) DeleteAllKeys() (*DeleteAllKeysResponse, *http.Response, error) {
+	request, err := s.NewRequest("delete_all_keys", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DeleteAllKeysResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetWalletSyncStatusResponse Response for get_sync_status on wallet
 type GetWalletSyncStatusResponse struct {
 	Success            bool `json:"success"`
