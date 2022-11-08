@@ -273,3 +273,32 @@ func (s *FullNodeService) GetFeeEstimate(opts *GetFeeEstimateOptions) (*GetFeeEs
 
 	return r, resp, nil
 }
+
+// FullNodePushTXOptions options for pushing tx to full node mempool
+type FullNodePushTXOptions struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+}
+
+// FullNodePushTXResponse Response from full node push_tx
+type FullNodePushTXResponse struct {
+	Status  string `json:"status"`
+	Success bool   `json:"success"`
+	Error   string `json:"error"`
+}
+
+// PushTX pushes a transaction to the full node
+func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXResponse, *http.Response, error) {
+	request, err := s.NewRequest("push_tx", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &FullNodePushTXResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
