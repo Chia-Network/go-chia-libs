@@ -361,7 +361,7 @@ type SendTransactionOptions struct {
 	WalletID uint32       `json:"wallet_id"`
 	Amount   uint64       `json:"amount"`
 	Address  string       `json:"address"`
-	Memos    []byte       `json:"memos,omitempty"`
+	Memos    [][]byte     `json:"memos,omitempty"`
 	Fee      uint64       `json:"fee"`
 	Coins    []types.Coin `json:"coins,omitempty"`
 }
