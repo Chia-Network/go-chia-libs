@@ -16,6 +16,9 @@ func (b Bytes) String() string {
 
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes) MarshalJSON() ([]byte, error) {
+	if len(b) == 0 {
+		return []byte("null"), nil
+	}
 	dst := make([]byte, hex.EncodedLen(len(b)))
 	hex.Encode(dst, b)
 	final := []byte(`"0x`)
@@ -26,6 +29,9 @@ func (b Bytes) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals hex into []byte
 func (b *Bytes) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		return nil
+	}
 	data = bytes.TrimLeft(data, `"`)
 	data = bytes.TrimRight(data, `"`)
 	data = bytes.TrimPrefix(data, []byte(`0x`))
