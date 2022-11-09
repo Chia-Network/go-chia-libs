@@ -41,10 +41,10 @@ const (
 
 // WalletInfo single wallet record
 type WalletInfo struct {
-	Data string      `json:"data"`
 	ID   uint32      `json:"id"`
 	Name string      `json:"name"`
 	Type *WalletType `json:"type"`
+	Data string      `json:"data"`
 }
 
 // WalletBalance specific wallet balance information

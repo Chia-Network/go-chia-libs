@@ -42,8 +42,8 @@ type Connection struct {
 	//CreationTime // @TODO parse to time - is seconds as float
 	//LastMessageTime // @TODO parse to time - is seconds as float
 	LocalPort      uint16    `json:"local_port"`
-	NodeID         string    `json:"node_id"`
-	PeakHash       string    `json:"peak_hash"`
+	NodeID         string    `json:"node_id"`   // @TODO Should this be Bytes or Bytes32?
+	PeakHash       string    `json:"peak_hash"` // @TODO Should this be bytes32?
 	PeakHeight     uint32    `json:"peak_height"`
 	PeakWeight     Uint128   `json:"peak_weight"`
 	PeerHost       IPAddress `json:"peer_host"`

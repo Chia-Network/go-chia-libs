@@ -2,19 +2,19 @@ package types
 
 // BlockRecord a single block record
 type BlockRecord struct {
-	HeaderHash                 string             `json:"header_hash"`
-	PrevHash                   string             `json:"prev_hash"`
+	HeaderHash                 Bytes32            `json:"header_hash"`
+	PrevHash                   Bytes32            `json:"prev_hash"`
 	Height                     uint32             `json:"height"`
 	Weight                     Uint128            `json:"weight"`
 	TotalIters                 Uint128            `json:"total_iters"`
 	SignagePointIndex          uint8              `json:"signage_point_index"`
 	ChallengeVDFOutput         *ClassgroupElement `json:"challenge_vdf_output"`
 	InfusedChallengeVDFOutput  *ClassgroupElement `json:"infused_challenge_vdf_output"`
-	RewardInfusionNewChallenge string             `json:"reward_infusion_new_challenge"`
-	ChallengeBlockInfoHash     string             `json:"challenge_block_info_hash"`
+	RewardInfusionNewChallenge Bytes32            `json:"reward_infusion_new_challenge"`
+	ChallengeBlockInfoHash     Bytes32            `json:"challenge_block_info_hash"`
 	SubSlotIters               uint64             `json:"sub_slot_iters"`
-	PoolPuzzleHash             *PuzzleHash        `json:"pool_puzzle_hash"`
-	FarmerPuzzleHash           *PuzzleHash        `json:"farmer_puzzle_hash"`
+	PoolPuzzleHash             *Bytes32           `json:"pool_puzzle_hash"`
+	FarmerPuzzleHash           *Bytes32           `json:"farmer_puzzle_hash"`
 	RequiredIters              uint64             `json:"required_iters"`
 	Deficit                    uint8              `json:"deficit"`
 	Overflow                   bool               `json:"overflow"`
@@ -22,14 +22,14 @@ type BlockRecord struct {
 
 	// Transaction Block - Present if is_transaction_block
 	Timestamp                uint64  `json:"timestamp"` // @TODO time.Time ?
-	PrevTransactionBlockHash string  `json:"prev_transaction_block_hash"`
+	PrevTransactionBlockHash Bytes32 `json:"prev_transaction_block_hash"`
 	Fees                     uint64  `json:"fees"`
 	RewardClaimsIncorporated []*Coin `json:"reward_claims_incorporated"`
 
 	// Slot - present if this is the first SB in sub slot
-	FinishedChallengeSlotHashes        []string `json:"finished_challenge_slot_hashes"`
-	FinishedInfusedChallengeSlotHashes []string `json:"finished_infused_challenge_slot_hashes"`
-	FinishedRewardSlotHashes           []string `json:"finished_reward_slot_hashes"`
+	FinishedChallengeSlotHashes        []Bytes32 `json:"finished_challenge_slot_hashes"`
+	FinishedInfusedChallengeSlotHashes []Bytes32 `json:"finished_infused_challenge_slot_hashes"`
+	FinishedRewardSlotHashes           []Bytes32 `json:"finished_reward_slot_hashes"`
 
 	// Sub-epoch - present if this is the first SB after sub-epoch
 	SubEpochSummaryIncluded *SubEpochSummary `json:"sub_epoch_summary_included"`
@@ -57,7 +57,7 @@ type RewardChainBlock struct {
 	Height                     uint32        `json:"height"`
 	TotalIters                 Uint128       `json:"total_iters"`
 	SignagePointIndex          uint8         `json:"signage_point_index"`
-	POSSSCCChallengeHash       string        `json:"pos_ss_cc_challenge_hash"`
+	POSSSCCChallengeHash       Bytes32       `json:"pos_ss_cc_challenge_hash"`
 	ProofOfSpace               *ProofOfSpace `json:"proof_of_space"`
 	ChallengeChainSPVDF        *VDFInfo      `json:"challenge_chain_sp_vdf"`
 	ChallengeChainSPSignature  *G2Element    `json:"challenge_chain_sp_signature"`
@@ -103,7 +103,7 @@ const (
 type BlockEvent struct {
 	TransactionBlock              bool               `json:"transaction_block"`
 	KSize                         uint8              `json:"k_size"`
-	HeaderHash                    string             `json:"header_hash"`
+	HeaderHash                    Bytes32            `json:"header_hash"`
 	Height                        uint32             `json:"height"`
 	ValidationTime                float64            `json:"validation_time"`
 	PreValidationTime             float64            `json:"pre_validation_time"`

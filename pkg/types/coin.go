@@ -2,9 +2,9 @@ package types
 
 // Coin is a coin
 type Coin struct {
+	ParentCoinInfo Bytes32 `json:"parent_coin_info"`
+	PuzzleHash     Bytes32 `json:"puzzle_hash"`
 	Amount         Uint128 `json:"amount"`
-	ParentCoinInfo string  `json:"parent_coin_info"`
-	PuzzleHash     string  `json:"puzzle_hash"`
 }
 
 // CoinSpend spend to a coin

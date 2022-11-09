@@ -59,7 +59,7 @@ const (
 // NewCompactProofEvent is an event from the timelord every time a new compact proof is generated
 type NewCompactProofEvent struct {
 	Success    bool                 `json:"success"`
-	HeaderHash string               `json:"header_hash"`
+	HeaderHash Bytes32              `json:"header_hash"`
 	Height     uint32               `json:"height"`
 	FieldVdf   CompressibleVDFField `json:"field_vdf"`
 }

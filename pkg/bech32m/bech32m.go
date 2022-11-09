@@ -164,7 +164,7 @@ func convertbits(data []byte, frombits, tobits uint, pad bool) ([]byte, error) {
 }
 
 // EncodePuzzleHash encode to an address
-func EncodePuzzleHash(puzzleHash [32]byte, prefix string) (string, error) {
+func EncodePuzzleHash(puzzleHash types.Bytes32, prefix string) (string, error) {
 	data, err := convertbits(types.Bytes32ToBytes(puzzleHash), 8, 5, true)
 	if err != nil {
 		return "", err
@@ -178,21 +178,21 @@ func EncodePuzzleHash(puzzleHash [32]byte, prefix string) (string, error) {
 }
 
 // DecodePuzzleHash Decodes an address to a puzzle hash
-func DecodePuzzleHash(addr string) (string, [32]byte, error) {
+func DecodePuzzleHash(addr string) (string, types.Bytes32, error) {
 	hrp, data, err := Decode(addr)
 	if err != nil {
-		return "", [32]byte{}, err
+		return "", types.Bytes32{}, err
 	}
 	if len(data) < 1 {
-		return "", [32]byte{}, fmt.Errorf("empty data section")
+		return "", types.Bytes32{}, fmt.Errorf("empty data section")
 	}
 	res, err := convertbits(data, 5, 8, false)
 	if err != nil {
-		return "", [32]byte{}, err
+		return "", types.Bytes32{}, err
 	}
 	b, err := types.BytesToBytes32(res)
 	if err != nil {
-		return "", [32]byte{}, err
+		return "", types.Bytes32{}, err
 	}
 	return hrp, b, nil
 }
