@@ -302,3 +302,31 @@ func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXRe
 
 	return r, resp, nil
 }
+
+// GetPuzzleAndSolutionOptions options for get_puzzle_and_solution rpc call
+type GetPuzzleAndSolutionOptions struct {
+	CoinID types.Bytes32 `json:"coin_id"`
+	Height uint32        `json:"height"`
+}
+
+// GetPuzzleAndSolutionResponse response from get_puzzle_and_solution
+type GetPuzzleAndSolutionResponse struct {
+	CoinSolution *types.CoinSpend `json:"coin_solution"`
+	Success      bool             `json:"success"`
+}
+
+// GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
+func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions) (*GetPuzzleAndSolutionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_puzzle_and_solution", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	record := &GetPuzzleAndSolutionResponse{}
+	resp, err := s.Do(request, record)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
