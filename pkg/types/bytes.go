@@ -18,8 +18,8 @@ func (b Bytes) MarshalJSON() ([]byte, error) {
 	return final, nil
 }
 
-// UnmarshalText unmarshals hex into []byte
-func (b *Bytes) UnmarshalText(data []byte) error {
+// UnmarshalJSON unmarshals hex into []byte
+func (b *Bytes) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimLeft(data, `"`)
 	data = bytes.TrimRight(data, `"`)
 	data = bytes.TrimPrefix(data, []byte(`0x`))
