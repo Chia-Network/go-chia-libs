@@ -75,3 +75,21 @@ func TestUnmarshalBytes(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expected, destStruct)
 }
+
+func TestUnmarshalBytes_Null(t *testing.T) {
+	test := []byte(`null`)
+	dest := &types.Bytes{}
+	err := json.Unmarshal(test, dest)
+	assert.NoError(t, err)
+	assert.Equal(t, &types.Bytes{}, dest)
+
+	type testStruct struct {
+		Data types.Bytes `json:"data"`
+	}
+	jsonInput := []byte(`{"data":null}`)
+	expected := &testStruct{Data: types.Bytes(nil)}
+	destStruct := &testStruct{}
+	err = json.Unmarshal(jsonInput, destStruct)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, destStruct)
+}
