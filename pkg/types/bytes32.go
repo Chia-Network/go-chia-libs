@@ -38,6 +38,11 @@ func (b *Bytes32) UnmarshalJSON(data []byte) error {
 	return err
 }
 
+// String Converts to hex string
+func (b Bytes32) String() string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
+}
+
 // Bytes32ToBytes returns []byte from [32]byte
 func Bytes32ToBytes(bytes32 Bytes32) Bytes {
 	return bytes32[:]
