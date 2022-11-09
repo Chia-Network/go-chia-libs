@@ -14,6 +14,13 @@ type CoinSpend struct {
 	Solution     *SerializedProgram `json:"solution"`
 }
 
+// CoinSolution solution to a coin
+type CoinSolution struct {
+	Coin         *Coin              `json:"coin"`
+	PuzzleReveal *SerializedProgram `json:"puzzle_reveal"`
+	Solution     *SerializedProgram `json:"solution"`
+}
+
 // CoinAddedEvent data from coin-added websocket event
 type CoinAddedEvent struct {
 	Success  bool   `json:"success"`
