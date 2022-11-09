@@ -31,6 +31,33 @@ func TestMarshalBytes(t *testing.T) {
 	assert.Equal(t, `{"data":"0x00010203"}`, string(encodedData))
 }
 
+func TestMarshalBytes_Empty(t *testing.T) {
+	noPtr := types.Bytes{}
+	ptr := &types.Bytes{}
+
+	encodedNoPtr, err := json.Marshal(noPtr)
+	assert.NoError(t, err)
+	assert.Equal(t, `null`, string(encodedNoPtr))
+
+	encodedPtr, err := json.Marshal(ptr)
+	assert.NoError(t, err)
+	assert.Equal(t, `null`, string(encodedPtr))
+
+	type testStruct struct {
+		Data types.Bytes `json:"data"`
+	}
+
+	data := &testStruct{Data: types.Bytes{}}
+	encodedData, err := json.Marshal(data)
+	assert.NoError(t, err)
+	assert.Equal(t, `{"data":null}`, string(encodedData))
+
+	var nilType types.Bytes
+	encodedNil, err := json.Marshal(nilType)
+	assert.NoError(t, err)
+	assert.Equal(t, `null`, string(encodedNil))
+}
+
 func TestUnmarshalBytes(t *testing.T) {
 	test := []byte(`"0x00010203"`)
 	dest := &types.Bytes{}
