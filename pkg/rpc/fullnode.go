@@ -73,7 +73,7 @@ func (s *FullNodeService) GetBlockchainState() (*GetBlockchainStateResponse, *ht
 
 // GetBlockOptions options for get_block rpc call
 type GetBlockOptions struct {
-	HeaderHash string `json:"header_hash"`
+	HeaderHash types.Bytes32 `json:"header_hash"`
 }
 
 // GetBlockResponse response for get_block rpc call

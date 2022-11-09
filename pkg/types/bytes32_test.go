@@ -41,3 +41,12 @@ func TestUnmarshalBytes32(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
 }
+
+func TestUnmarshalBytes32_Nil(t *testing.T) {
+	hexstr := `""`
+	expected := types.Bytes32{}
+	actual := types.Bytes32{}
+	err := json.Unmarshal([]byte(hexstr), &actual)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, actual)
+}

@@ -1,14 +1,11 @@
 package types
 
-// PuzzleHash Own type for future methods to encode/decode
-type PuzzleHash string
-
-// SerializedProgram Just represent as a string for now
-type SerializedProgram string
+// SerializedProgram An opaque representation of a clvm program. It has a more limited interface than a full SExp
+type SerializedProgram Bytes
 
 // ClassgroupElement Classgroup Element
 type ClassgroupElement struct {
-	Data string `json:"data"`
+	Data Bytes100 `json:"data"`
 }
 
 // EndOfSubSlotBundle end of subslot bundle
@@ -16,8 +13,14 @@ type EndOfSubSlotBundle struct {
 	// @TODO
 }
 
-// G1Element String for now, can make better later if we need
-type G1Element string
+// PublicKeyMPL is a public key
+type PublicKeyMPL Bytes48
 
-// G2Element String for now, can make better later if we need
-type G2Element string
+// G1Element is a public key
+type G1Element PublicKeyMPL
+
+// SignatureMPL is a signature
+type SignatureMPL Bytes96
+
+// G2Element is a signature
+type G2Element SignatureMPL

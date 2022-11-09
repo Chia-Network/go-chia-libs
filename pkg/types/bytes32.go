@@ -12,7 +12,7 @@ type Bytes32 [32]byte
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes32) MarshalJSON() ([]byte, error) {
 	dst := make([]byte, hex.EncodedLen(len(b)))
-	hex.Encode(dst, Bytes32ToBytes(b))
+	hex.Encode(dst, b[:])
 	final := []byte(`"0x`)
 	final = append(final, dst...)
 	final = append(final, []byte(`"`)...)

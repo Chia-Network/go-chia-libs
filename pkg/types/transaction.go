@@ -9,7 +9,7 @@ import (
 type TransactionRecord struct {
 	ConfirmedAtHeight uint32           `json:"confirmed_at_height"`
 	CreatedAtTime     uint64           `json:"created_at_time"` // @TODO time.Time?
-	ToPuzzleHash      *PuzzleHash      `json:"to_puzzle_hash"`
+	ToPuzzleHash      *Bytes32         `json:"to_puzzle_hash"`
 	Amount            uint64           `json:"amount"`
 	FeeAmount         uint64           `json:"fee_amount"`
 	Confirmed         bool             `json:"confirmed"`
@@ -19,15 +19,12 @@ type TransactionRecord struct {
 	Removals          []*Coin          `json:"removals"`
 	WalletID          uint32           `json:"wallet_id"`
 	SentTo            []*SentTo        `json:"sent_to"`
-	TradeID           string           `json:"trade_id"`
+	TradeID           *Bytes32         `json:"trade_id"`
 	Type              *TransactionType `json:"type"`
-	Name              string           `json:"name"` // @TODO bytes32 / hex
+	Name              Bytes32          `json:"name"`
 	// ToAddress is not on the official type, but some endpoints return it anyways
-	ToAddress *Address `json:"to_address"`
+	ToAddress string `json:"to_address"`
 }
-
-// Address Own type for future methods to encode/decode
-type Address string
 
 // SentTo Represents the list of peers that we sent the transaction to, whether each one
 // included it in the mempool, and what the error message (if any) was
@@ -91,6 +88,6 @@ const (
 
 // SpendBundle Spend Bundle...
 type SpendBundle struct {
-	AggregatedSignature string       `json:"aggregated_signature"`
 	CoinSpends          []*CoinSpend `json:"coin_spends"`
+	AggregatedSignature G2Element    `json:"aggregated_signature"`
 }
