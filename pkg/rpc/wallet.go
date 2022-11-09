@@ -358,12 +358,12 @@ func (s *WalletService) GetTransaction(opts *GetWalletTransactionOptions) (*GetW
 
 // SendTransactionOptions represents the options for send_transaction
 type SendTransactionOptions struct {
-	WalletID uint32       `json:"wallet_id"`
-	Amount   uint64       `json:"amount"`
-	Address  string       `json:"address"`
-	Memos    [][]byte     `json:"memos,omitempty"`
-	Fee      uint64       `json:"fee"`
-	Coins    []types.Coin `json:"coins,omitempty"`
+	WalletID uint32        `json:"wallet_id"`
+	Amount   uint64        `json:"amount"`
+	Address  string        `json:"address"`
+	Memos    []types.Bytes `json:"memos,omitempty"`
+	Fee      uint64        `json:"fee"`
+	Coins    []types.Coin  `json:"coins,omitempty"`
 }
 
 // SendTransactionResponse represents the response from send_transaction
