@@ -3,10 +3,16 @@ package types
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 )
 
 // Bytes is a wrapper around []byte that marshals down to hex and more closely matches types in chia-blockchain
 type Bytes []byte
+
+// String Converts to hex string
+func (b Bytes) String() string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
+}
 
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes) MarshalJSON() ([]byte, error) {

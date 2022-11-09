@@ -9,6 +9,11 @@ import (
 // Bytes48 Helper type with custom json handling for [48]byte
 type Bytes48 [48]byte
 
+// String Converts to hex string
+func (b Bytes48) String() string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
+}
+
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes48) MarshalJSON() ([]byte, error) {
 	dst := make([]byte, hex.EncodedLen(len(b)))

@@ -9,6 +9,11 @@ import (
 // Bytes32 Helper type with custom json handling for [32]byte
 type Bytes32 [32]byte
 
+// String Converts to hex string
+func (b Bytes32) String() string {
+	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
+}
+
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes32) MarshalJSON() ([]byte, error) {
 	dst := make([]byte, hex.EncodedLen(len(b)))
@@ -36,11 +41,6 @@ func (b *Bytes32) UnmarshalJSON(data []byte) error {
 	}
 	*b = b32
 	return err
-}
-
-// String Converts to hex string
-func (b Bytes32) String() string {
-	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
 }
 
 // Bytes32ToBytes returns []byte from [32]byte
