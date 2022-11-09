@@ -580,6 +580,33 @@ func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *
 	return r, resp, nil
 }
 
+// NFTGetByDidOptions represents the options for nft_get_by_did
+type NFTGetByDidOptions struct {
+	DidID string `json:"did_id"` // not required -- if blank, this function will return the first NFT wallet ID it finds
+}
+
+// NFTGetByDidResponse represents the response from nft_get_by_did
+type NFTGetByDidResponse struct {
+	Success  bool   `json:"success"`
+	WalletID uint32 `json:"wallet_id"`
+}
+
+// NFTGetByDid Get wallet ID by DID
+func (s *WalletService) NFTGetByDid(opts *NFTGetByDidOptions) (*NFTGetByDidResponse, *http.Response, error) {
+	request, err := s.NewRequest("nft_get_by_did", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &NFTGetByDidResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetSpendableCoinsOptions Options for get_spendable_coins
 type GetSpendableCoinsOptions struct {
 	WalletID            uint32   `json:"wallet_id"`
