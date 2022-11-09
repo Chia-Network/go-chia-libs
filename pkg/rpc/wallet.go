@@ -582,7 +582,7 @@ func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *
 
 // NFTGetByDidOptions represents the options for nft_get_by_did
 type NFTGetByDidOptions struct {
-	DidID string `json:"did_id"` // not required -- if blank, this function will return the first NFT wallet ID it finds
+	DidID types.Bytes32 `json:"did_id,omitempty"`
 }
 
 // NFTGetByDidResponse represents the response from nft_get_by_did

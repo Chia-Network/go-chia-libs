@@ -305,8 +305,8 @@ func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXRe
 
 // GetPuzzleAndSolutionOptions options for get_puzzle_and_solution rpc call
 type GetPuzzleAndSolutionOptions struct {
-	CoinID string `json:"coin_id"`
-	Height int    `json:"height"`
+	CoinID types.Bytes32 `json:"coin_id"`
+	Height uint32        `json:"height"`
 }
 
 // GetPuzzleAndSolutionResponse response from get_puzzle_and_solution
