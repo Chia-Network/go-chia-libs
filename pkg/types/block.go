@@ -21,10 +21,10 @@ type BlockRecord struct {
 	PrevTransactionBlockHeight uint32             `json:"prev_transaction_block_height"`
 
 	// Transaction Block - Present if is_transaction_block
-	Timestamp                uint64  `json:"timestamp"` // @TODO time.Time ?
-	PrevTransactionBlockHash Bytes32 `json:"prev_transaction_block_hash"`
-	Fees                     uint64  `json:"fees"`
-	RewardClaimsIncorporated []*Coin `json:"reward_claims_incorporated"`
+	Timestamp                uint64   `json:"timestamp"` // @TODO time.Time ?
+	PrevTransactionBlockHash *Bytes32 `json:"prev_transaction_block_hash"`
+	Fees                     uint64   `json:"fees"`
+	RewardClaimsIncorporated []*Coin  `json:"reward_claims_incorporated"`
 
 	// Slot - present if this is the first SB in sub slot
 	FinishedChallengeSlotHashes        []Bytes32 `json:"finished_challenge_slot_hashes"`
