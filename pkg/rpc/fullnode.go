@@ -311,8 +311,8 @@ type GetPuzzleAndSolutionOptions struct {
 
 // GetPuzzleAndSolutionResponse response from get_puzzle_and_solution
 type GetPuzzleAndSolutionResponse struct {
-	CoinSolution *types.CoinSolution `json:"coin_solution"`
-	Success      bool                `json:"success"`
+	CoinSolution *types.CoinSpend `json:"coin_solution"`
+	Success      bool             `json:"success"`
 }
 
 // GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
