@@ -26,6 +26,9 @@ func (b Bytes100) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals hex into []byte
 func (b *Bytes100) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		return nil
+	}
 	data = bytes.TrimLeft(data, `"`)
 	data = bytes.TrimRight(data, `"`)
 	data = bytes.TrimPrefix(data, []byte(`0x`))

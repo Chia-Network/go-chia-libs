@@ -8,22 +8,22 @@ type BlockRecord struct {
 	Weight                     Uint128            `json:"weight"`
 	TotalIters                 Uint128            `json:"total_iters"`
 	SignagePointIndex          uint8              `json:"signage_point_index"`
-	ChallengeVDFOutput         *ClassgroupElement `json:"challenge_vdf_output"`
+	ChallengeVDFOutput         ClassgroupElement  `json:"challenge_vdf_output"`
 	InfusedChallengeVDFOutput  *ClassgroupElement `json:"infused_challenge_vdf_output"`
 	RewardInfusionNewChallenge Bytes32            `json:"reward_infusion_new_challenge"`
 	ChallengeBlockInfoHash     Bytes32            `json:"challenge_block_info_hash"`
 	SubSlotIters               uint64             `json:"sub_slot_iters"`
-	PoolPuzzleHash             *Bytes32           `json:"pool_puzzle_hash"`
-	FarmerPuzzleHash           *Bytes32           `json:"farmer_puzzle_hash"`
+	PoolPuzzleHash             Bytes32            `json:"pool_puzzle_hash"`
+	FarmerPuzzleHash           Bytes32            `json:"farmer_puzzle_hash"`
 	RequiredIters              uint64             `json:"required_iters"`
 	Deficit                    uint8              `json:"deficit"`
 	Overflow                   bool               `json:"overflow"`
 	PrevTransactionBlockHeight uint32             `json:"prev_transaction_block_height"`
 
 	// Transaction Block - Present if is_transaction_block
-	Timestamp                uint64   `json:"timestamp"` // @TODO time.Time ?
+	Timestamp                *uint64  `json:"timestamp"` // @TODO time.Time ?
 	PrevTransactionBlockHash *Bytes32 `json:"prev_transaction_block_hash"`
-	Fees                     uint64   `json:"fees"`
+	Fees                     *uint64  `json:"fees"`
 	RewardClaimsIncorporated []*Coin  `json:"reward_claims_incorporated"`
 
 	// Slot - present if this is the first SB in sub slot

@@ -31,6 +31,24 @@ func TestMarshalBytes32(t *testing.T) {
 	marshalled, err := json.Marshal(b32)
 	assert.NoError(t, err)
 	assert.Equal(t, `"0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"`, string(marshalled))
+
+	type testStruct struct {
+		Data *types.Bytes32 `json:"data"`
+	}
+	toMarshal := &testStruct{Data: nil}
+	expected := `{"data":null}`
+	actual, err := json.Marshal(toMarshal)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, string(actual))
+
+	type testStruct2 struct {
+		Data types.Bytes32 `json:"data"`
+	}
+	toMarshal2 := &testStruct2{Data: types.Bytes32{}}
+	expected2 := `{"data":"0x0000000000000000000000000000000000000000000000000000000000000000"}`
+	actual2, err := json.Marshal(toMarshal2)
+	assert.NoError(t, err)
+	assert.Equal(t, expected2, string(actual2))
 }
 
 func TestUnmarshalBytes32(t *testing.T) {
@@ -40,10 +58,20 @@ func TestUnmarshalBytes32(t *testing.T) {
 	err := json.Unmarshal([]byte(hexstr), &actual)
 	assert.NoError(t, err)
 	assert.Equal(t, expected, actual)
+
+	type testStruct struct {
+		Data *types.Bytes32 `json:"data"`
+	}
+	jsonInput := []byte(`{"data":null}`)
+	expectedStruct := &testStruct{Data: nil}
+	destStruct := &testStruct{}
+	err = json.Unmarshal(jsonInput, destStruct)
+	assert.NoError(t, err)
+	assert.Equal(t, expectedStruct, destStruct)
 }
 
 func TestUnmarshalBytes32_Nil(t *testing.T) {
-	hexstr := `""`
+	hexstr := `null`
 	expected := types.Bytes32{}
 	actual := types.Bytes32{}
 	err := json.Unmarshal([]byte(hexstr), &actual)
