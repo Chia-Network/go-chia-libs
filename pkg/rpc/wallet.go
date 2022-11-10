@@ -468,9 +468,9 @@ type GetNFTsOptions struct {
 
 // GetNFTsResponse represents the response from nft_get_nfts
 type GetNFTsResponse struct {
-	Success  bool        `json:"success"`
-	WalletID uint32      `json:"wallet_id"`
-	NFTList  []types.NFT `json:"nft_list"`
+	Success  bool            `json:"success"`
+	WalletID uint32          `json:"wallet_id"`
+	NFTList  []types.NFTInfo `json:"nft_list"`
 }
 
 // GetNFTs Show all NFTs in a given wallet
@@ -528,8 +528,8 @@ type GetNFTInfoOptions struct {
 
 // GetNFTInfoResponse represents the response from nft_get_info
 type GetNFTInfoResponse struct {
-	NFTInfo types.NFT `json:"nft_info"`
-	Success bool      `json:"success"`
+	NFTInfo types.NFTInfo `json:"nft_info"`
+	Success bool          `json:"success"`
 }
 
 // GetNFTInfo Get info about an NFT
