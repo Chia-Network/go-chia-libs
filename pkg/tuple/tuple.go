@@ -46,6 +46,18 @@ func (t *Tuple[T]) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	vp := reflect.ValueOf(&t.value)
+	v := vp.Elem()
+	for i := 0; i < v.NumField(); i++ {
+		switch v.Field(i).Kind() {
+		case reflect.String:
+			if stringed, ok := tmpMap[i].(string); ok {
+				v.Field(i).SetString(stringed)
+			}
+			// @TODO handle other types
+		}
+	}
+
 	t.isPresent = true
 	return nil
 }
