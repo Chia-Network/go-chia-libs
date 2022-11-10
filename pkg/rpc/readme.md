@@ -132,8 +132,10 @@ if err != nil {
 	log.Fatal(err)
 }
 
-for _, transaction := range transactions.Transactions {
-	log.Println(transaction.Name)
+if transactions.Transactions.IsPresent() {
+    for _, transaction := range transactions.Transactions.MustGet() {
+        log.Println(transaction.Name)
+    }
 }
 ```
 
@@ -183,7 +185,9 @@ if err != nil {
 	log.Fatal(err)
 }
 
-log.Println(state.BlockchainState.Difficulty)
+if state.BlockchainState.IsPresent() {
+    log.Println(state.BlockchainState.MustGet().Difficulty)	
+}
 ```
 
 ### Get Estimated Network Space
@@ -203,7 +207,9 @@ if err != nil {
 	log.Fatal(err)
 }
 
-log.Println(util.FormatBytes(state.BlockchainState.Space))
+if state.BlockchainState.IsPresent() {
+    log.Println(state.BlockchainState.MustGet().Space)
+}
 ```
 
 ### Request Cache
