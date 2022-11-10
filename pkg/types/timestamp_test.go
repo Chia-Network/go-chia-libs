@@ -26,3 +26,12 @@ func TestTimestamp_UnmarshalJSON(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expected, *unmarshalled)
 }
+
+func TestTimestamp_UnmarshalJSONFloat(t *testing.T) {
+	data := []byte(`1668050986.646834`)
+	expected := types.Timestamp{Time: time.Unix(1668050986, 0)}
+	unmarshalled := &types.Timestamp{}
+	err := json.Unmarshal(data, unmarshalled)
+	assert.NoError(t, err)
+	assert.Equal(t, expected, *unmarshalled)
+}

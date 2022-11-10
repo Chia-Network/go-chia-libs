@@ -9,7 +9,7 @@ const (
 	// WalletTypeStandard Standard Wallet
 	WalletTypeStandard = WalletType(0)
 
-	// Deprecated: WalletTypeRateLimited Rate Limited Wallet
+	// WalletTypeRateLimited Deprecated: Rate Limited Wallet
 	WalletTypeRateLimited = WalletType(1)
 
 	// WalletTypeAtomicSwap Atomic Swap

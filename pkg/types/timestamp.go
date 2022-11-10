@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"fmt"
 	"strconv"
 	"time"
@@ -18,7 +19,10 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals from uint64
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
-	intval, err := strconv.Atoi(string(data))
+	// Split accounts for unix timestamps in float form (1668050986.646834)
+	// In these cases, we just parse the seconds and ignore the decimal
+	splits := bytes.Split(data, []byte(`.`))
+	intval, err := strconv.Atoi(string(splits[0]))
 	if err != nil {
 		return err
 	}
