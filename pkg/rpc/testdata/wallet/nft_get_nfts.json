@@ -1,0 +1,32 @@
+{
+    "nft_list": [
+        {
+            "chain_info": "((117 \"https://pixnio.com/free-images/2022/06/03/2022-06-03-07-49-44-900x1350.jpg\") (104 . 0x77923fb8d2556cfff3962ec2232259d71c11238c46b6ea2ff5c22c803f4847f2) (28021) (27765) (29550 . 1) (29556 . 1))",
+            "data_hash": "0x77923fb8d2556cfff3962ec2232259d71c11238c46b6ea2ff5c22c803f4847f2",
+            "data_uris": [
+                "https://pixnio.com/free-images/2022/06/03/2022-06-03-07-49-44-900x1350.jpg"
+            ],
+            "edition_number": 1,
+            "edition_total": 1,
+            "launcher_id": "0x13fe99139226c1b2d76351a11affe0887f4d93ddfbfe1d07e1c181dc8ae6dc5f",
+            "launcher_puzhash": "0xeff07522495060c066f66f32acc2a77e3a3e737aca8baea4d1a64ea4cdc13da9",
+            "license_hash": "0x",
+            "license_uris": [],
+            "metadata_hash": "0x",
+            "metadata_uris": [],
+            "mint_height": 1619167,
+            "minter_did": "0xc42825559e5bda2bd31b03de428ea871a101ce0301a2a2f79ba5e833b84aa29d",
+            "nft_coin_id": "0x3ca34e2f816a78a87ee0f694f25843d0e0079038bde0e498cf9393b828845ace",
+            "off_chain_metadata": null,
+            "owner_did": null,
+            "p2_address": "0x3bed5ecaeabea5616bd3ca9657317281f82ac6c277da9a80a296cbb71de12f8c",
+            "pending_transaction": false,
+            "royalty_percentage": 0,
+            "royalty_puzzle_hash": "0xc0c9d006a7b1b0aa6f8fd198e95948c35fbafbc2536656de94a76764f554cafc",
+            "supports_did": true,
+            "updater_puzhash": "0xfe8a4b4e27a2e29a4d3fc7ce9d527adbcaccbab6ada3903ccf3ba9a769d2d78b"
+        }
+    ],
+    "success": true,
+    "wallet_id": 4
+}

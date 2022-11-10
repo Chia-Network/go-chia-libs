@@ -29,6 +29,15 @@ type Client struct {
 // ConnectionMode specifies the method used to connect to the server (HTTP or Websocket)
 type ConnectionMode uint8
 
+// PortOptions contains optional fields for each service's listening ports
+type PortOptions struct {
+	FullNode  uint16
+	Farmer    uint16
+	Harvester uint16
+	Wallet    uint16
+	Crawler   uint16
+}
+
 const (
 	// ConnectionModeHTTP uses HTTP for requests to the RPC server
 	ConnectionModeHTTP ConnectionMode = iota
@@ -38,7 +47,7 @@ const (
 )
 
 // NewClient returns a new RPC Client
-func NewClient(connectionMode ConnectionMode, options ...rpcinterface.ClientOptionFunc) (*Client, error) {
+func NewClient(connectionMode ConnectionMode, ports PortOptions, options ...rpcinterface.ClientOptionFunc) (*Client, error) {
 	cfg, err := config.GetChiaConfig()
 	if err != nil {
 		return nil, err
@@ -46,6 +55,22 @@ func NewClient(connectionMode ConnectionMode, options ...rpcinterface.ClientOpti
 
 	c := &Client{
 		config: cfg,
+	}
+
+	if ports.FullNode != 0 {
+		c.config.FullNode.RPCPort = ports.FullNode
+	}
+	if ports.Farmer != 0 {
+		c.config.Farmer.RPCPort = ports.Farmer
+	}
+	if ports.Harvester != 0 {
+		c.config.Harvester.RPCPort = ports.Harvester
+	}
+	if ports.Wallet != 0 {
+		c.config.Wallet.RPCPort = ports.Wallet
+	}
+	if ports.Crawler != 0 {
+		c.config.Seeder.CrawlerConfig.RPCPort = ports.Crawler
 	}
 
 	var activeClient rpcinterface.Client
