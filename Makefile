@@ -1,9 +1,6 @@
 MODULE   = $(shell env GO111MODULE=on $(GO) list -m)
 DATE    ?= $(shell date +%FT%T%z)
 PKGS     = $(or $(PKG),$(shell env GO111MODULE=on $(GO) list ./...))
-TESTPKGS = $(shell env GO111MODULE=on $(GO) list -f \
-			'{{ if or .TestGoFiles .XTestGoFiles }}{{ .ImportPath }}{{ end }}' \
-			$(PKGS))
 BIN      = $(CURDIR)/bin
 
 GO      = go
@@ -61,11 +58,11 @@ test-race:    ARGS=-race         ## Run tests with race detector
 $(TEST_TARGETS): NAME=$(MAKECMDGOALS:test-%=%)
 $(TEST_TARGETS): test
 check test tests: fmt lint vet staticcheck errcheck; $(info $(M) running $(NAME:%=% )tests…) @ ## Run tests
-	$Q $(GO) test -timeout $(TIMEOUT)s $(ARGS) $(TESTPKGS)
+	$Q $(GO) test -timeout $(TIMEOUT)s $(ARGS) $(PKGS)
 
 test-xml: fmt lint vet staticcheck errcheck | $(GO2XUNIT) ; $(info $(M) running xUnit tests…) @ ## Run tests with xUnit output
 	$Q mkdir -p test
-	$Q 2>&1 $(GO) test -timeout $(TIMEOUT)s -v $(TESTPKGS) | tee test/tests.output
+	$Q 2>&1 $(GO) test -timeout $(TIMEOUT)s -v $(PKGS) | tee test/tests.output
 	$(GO2XUNIT) -fail -input test/tests.output -output test/tests.xml
 
 COVERAGE_MODE    = atomic
@@ -78,11 +75,11 @@ test-coverage: COVERAGE_DIR := $(CURDIR)/test/coverage
 test-coverage: fmt lint vet staticcheck errcheck test-coverage-tools ; $(info $(M) running coverage tests…) @ ## Run coverage tests
 	$Q mkdir -p $(COVERAGE_DIR)
 	$Q $(GO) test \
-		-coverpkg=$$($(GO) list -f '{{ join .Deps "\n" }}' $(TESTPKGS) | \
+		-coverpkg=$$($(GO) list -f '{{ join .Deps "\n" }}' $(PKGS) | \
 					grep '^$(MODULE)/' | \
 					tr '\n' ',' | sed 's/,$$//') \
 		-covermode=$(COVERAGE_MODE) \
-		-coverprofile="$(COVERAGE_PROFILE)" $(TESTPKGS)
+		-coverprofile="$(COVERAGE_PROFILE)" $(PKGS)
 	$Q $(GO) tool cover -html=$(COVERAGE_PROFILE) -o $(COVERAGE_HTML)
 	$Q $(GOCOV) convert $(COVERAGE_PROFILE) | $(GOCOVXML) > $(COVERAGE_XML)
 
