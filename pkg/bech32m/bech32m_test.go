@@ -25,20 +25,23 @@ func TestKnownAddressConversions(t *testing.T) {
 
 	for prefix, tests := range combinations {
 		for address, hexstr := range tests {
-			hexbytes, err := hex.DecodeString(hexstr)
-			assert.NoError(t, err)
-			hexbytes32, err := types.BytesToBytes32(hexbytes)
-			assert.NoError(t, err)
+			t.Run(address, func(t *testing.T) {
+				hexbytes, err := hex.DecodeString(hexstr)
+				assert.NoError(t, err)
+				hexbytes32, err := types.BytesToBytes32(hexbytes)
+				assert.NoError(t, err)
 
-			// Test encoding
-			generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes32, prefix)
-			assert.NoError(t, err)
-			assert.Equal(t, address, generatedAddress)
+				// Test encoding
+				generatedAddress, err := bech32m.EncodePuzzleHash(hexbytes32, prefix)
+				assert.NoError(t, err)
+				assert.Equal(t, address, generatedAddress)
 
-			// Test decoding
-			_, generatedBytes, err := bech32m.DecodePuzzleHash(address)
-			assert.NoError(t, err)
-			assert.Equal(t, hexbytes32, generatedBytes)
+				// Test decoding
+				_, generatedBytes, err := bech32m.DecodePuzzleHash(address)
+				assert.NoError(t, err)
+				assert.Equal(t, hexbytes32, generatedBytes)
+			})
+
 		}
 	}
 }
