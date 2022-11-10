@@ -76,8 +76,8 @@ type AddKeyOptions struct {
 // AddKeyResponse response from the add_key endpoint
 type AddKeyResponse struct {
 	Response
-	Word        []mo.Option[string] `json:"word,omitempty"` // This is part of a unique error response
-	Fingerprint []mo.Option[int]    `json:"fingerprint,omitempty"`
+	Word        mo.Option[string] `json:"word,omitempty"` // This is part of a unique error response
+	Fingerprint mo.Option[int]    `json:"fingerprint,omitempty"`
 }
 
 // AddKey Adds a new key from 24 words to the keychain
