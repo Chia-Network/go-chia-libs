@@ -462,17 +462,17 @@ func (u *Uint128) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON marshals the uint128 value to json
-func (u *Uint128) MarshalJSON() ([]byte, error) {
+func (u Uint128) MarshalJSON() ([]byte, error) {
 	return []byte(u.String()), nil
 }
 
 // FitsInUint64 returns true if the value of the Uint128 will fit in Uint64
-func (u *Uint128) FitsInUint64() bool {
+func (u Uint128) FitsInUint64() bool {
 	return u.Hi == 0
 }
 
 // Uint64 returns the Uint64 value of the Int
 // Be careful with this - if the number is larger than Uint64, it will just return nonsense
-func (u *Uint128) Uint64() uint64 {
+func (u Uint128) Uint64() uint64 {
 	return u.Lo
 }
