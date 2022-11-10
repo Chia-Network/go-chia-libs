@@ -8,9 +8,9 @@ import (
 // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/farmer/farmer_api.py#L270
 type EventFarmerSubmittedPartial struct {
 	LauncherID                   Bytes32 `json:"launcher_id"`
-	PoolURL                      string `json:"pool_url"`
-	CurrentDifficulty            uint64 `json:"current_difficulty"` // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/pool_protocol.py#L97
-	PointsAcknowledgedSinceStart uint64 `json:"points_acknowledged_since_start"`
+	PoolURL                      string  `json:"pool_url"`
+	CurrentDifficulty            uint64  `json:"current_difficulty"` // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/pool_protocol.py#L97
+	PointsAcknowledgedSinceStart uint64  `json:"points_acknowledged_since_start"`
 }
 
 // EventFarmerProof is the farmer event `proof`
