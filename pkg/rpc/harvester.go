@@ -3,6 +3,8 @@ package rpc
 import (
 	"net/http"
 
+	"github.com/samber/mo"
+
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
@@ -24,10 +26,10 @@ func (s *HarvesterService) Do(req *rpcinterface.Request, v interface{}) (*http.R
 
 // HarvesterGetPlotsResponse get_plots response format
 type HarvesterGetPlotsResponse struct {
-	Success               bool              `json:"success"`
-	Plots                 []*types.PlotInfo `json:"plots"`
-	FailedToOpenFilenames []string          `json:"failed_to_open_filenames"`
-	NotFoundFilenames     []string          `json:"not_found_filenames"`
+	Response
+	Plots                 mo.Option[[]types.PlotInfo] `json:"plots"`
+	FailedToOpenFilenames mo.Option[[]string]         `json:"failed_to_open_filenames"`
+	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
 }
 
 // GetPlots returns connections

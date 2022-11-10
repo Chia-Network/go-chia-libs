@@ -3,6 +3,8 @@ package rpc
 import (
 	"net/http"
 
+	"github.com/samber/mo"
+
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
@@ -29,8 +31,8 @@ type GetConnectionsOptions struct {
 
 // GetConnectionsResponse get_connections response format
 type GetConnectionsResponse struct {
-	Success     bool                `json:"success"`
-	Connections []*types.Connection `json:"connections"`
+	Response
+	Connections mo.Option[[]types.Connection] `json:"connections"`
 }
 
 // GetConnections returns connections
@@ -51,8 +53,8 @@ func (s *FullNodeService) GetConnections(opts *GetConnectionsOptions) (*GetConne
 
 // GetBlockchainStateResponse is the blockchain state RPC response
 type GetBlockchainStateResponse struct {
-	Success         bool                   `json:"success"`
-	BlockchainState *types.BlockchainState `json:"blockchain_state"`
+	Response
+	BlockchainState mo.Option[types.BlockchainState] `json:"blockchain_state,omitempty"`
 }
 
 // GetBlockchainState returns blockchain state
@@ -78,8 +80,8 @@ type GetBlockOptions struct {
 
 // GetBlockResponse response for get_block rpc call
 type GetBlockResponse struct {
-	Success bool             `json:"success"`
-	Block   *types.FullBlock `json:"block"`
+	Response
+	Block mo.Option[types.FullBlock] `json:"block"`
 }
 
 // GetBlock full_node->get_block RPC method
@@ -106,8 +108,8 @@ type GetBlocksOptions struct {
 
 // GetBlocksResponse response for get_blocks rpc call
 type GetBlocksResponse struct {
-	Success bool               `json:"success"`
-	Blocks  []*types.FullBlock `json:"blocks"`
+	Response
+	Blocks mo.Option[[]types.FullBlock] `json:"blocks"`
 }
 
 // GetBlocks full_node->get_blocks RPC method
@@ -128,8 +130,8 @@ func (s *FullNodeService) GetBlocks(opts *GetBlocksOptions) (*GetBlocksResponse,
 
 // GetBlockCountMetricsResponse response for get_block_count_metrics rpc call
 type GetBlockCountMetricsResponse struct {
-	Success bool                     `json:"success"`
-	Metrics *types.BlockCountMetrics `json:"metrics"`
+	Response
+	Metrics mo.Option[types.BlockCountMetrics] `json:"metrics"`
 }
 
 // GetBlockCountMetrics gets metrics about blocks
@@ -156,8 +158,8 @@ type GetBlockByHeightOptions struct {
 
 // GetBlockRecordResponse response from get_block_record_by_height
 type GetBlockRecordResponse struct {
-	Success     bool               `json:"success"`
-	BlockRecord *types.BlockRecord `json:"block_record"`
+	Response
+	BlockRecord mo.Option[types.BlockRecord] `json:"block_record"`
 }
 
 // GetBlockRecordByHeight full_node->get_block_record_by_height RPC method
@@ -174,9 +176,8 @@ func (s *FullNodeService) GetBlockRecordByHeight(opts *GetBlockByHeightOptions) 
 		return nil, resp, err
 	}
 
-	// @TODO handle this correctly
 	// I believe this happens when the node is not yet synced to this height
-	if record == nil || record.BlockRecord == nil {
+	if record == nil || record.BlockRecord.IsAbsent() {
 		return nil, nil, nil
 	}
 
@@ -192,7 +193,7 @@ func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetB
 	}
 
 	request, err := s.NewRequest("get_block", GetBlockOptions{
-		HeaderHash: record.BlockRecord.HeaderHash,
+		HeaderHash: record.BlockRecord.OrEmpty().HeaderHash,
 	})
 	if err != nil {
 		return nil, nil, err
@@ -215,7 +216,8 @@ type GetCoinRecordByNameOptions struct {
 
 // GetCoinRecordByNameResponse response from get_coin_record_by_name endpoint
 type GetCoinRecordByNameResponse struct {
-	CoinRecord types.CoinRecord `json:"coin_record"`
+	Response
+	CoinRecord mo.Option[types.CoinRecord] `json:"coin_record"`
 }
 
 // GetCoinRecordByName request to get_coin_record_by_name endpoint
@@ -246,15 +248,16 @@ type GetFeeEstimateOptions struct {
 
 // GetFeeEstimateResponse response for get_fee_estimate
 type GetFeeEstimateResponse struct {
-	Estimates         []uint64 `json:"estimates"`
-	TargetTimes       []uint64 `json:"target_times"`
-	CurrentFeeRate    uint64   `json:"current_fee_rate"`
-	MempoolSize       uint64   `json:"mempool_size"`
-	MempoolMaxSize    uint64   `json:"mempool_max_size"`
-	FullNodeSynced    bool     `json:"full_node_synced"`
-	PeakHeight        uint32   `json:"peak_height"`
-	LastPeakTimestamp uint64   `json:"last_peak_timestamp"`
-	NodeTimeUTC       uint64   `json:"node_time_utc"`
+	Response
+	Estimates         mo.Option[[]uint64] `json:"estimates"`
+	TargetTimes       mo.Option[[]uint64] `json:"target_times"`
+	CurrentFeeRate    mo.Option[uint64]   `json:"current_fee_rate"`
+	MempoolSize       mo.Option[uint64]   `json:"mempool_size"`
+	MempoolMaxSize    mo.Option[uint64]   `json:"mempool_max_size"`
+	FullNodeSynced    mo.Option[bool]     `json:"full_node_synced"`
+	PeakHeight        mo.Option[uint32]   `json:"peak_height"`
+	LastPeakTimestamp mo.Option[uint64]   `json:"last_peak_timestamp"`
+	NodeTimeUTC       mo.Option[uint64]   `json:"node_time_utc"`
 }
 
 // GetFeeEstimate endpoint
@@ -281,9 +284,8 @@ type FullNodePushTXOptions struct {
 
 // FullNodePushTXResponse Response from full node push_tx
 type FullNodePushTXResponse struct {
-	Status  string `json:"status"`
-	Success bool   `json:"success"`
-	Error   string `json:"error"`
+	Response
+	Status mo.Option[string] `json:"status"`
 }
 
 // PushTX pushes a transaction to the full node
@@ -311,8 +313,8 @@ type GetPuzzleAndSolutionOptions struct {
 
 // GetPuzzleAndSolutionResponse response from get_puzzle_and_solution
 type GetPuzzleAndSolutionResponse struct {
-	CoinSolution *types.CoinSpend `json:"coin_solution"`
-	Success      bool             `json:"success"`
+	Response
+	CoinSolution mo.Option[types.CoinSpend] `json:"coin_solution"`
 }
 
 // GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method

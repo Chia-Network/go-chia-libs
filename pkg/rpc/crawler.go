@@ -3,6 +3,8 @@ package rpc
 import (
 	"net/http"
 
+	"github.com/samber/mo"
+
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
@@ -24,8 +26,8 @@ func (s *CrawlerService) Do(req *rpcinterface.Request, v interface{}) (*http.Res
 
 // GetPeerCountsResponse Response for get_get_peer_counts on crawler
 type GetPeerCountsResponse struct {
-	Success    bool                     `json:"success"`
-	PeerCounts *types.CrawlerPeerCounts `json:"peer_counts"`
+	Response
+	PeerCounts mo.Option[types.CrawlerPeerCounts] `json:"peer_counts"`
 }
 
 // GetPeerCounts crawler rpc -> get_peer_counts
@@ -53,9 +55,9 @@ type GetIPsAfterTimestampOptions struct {
 
 // GetIPsAfterTimestampResponse Response for get_ips_after_timestamp
 type GetIPsAfterTimestampResponse struct {
-	Success bool     `json:"success"`
-	IPs     []string `json:"ips"`
-	Total   int      `json:"total"`
+	Response
+	IPs   mo.Option[[]string] `json:"ips"`
+	Total mo.Option[int]      `json:"total"`
 }
 
 // GetIPsAfterTimestamp Returns IP addresses seen by the network after a particular timestamp
