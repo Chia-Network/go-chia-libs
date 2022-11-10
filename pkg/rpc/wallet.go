@@ -3,6 +3,8 @@ package rpc
 import (
 	"net/http"
 
+	"github.com/samber/mo"
+
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
@@ -24,7 +26,8 @@ func (s *WalletService) Do(req *rpcinterface.Request, v interface{}) (*http.Resp
 
 // GetPublicKeysResponse response from get_public_keys
 type GetPublicKeysResponse struct {
-	PublicKeyFingerprints []int `json:"public_key_fingerprints"`
+	Response
+	PublicKeyFingerprints mo.Option[[]int] `json:"public_key_fingerprints"`
 }
 
 // GetPublicKeys endpoint
@@ -45,8 +48,8 @@ func (s *WalletService) GetPublicKeys() (*GetPublicKeysResponse, *http.Response,
 
 // GenerateMnemonicResponse Random new 24 words response
 type GenerateMnemonicResponse struct {
-	Mnemonic []string `json:"mnemonic"`
-	Success  bool     `json:"success"`
+	Response
+	Mnemonic mo.Option[[]string] `json:"mnemonic"`
 }
 
 // GenerateMnemonic Endpoint for generating a new random 24 words
@@ -72,10 +75,9 @@ type AddKeyOptions struct {
 
 // AddKeyResponse response from the add_key endpoint
 type AddKeyResponse struct {
-	Success     bool   `json:"success"`
-	Error       string `json:"error"`
-	Word        string `json:"word,omitempty"`
-	Fingerprint int    `json:"fingerprint,omitempty"`
+	Response
+	Word        []mo.Option[string] `json:"word,omitempty"` // This is part of a unique error response
+	Fingerprint []mo.Option[int]    `json:"fingerprint,omitempty"`
 }
 
 // AddKey Adds a new key from 24 words to the keychain
@@ -96,8 +98,7 @@ func (s *WalletService) AddKey(options *AddKeyOptions) (*AddKeyResponse, *http.R
 
 // DeleteAllKeysResponse Delete keys response
 type DeleteAllKeysResponse struct {
-	Success bool   `json:"success"`
-	Error   string `json:"error"`
+	Response
 }
 
 // DeleteAllKeys deletes all keys from the keychain
@@ -116,14 +117,6 @@ func (s *WalletService) DeleteAllKeys() (*DeleteAllKeysResponse, *http.Response,
 	return r, resp, nil
 }
 
-// GetWalletSyncStatusResponse Response for get_sync_status on wallet
-type GetWalletSyncStatusResponse struct {
-	Success            bool `json:"success"`
-	GenesisInitialized bool `json:"genesis_initialized"`
-	Synced             bool `json:"synced"`
-	Syncing            bool `json:"syncing"`
-}
-
 // GetNextAddressOptions options for get_next_address endpoint
 type GetNextAddressOptions struct {
 	NewAddress bool   `json:"new_address"`
@@ -132,8 +125,9 @@ type GetNextAddressOptions struct {
 
 // GetNextAddressResponse response from get next address
 type GetNextAddressResponse struct {
-	WalletID uint32 `json:"wallet_id"`
-	Address  string `json:"address"`
+	Response
+	WalletID mo.Option[uint32] `json:"wallet_id"`
+	Address  mo.Option[string] `json:"address"`
 }
 
 // GetNextAddress returns the current address for the wallet. If NewAddress is true, it moves to the next address before responding
@@ -150,6 +144,14 @@ func (s *WalletService) GetNextAddress(options *GetNextAddressOptions) (*GetNext
 	}
 
 	return r, resp, nil
+}
+
+// GetWalletSyncStatusResponse Response for get_sync_status on wallet
+type GetWalletSyncStatusResponse struct {
+	Response
+	GenesisInitialized mo.Option[bool] `json:"genesis_initialized"`
+	Synced             mo.Option[bool] `json:"synced"`
+	Syncing            mo.Option[bool] `json:"syncing"`
 }
 
 // GetSyncStatus wallet rpc -> get_sync_status
@@ -170,8 +172,8 @@ func (s *WalletService) GetSyncStatus() (*GetWalletSyncStatusResponse, *http.Res
 
 // GetWalletHeightInfoResponse response for get_height_info on wallet
 type GetWalletHeightInfoResponse struct {
-	Success bool   `json:"success"`
-	Height  uint32 `json:"height"`
+	Response
+	Height mo.Option[uint32] `json:"height"`
 }
 
 // GetHeightInfo wallet rpc -> get_height_info
@@ -192,9 +194,9 @@ func (s *WalletService) GetHeightInfo() (*GetWalletHeightInfoResponse, *http.Res
 
 // GetWalletNetworkInfoResponse response for get_height_info on wallet
 type GetWalletNetworkInfoResponse struct {
-	Success       bool   `json:"success"`
-	NetworkName   string `json:"network_name"`
-	NetworkPrefix string `json:"network_prefix"`
+	Response
+	NetworkName   mo.Option[string] `json:"network_name"`
+	NetworkPrefix mo.Option[string] `json:"network_prefix"`
 }
 
 // GetNetworkInfo wallet rpc -> get_network_info
@@ -220,9 +222,9 @@ type GetWalletsOptions struct {
 
 // GetWalletsResponse wallet rpc -> get_wallets
 type GetWalletsResponse struct {
-	Success     bool                `json:"success"`
-	Fingerprint int                 `json:"fingerprint"`
-	Wallets     []*types.WalletInfo `json:"wallets"`
+	Response
+	Fingerprint mo.Option[int]                `json:"fingerprint"`
+	Wallets     mo.Option[[]types.WalletInfo] `json:"wallets"`
 }
 
 // GetWallets wallet rpc -> get_wallets
@@ -248,8 +250,8 @@ type GetWalletBalanceOptions struct {
 
 // GetWalletBalanceResponse is the wallet balance RPC response
 type GetWalletBalanceResponse struct {
-	Success bool                 `json:"success"`
-	Balance *types.WalletBalance `json:"wallet_balance"`
+	Response
+	Balance mo.Option[types.WalletBalance] `json:"wallet_balance"`
 }
 
 // GetWalletBalance returns wallet balance
@@ -275,9 +277,9 @@ type GetWalletTransactionCountOptions struct {
 
 // GetWalletTransactionCountResponse response for get_transaction_count
 type GetWalletTransactionCountResponse struct {
-	Success  bool   `json:"success"`
-	WalletID uint32 `json:"wallet_id"`
-	Count    int    `json:"count"`
+	Response
+	WalletID mo.Option[uint32] `json:"wallet_id"`
+	Count    mo.Option[int]    `json:"count"`
 }
 
 // GetTransactionCount returns the total count of transactions for the specific wallet ID
@@ -306,9 +308,9 @@ type GetWalletTransactionsOptions struct {
 
 // GetWalletTransactionsResponse response for get_wallet_transactions
 type GetWalletTransactionsResponse struct {
-	Success      bool                       `json:"success"`
-	WalletID     uint32                     `json:"wallet_id"`
-	Transactions []*types.TransactionRecord `json:"transactions"`
+	Response
+	WalletID     mo.Option[uint32]                    `json:"wallet_id"`
+	Transactions mo.Option[[]types.TransactionRecord] `json:"transactions"`
 }
 
 // GetTransactions wallet rpc -> get_transactions
@@ -335,9 +337,9 @@ type GetWalletTransactionOptions struct {
 
 // GetWalletTransactionResponse response for get_wallet_transactions
 type GetWalletTransactionResponse struct {
-	Success       bool                     `json:"success"`
-	Transaction   *types.TransactionRecord `json:"transaction"`
-	TransactionID string                   `json:"transaction_id"`
+	Response
+	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
+	TransactionID mo.Option[string]                  `json:"transaction_id"`
 }
 
 // GetTransaction returns a single transaction record
@@ -368,9 +370,9 @@ type SendTransactionOptions struct {
 
 // SendTransactionResponse represents the response from send_transaction
 type SendTransactionResponse struct {
-	Success       bool                    `json:"success"`
-	TransactionID string                  `json:"transaction_id"`
-	Transaction   types.TransactionRecord `json:"transaction"`
+	Response
+	TransactionID mo.Option[string]                  `json:"transaction_id"`
+	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 }
 
 // SendTransaction sends a transaction
@@ -399,9 +401,9 @@ type CatSpendOptions struct {
 
 // CatSpendResponse represents the response from cat_spend
 type CatSpendResponse struct {
-	Success       bool                    `json:"success"`
-	TransactionID string                  `json:"transaction_id"`
-	Transaction   types.TransactionRecord `json:"transaction"`
+	Response
+	TransactionID mo.Option[string]                  `json:"transaction_id"`
+	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 }
 
 // CatSpend sends a transaction
@@ -440,9 +442,9 @@ type MintNFTOptions struct {
 
 // MintNFTResponse represents the response from nft_get_info
 type MintNFTResponse struct {
-	SpendBundle types.SpendBundle `json:"spend_bundle"`
-	Success     bool              `json:"success"`
-	WalletID    uint32            `json:"wallet_id"`
+	Response
+	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
+	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
 
 // MintNFT Mint a new NFT
@@ -468,9 +470,9 @@ type GetNFTsOptions struct {
 
 // GetNFTsResponse represents the response from nft_get_nfts
 type GetNFTsResponse struct {
-	Success  bool        `json:"success"`
-	WalletID uint32      `json:"wallet_id"`
-	NFTList  []types.NFT `json:"nft_list"`
+	Response
+	WalletID mo.Option[uint32]          `json:"wallet_id"`
+	NFTList  mo.Option[[]types.NFTInfo] `json:"nft_list"`
 }
 
 // GetNFTs Show all NFTs in a given wallet
@@ -499,9 +501,9 @@ type TransferNFTOptions struct {
 
 // TransferNFTResponse represents the response from nft_get_info
 type TransferNFTResponse struct {
-	SpendBundle types.SpendBundle `json:"spend_bundle"`
-	Success     bool              `json:"success"`
-	WalletID    uint32            `json:"wallet_id"`
+	Response
+	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
+	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
 
 // TransferNFT Get info about an NFT
@@ -528,8 +530,8 @@ type GetNFTInfoOptions struct {
 
 // GetNFTInfoResponse represents the response from nft_get_info
 type GetNFTInfoResponse struct {
-	NFTInfo types.NFT `json:"nft_info"`
-	Success bool      `json:"success"`
+	Response
+	NFTInfo mo.Option[types.NFTInfo] `json:"nft_info"`
 }
 
 // GetNFTInfo Get info about an NFT
@@ -559,9 +561,9 @@ type NFTAddURIOptions struct {
 
 // NFTAddURIResponse represents the response from nft_add_uri
 type NFTAddURIResponse struct {
-	SpendBundle types.SpendBundle `json:"spend_bundle"`
-	Success     bool              `json:"success"`
-	WalletID    uint32            `json:"wallet_id"`
+	Response
+	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
+	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
 
 // NFTAddURI Get info about an NFT
@@ -587,8 +589,8 @@ type NFTGetByDidOptions struct {
 
 // NFTGetByDidResponse represents the response from nft_get_by_did
 type NFTGetByDidResponse struct {
-	Success  bool   `json:"success"`
-	WalletID uint32 `json:"wallet_id"`
+	Response
+	WalletID mo.Option[uint32] `json:"wallet_id"`
 }
 
 // NFTGetByDid Get wallet ID by DID
@@ -617,9 +619,10 @@ type GetSpendableCoinsOptions struct {
 
 // GetSpendableCoinsResponse response from get_spendable_coins
 type GetSpendableCoinsResponse struct {
-	ConfirmedRecords     []types.CoinRecord `json:"confirmed_records"`
-	UnconfirmedRemovals  []types.CoinRecord `json:"unconfirmed_removals"`
-	UnconfirmedAdditions []types.CoinRecord `json:"unconfirmed_additions"`
+	Response
+	ConfirmedRecords     mo.Option[[]types.CoinRecord] `json:"confirmed_records"`
+	UnconfirmedRemovals  mo.Option[[]types.CoinRecord] `json:"unconfirmed_removals"`
+	UnconfirmedAdditions mo.Option[[]types.CoinRecord] `json:"unconfirmed_additions"`
 }
 
 // GetSpendableCoins returns information about the coins in the wallet
@@ -652,8 +655,9 @@ type CreateSignedTransactionOptions struct {
 
 // CreateSignedTransactionResponse Response from create_signed_transaction
 type CreateSignedTransactionResponse struct {
-	SignedTXs []types.TransactionRecord `json:"signed_txs"`
-	SignedTX  types.TransactionRecord   `json:"signed_tx"`
+	Response
+	SignedTXs mo.Option[[]types.TransactionRecord] `json:"signed_txs"`
+	SignedTX  mo.Option[types.TransactionRecord]   `json:"signed_tx"`
 }
 
 // CreateSignedTransaction generates a signed transaction based on the specified options
@@ -674,8 +678,9 @@ func (s *WalletService) CreateSignedTransaction(opts *CreateSignedTransactionOpt
 
 // SendTransactionMultiResponse Response from send_transaction_multi
 type SendTransactionMultiResponse struct {
-	Transaction   types.TransactionRecord `json:"transaction"`
-	TransactionID string                  `json:"transaction_id"`
+	Response
+	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
+	TransactionID mo.Option[string]                  `json:"transaction_id"`
 }
 
 // SendTransactionMulti allows sending a more detailed transaction with multiple inputs/outputs.

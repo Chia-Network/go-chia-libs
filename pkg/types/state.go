@@ -1,23 +1,29 @@
 package types
 
+import (
+	"github.com/samber/mo"
+)
+
 // WebsocketBlockchainState is how blockchain_state comes across in the websockets (wrapped)
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/rpc/full_node_rpc_api.py#L123
 type WebsocketBlockchainState struct {
 	BlockchainState BlockchainState `json:"blockchain_state"`
 }
 
 // BlockchainState blockchain state
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/rpc/full_node_rpc_api.py#L123
 type BlockchainState struct {
-	Difficulty                  uint64          `json:"difficulty"`
-	GenesisChallengeInitialized bool            `json:"genesis_challenge_initialized"`
-	MempoolSize                 uint64          `json:"mempool_size"`
-	MempoolCost                 uint64          `json:"mempool_cost"`
-	MempoolMinFees              *MempoolMinFees `json:"mempool_min_fees"`
-	MempoolMaxTotalCost         uint64          `json:"mempool_max_total_cost"`
-	Peak                        *BlockRecord    `json:"peak"`
-	Space                       Uint128         `json:"space"`
-	SubSlotIters                uint64          `json:"sub_slot_iters"`
-	Sync                        *Sync           `json:"sync"`
-	BlockMaxCost                uint64          `json:"block_max_cost"`
+	Difficulty                  uint64                 `json:"difficulty"`
+	GenesisChallengeInitialized bool                   `json:"genesis_challenge_initialized"`
+	MempoolSize                 uint64                 `json:"mempool_size"`
+	MempoolCost                 uint64                 `json:"mempool_cost"`
+	MempoolMinFees              MempoolMinFees         `json:"mempool_min_fees"`
+	MempoolMaxTotalCost         uint64                 `json:"mempool_max_total_cost"`
+	Peak                        mo.Option[BlockRecord] `json:"peak"`
+	Space                       Uint128                `json:"space"`
+	SubSlotIters                uint64                 `json:"sub_slot_iters"`
+	Sync                        Sync                   `json:"sync"`
+	BlockMaxCost                uint64                 `json:"block_max_cost"`
 }
 
 // MempoolMinFees minimum fees to get in the mempool at varying costs
