@@ -64,14 +64,24 @@ func setType(field *reflect.Value, fillValue interface{}) {
 		return
 	}
 	switch field.Kind() {
-	case reflect.String:
-		if stringed, ok := fillValue.(string); ok {
-			field.SetString(stringed)
-		}
+	case reflect.Bool:
+	case reflect.Int:
+	case reflect.Int8:
+	case reflect.Int16:
+	case reflect.Int32:
+	case reflect.Int64:
+	case reflect.Uint:
 	case reflect.Uint8:
 		// numeric looking things seem to unmarshal generically into float64
 		if floated, ok := fillValue.(float64); ok {
 			field.SetUint(uint64(floated))
+		}
+	case reflect.Uint16:
+	case reflect.Uint32:
+	case reflect.Uint64:
+	case reflect.String:
+		if stringed, ok := fillValue.(string); ok {
+			field.SetString(stringed)
 		}
 	case reflect.Struct:
 		// The only nested struct we support for now is Option[T]
