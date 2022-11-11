@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"reflect"
+
+	"github.com/samber/mo"
 )
 
 // Some builds a Tupe when value is present.
@@ -49,15 +51,38 @@ func (t *Tuple[T]) UnmarshalJSON(b []byte) error {
 	vp := reflect.ValueOf(&t.value)
 	v := vp.Elem()
 	for i := 0; i < v.NumField(); i++ {
-		switch v.Field(i).Kind() {
-		case reflect.String:
-			if stringed, ok := tmpMap[i].(string); ok {
-				v.Field(i).SetString(stringed)
-			}
-			// @TODO handle other types
-		}
+		field := v.Field(i)
+		setType(&field, tmpMap[i])
 	}
 
 	t.isPresent = true
 	return nil
+}
+
+func setType(field *reflect.Value, fillValue interface{}) {
+	if fillValue == nil {
+		return
+	}
+	switch field.Kind() {
+	case reflect.String:
+		if stringed, ok := fillValue.(string); ok {
+			field.SetString(stringed)
+		}
+	case reflect.Uint8:
+		// numeric looking things seem to unmarshal generically into float64
+		if floated, ok := fillValue.(float64); ok {
+			field.SetUint(uint64(floated))
+		}
+	case reflect.Struct:
+		// The only nested struct we support for now is Option[T]
+		actualType := field.Type().Name()
+		switch actualType {
+		case "Option[string]":
+			os := mo.Some(fillValue.(string))
+			osrp := reflect.ValueOf(&os)
+			osr := osrp.Elem()
+			field.Set(osr)
+		}
+		// @TODO handle other types
+	}
 }
