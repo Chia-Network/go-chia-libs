@@ -20,6 +20,11 @@ type Tuple[T any] struct {
 	value     T
 }
 
+// Value returns the underlying struct
+func (t Tuple[T]) Value() T {
+	return t.value
+}
+
 // MarshalJSON custom marshaller for tuple wrapped structs
 func (t Tuple[T]) MarshalJSON() ([]byte, error) {
 	v := reflect.ValueOf(t.value)

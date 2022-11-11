@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"strings"
 )
 
 // Bytes is a wrapper around []byte that marshals down to hex and more closely matches types in chia-blockchain
@@ -12,6 +13,22 @@ type Bytes []byte
 // String Converts to hex string
 func (b Bytes) String() string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
+}
+
+// BytesFromHexString parses a hex string into Bytes
+func BytesFromHexString(hexstr string) (Bytes, error) {
+	hexstr = strings.TrimLeft(hexstr, `"`)
+	hexstr = strings.TrimRight(hexstr, `"`)
+	hexstr = strings.TrimPrefix(hexstr, `0x`)
+
+	hexStrBytes := []byte(hexstr)
+	dest := make(Bytes, hex.DecodedLen(len(hexStrBytes)))
+	_, err := hex.Decode(dest, hexStrBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return dest, nil
 }
 
 // MarshalJSON marshals Bytes into hex for json
