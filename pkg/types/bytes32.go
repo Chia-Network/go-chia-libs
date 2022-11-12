@@ -14,7 +14,7 @@ func (b Bytes32) String() string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
 }
 
-// Bytes32FromHexString parses a hex string into Bytes
+// Bytes32FromHexString parses a hex string into Bytes32
 func Bytes32FromHexString(hexstr string) (Bytes32, error) {
 	b, err := BytesFromHexString(hexstr)
 	if err != nil {
