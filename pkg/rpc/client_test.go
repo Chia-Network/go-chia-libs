@@ -10,15 +10,9 @@ import (
 	"testing"
 )
 
-var (
-	mux    *http.ServeMux
-	server *httptest.Server
-	client *Client
-)
-
-func setup(t *testing.T) func() {
-	mux = http.NewServeMux()
-	server = httptest.NewTLSServer(mux)
+func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
+	mux := http.NewServeMux()
+	server := httptest.NewTLSServer(mux)
 
 	u, err := url.Parse(server.URL)
 	if err != nil {
@@ -28,16 +22,18 @@ func setup(t *testing.T) func() {
 	if err != nil {
 		t.Fatal(err)
 	}
-	client, err = NewClient(ConnectionModeHTTP, PortOptions{
+	client, err := NewClient(ConnectionModeHTTP, PortOptions{
 		Wallet: uint16(p),
 	})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	return func() {
-		server.Close()
-	}
+	return mux, server, client
+}
+
+func teardown(server *httptest.Server) {
+	server.Close()
 }
 
 func fixture(path string) string {
