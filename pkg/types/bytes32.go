@@ -14,6 +14,20 @@ func (b Bytes32) String() string {
 	return fmt.Sprintf("0x%s", hex.EncodeToString(b[:]))
 }
 
+// Bytes32FromHexString parses a hex string into Bytes32
+func Bytes32FromHexString(hexstr string) (Bytes32, error) {
+	b, err := BytesFromHexString(hexstr)
+	if err != nil {
+		return Bytes32{}, err
+	}
+
+	dest, err := BytesToBytes32(b)
+	if err != nil {
+		return Bytes32{}, err
+	}
+	return dest, nil
+}
+
 // MarshalJSON marshals Bytes into hex for json
 func (b Bytes32) MarshalJSON() ([]byte, error) {
 	dst := make([]byte, hex.EncodedLen(len(b)))
