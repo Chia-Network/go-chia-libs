@@ -9,6 +9,13 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
+func TestBytesFromHexString(t *testing.T) {
+	hex := "0x00010203"
+	bytes, err := types.BytesFromHexString(hex)
+	assert.NoError(t, err)
+	assert.Equal(t, types.Bytes{0, 1, 2, 3}, bytes)
+}
+
 func TestMarshalBytes(t *testing.T) {
 	noPtr := types.Bytes{0, 1, 2, 3}
 	ptr := &types.Bytes{0, 1, 2, 3}
