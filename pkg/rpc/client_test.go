@@ -1,11 +1,11 @@
 package rpc
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"strconv"
 	"testing"
 )
@@ -41,7 +41,7 @@ func teardown(server *httptest.Server) {
 }
 
 func fixture(path string) string {
-	b, err := ioutil.ReadFile("testdata/" + path)
+	b, err := os.ReadFile("testdata/" + path)
 	if err != nil {
 		panic(err)
 	}
