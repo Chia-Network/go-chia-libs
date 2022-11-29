@@ -1,7 +1,6 @@
 package rpc
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -16,7 +15,7 @@ func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
 
 	u, err := url.Parse(server.URL)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 	p, err := strconv.ParseUint(u.Port(), 10, 16)
 	if err != nil {
