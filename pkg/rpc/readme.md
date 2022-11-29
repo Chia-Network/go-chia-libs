@@ -25,6 +25,37 @@ func main() {
 }
 ```
 
+#### HTTP Mode w/ Manual Config
+
+To provide a manual config struct instead of using AutoConfig, use something like the following:
+
+```go
+package main
+
+import (
+	"github.com/chia-network/go-chia-libs/pkg/config"
+	"github.com/chia-network/go-chia-libs/pkg/rpc"
+)
+
+func main() {
+	client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithManualConfig(config.ChiaConfig{
+		ChiaRoot: "/path/to/.chia",
+		FullNode: config.FullNodeConfig{
+			PortConfig: config.PortConfig{
+				Port:    8444,
+				RPCPort: 8555,
+			},
+			SSL: config.SSLConfig{
+				PrivateCRT: "config/ssl/full_node/private_full_node.crt",
+				PrivateKey: "config/ssl/full_node/private_full_node.key",
+				PublicCRT:  "config/ssl/full_node/public_full_node.crt",
+				PublicKey:  "config/ssl/full_node/public_full_node.key",
+			},
+		},
+	}))
+}
+```
+
 ### Websocket Mode
 
 To use Websocket mode, specify ConnectionModeWebsocket when creating the client:
