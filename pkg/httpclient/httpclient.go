@@ -71,11 +71,6 @@ func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionF
 		return nil, err
 	}
 
-	err = c.initialKeyPairs()
-	if err != nil {
-		return nil, err
-	}
-
 	for _, fn := range options {
 		if fn == nil {
 			continue
@@ -83,12 +78,6 @@ func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionF
 		if err := fn(c); err != nil {
 			return nil, err
 		}
-	}
-
-	// Generate the http clients and transports after any client options are applied, in case custom keypairs were provided
-	err = c.generateHTTPClients()
-	if err != nil {
-		return nil, err
 	}
 
 	return c, nil
@@ -220,97 +209,57 @@ func (c *HTTPClient) Do(req *rpcinterface.Request, v interface{}) (*http.Respons
 	return resp, err
 }
 
-// Sets the initial key pairs based on config
-func (c *HTTPClient) initialKeyPairs() error {
-	var err error
-
-	c.nodeKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-	if err != nil {
-		return fmt.Errorf("error loading full node config: %w", err)
-	}
-
-	c.farmerKeyPair, err = c.config.Farmer.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-	if err != nil {
-		return fmt.Errorf("error loading farmer config: %w", err)
-	}
-
-	c.harvesterKeyPair, err = c.config.Harvester.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-	if err != nil {
-		return fmt.Errorf("error loading harvester config: %w", err)
-	}
-
-	c.walletKeyPair, err = c.config.Wallet.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-	if err != nil {
-		return fmt.Errorf("error loading wallet config: %w", err)
-	}
-
-	c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-	if err != nil {
-		// Fall back to just using the full node certs in this case
-		// This should only happen on old installations that didn't have the crawler in the config initially
-		c.crawlerKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
-		if err != nil {
-			return fmt.Errorf("error loading crawler config: %w", err)
-		}
-	}
-
-	return nil
-}
-
-func (c *HTTPClient) generateHTTPClients() error {
-	var err error
-
-	if c.nodeClient == nil {
-		c.nodeClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFullNode)
-		if err != nil {
-			return err
-		}
-	}
-
-	if c.farmerClient == nil {
-		c.farmerClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFarmer)
-		if err != nil {
-			return err
-		}
-	}
-
-	if c.harvesterClient == nil {
-		c.harvesterClient, err = c.generateHTTPClientForService(rpcinterface.ServiceHarvester)
-		if err != nil {
-			return err
-		}
-	}
-
-	if c.walletClient == nil {
-		c.walletClient, err = c.generateHTTPClientForService(rpcinterface.ServiceWallet)
-		if err != nil {
-			return err
-		}
-	}
-
-	if c.crawlerClient == nil {
-		c.crawlerClient, err = c.generateHTTPClientForService(rpcinterface.ServiceCrawler)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
 func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceType) (*http.Client, error) {
-	var keyPair *tls.Certificate
+	var (
+		keyPair *tls.Certificate
+		err     error
+	)
 
 	switch service {
 	case rpcinterface.ServiceFullNode:
+		if c.nodeKeyPair == nil {
+			c.nodeKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
 		keyPair = c.nodeKeyPair
 	case rpcinterface.ServiceFarmer:
+		if c.farmerKeyPair == nil {
+			c.farmerKeyPair, err = c.config.Farmer.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
 		keyPair = c.farmerKeyPair
 	case rpcinterface.ServiceHarvester:
+		if c.harvesterKeyPair == nil {
+			c.harvesterKeyPair, err = c.config.Harvester.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
 		keyPair = c.harvesterKeyPair
 	case rpcinterface.ServiceWallet:
+		if c.walletKeyPair == nil {
+			c.walletKeyPair, err = c.config.Wallet.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
 		keyPair = c.walletKeyPair
 	case rpcinterface.ServiceCrawler:
+		if c.crawlerKeyPair == nil {
+			c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				// Fall back to just using the full node certs in this case
+				// This should only happen on old installations that didn't have the crawler in the config initially
+				c.crawlerKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+				if err != nil {
+					return nil, err
+				}
+			}
+		}
 		keyPair = c.crawlerKeyPair
 	default:
 		return nil, fmt.Errorf("unknown service")
@@ -359,18 +308,51 @@ func (c *HTTPClient) portForService(service rpcinterface.ServiceType) uint16 {
 
 // httpClientForService returns the proper http client to use with the service
 func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*http.Client, error) {
-	var client *http.Client
+	var (
+		client *http.Client
+		err    error
+	)
 
 	switch service {
 	case rpcinterface.ServiceFullNode:
+		if c.nodeClient == nil {
+			c.nodeClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFullNode)
+			if err != nil {
+				return nil, err
+			}
+		}
 		client = c.nodeClient
 	case rpcinterface.ServiceFarmer:
+		if c.farmerClient == nil {
+			c.farmerClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFarmer)
+			if err != nil {
+				return nil, err
+			}
+		}
 		client = c.farmerClient
 	case rpcinterface.ServiceHarvester:
+		if c.harvesterClient == nil {
+			c.harvesterClient, err = c.generateHTTPClientForService(rpcinterface.ServiceHarvester)
+			if err != nil {
+				return nil, err
+			}
+		}
 		client = c.harvesterClient
 	case rpcinterface.ServiceWallet:
+		if c.walletClient == nil {
+			c.walletClient, err = c.generateHTTPClientForService(rpcinterface.ServiceWallet)
+			if err != nil {
+				return nil, err
+			}
+		}
 		client = c.walletClient
 	case rpcinterface.ServiceCrawler:
+		if c.crawlerClient == nil {
+			c.crawlerClient, err = c.generateHTTPClientForService(rpcinterface.ServiceCrawler)
+			if err != nil {
+				return nil, err
+			}
+		}
 		client = c.crawlerClient
 	}
 
