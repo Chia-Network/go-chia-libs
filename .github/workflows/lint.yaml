@@ -14,9 +14,13 @@ jobs:
 
       - name: Get config
         run: |
-          wget https://raw.githubusercontent.com/Chia-Network/chia-blockchain/main/chia/util/initial-config.yaml
-          mkdir -p ~/.chia/mainnet/config/
-          mv initial-config.yaml ~/.chia/mainnet/config/config.yaml
+          apt-get update
+          apt-get install ca-certificates curl gnupg -y
+          curl -sL https://repo.chia.net/FD39E6D3.pubkey.asc | gpg --dearmor -o /usr/share/keyrings/chia.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/chia.gpg] https://repo.chia.net/debian/ stable main" | tee /etc/apt/sources.list.d/chia.list > /dev/null
+          apt-get update
+          apt-get install chia-blockchain-cli
+          chia init
 
       - name: Test
         run: make test-coverage
