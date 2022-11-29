@@ -22,9 +22,13 @@ func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	client, err := NewClient(ConnectionModeHTTP, PortOptions{
-		Wallet: uint16(p),
-	})
+	client, err := NewClient(ConnectionModeHTTP,
+		WithDaemonPort(uint16(p)),
+		WithNodePort(uint16(p)),
+		WithFarmerPort(uint16(p)),
+		WithHarvesterPort(uint16(p)),
+		WithWalletPort(uint16(p)),
+		WithCrawlerPort(uint16(p)))
 	if err != nil {
 		t.Fatal(err)
 	}
