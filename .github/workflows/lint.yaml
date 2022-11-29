@@ -12,5 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Get config
+        run: |
+          wget https://raw.githubusercontent.com/Chia-Network/chia-blockchain/main/chia/util/initial-config.yaml
+          mkdir -p ~/.chia/mainnet/config/
+          mv initial-config.yaml ~/.chia/mainnet/config/config.yaml
+
       - name: Test
         run: make test-coverage
