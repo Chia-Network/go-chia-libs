@@ -9,18 +9,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container: golang:1
+    env:
+      CHIA_SSL_DIR: "/root/.chia/mainnet/config/ssl"
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get config
+      - name: Generate a dummy key/crt pair for tests
         run: |
-          apt-get update
-          apt-get install ca-certificates curl gnupg -y
-          curl -sL https://repo.chia.net/FD39E6D3.pubkey.asc | gpg --dearmor -o /usr/share/keyrings/chia.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/chia.gpg] https://repo.chia.net/debian/ stable main" | tee /etc/apt/sources.list.d/chia.list > /dev/null
-          apt-get update
-          apt-get install chia-blockchain-cli
-          chia init
+          mkdir -p ${CHIA_SSL_DIR}/{daemon,full_node,farmer,harvester,wallet,crawler}
+          openssl req -new -newkey rsa:4096 -days 30 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout host.key -out host.crt
+          tee ${CHIA_SSL_DIR}/daemon/private_daemon.key ${CHIA_SSL_DIR}/full_node/private_full_node.key ${CHIA_SSL_DIR}/farmer/private_farmer.key ${CHIA_SSL_DIR}/harvester/private_harvester.key ${CHIA_SSL_DIR}/wallet/private_wallet.key ${CHIA_SSL_DIR}/crawler/private_crawler.key < ./host.key
+          tee ${CHIA_SSL_DIR}/daemon/private_daemon.crt ${CHIA_SSL_DIR}/full_node/private_full_node.crt ${CHIA_SSL_DIR}/farmer/private_farmer.crt ${CHIA_SSL_DIR}/harvester/private_harvester.crt ${CHIA_SSL_DIR}/wallet/private_wallet.crt ${CHIA_SSL_DIR}/crawler/private_crawler.crt < ./host.crt
 
       - name: Test
         run: make test-coverage
