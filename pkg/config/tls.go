@@ -7,12 +7,7 @@ import (
 )
 
 // LoadPrivateKeyPair loads the private key pair for the SSLConfig
-func (s *SSLConfig) LoadPrivateKeyPair() (*tls.Certificate, error) {
-	rootPath, err := GetChiaRootPath()
-	if err != nil {
-		return nil, err
-	}
-
+func (s *SSLConfig) LoadPrivateKeyPair(rootPath string) (*tls.Certificate, error) {
 	if s.PrivateCRT == "" || s.PrivateKey == "" {
 		return nil, errors.New("missing private key or cert. Ensure config.yaml is up to date with the latest changes")
 	}
@@ -22,12 +17,7 @@ func (s *SSLConfig) LoadPrivateKeyPair() (*tls.Certificate, error) {
 }
 
 // LoadPublicKeyPair loads the public key pair for the SSLConfig
-func (s *SSLConfig) LoadPublicKeyPair() (*tls.Certificate, error) {
-	rootPath, err := GetChiaRootPath()
-	if err != nil {
-		return nil, err
-	}
-
+func (s *SSLConfig) LoadPublicKeyPair(rootPath string) (*tls.Certificate, error) {
 	if s.PublicCRT == "" || s.PublicKey == "" {
 		return nil, errors.New("missing public key or cert. Ensure config.yaml is up to date with the latest changes")
 	}

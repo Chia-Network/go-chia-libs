@@ -268,7 +268,7 @@ func (c *WebsocketClient) reconnectLoop() {
 func (c *WebsocketClient) initialKeyPairs() error {
 	var err error
 
-	c.daemonKeyPair, err = c.config.DaemonSSL.LoadPrivateKeyPair()
+	c.daemonKeyPair, err = c.config.DaemonSSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		return err
 	}

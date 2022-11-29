@@ -224,31 +224,31 @@ func (c *HTTPClient) Do(req *rpcinterface.Request, v interface{}) (*http.Respons
 func (c *HTTPClient) initialKeyPairs() error {
 	var err error
 
-	c.nodeKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair()
+	c.nodeKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		return fmt.Errorf("error loading full node config: %w", err)
 	}
 
-	c.farmerKeyPair, err = c.config.Farmer.SSL.LoadPrivateKeyPair()
+	c.farmerKeyPair, err = c.config.Farmer.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		return fmt.Errorf("error loading farmer config: %w", err)
 	}
 
-	c.harvesterKeyPair, err = c.config.Harvester.SSL.LoadPrivateKeyPair()
+	c.harvesterKeyPair, err = c.config.Harvester.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		return fmt.Errorf("error loading harvester config: %w", err)
 	}
 
-	c.walletKeyPair, err = c.config.Wallet.SSL.LoadPrivateKeyPair()
+	c.walletKeyPair, err = c.config.Wallet.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		return fmt.Errorf("error loading wallet config: %w", err)
 	}
 
-	c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair()
+	c.crawlerKeyPair, err = c.config.Seeder.CrawlerConfig.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 	if err != nil {
 		// Fall back to just using the full node certs in this case
 		// This should only happen on old installations that didn't have the crawler in the config initially
-		c.crawlerKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair()
+		c.crawlerKeyPair, err = c.config.FullNode.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
 		if err != nil {
 			return fmt.Errorf("error loading crawler config: %w", err)
 		}
