@@ -75,3 +75,31 @@ func TestGetNFTs(t *testing.T) {
 	require.NotNil(t, resp)
 	require.Equal(t, want, *r)
 }
+
+func TestNFTGetByDid(t *testing.T) {
+	mux, server, client := setup(t)
+	defer teardown(server)
+
+	mux.HandleFunc("/nft_get_by_did", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, err := fmt.Fprint(w, fixture("wallet/nft_get_by_did.json"))
+		if err != nil {
+			return
+		}
+	})
+
+	want := NFTGetByDidResponse{
+		Response: Response{
+			Success: true,
+		},
+		WalletID: mo.Some[uint32](4),
+	}
+
+	r, resp, err := client.WalletService.NFTGetByDid(&NFTGetByDidOptions{
+		DidID: getBytes32FromHexString(t, "0xc42825559e5bda2bd31b03de428ea871a101ce0301a2a2f79ba5e833b84aa29d"),
+	})
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	require.Equal(t, want, *r)
+}
