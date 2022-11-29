@@ -95,41 +95,6 @@ func (c *HTTPClient) SetCacheValidTime(validTime time.Duration) {
 	c.cacheValidTime = validTime
 }
 
-// SetDaemonPort overrides the daemon port in the config
-func (c *HTTPClient) SetDaemonPort(p uint16) error {
-	return nil
-}
-
-// SetNodePort overrides the full node port in the config
-func (c *HTTPClient) SetNodePort(p uint16) error {
-	c.nodePort = p
-	return nil
-}
-
-// SetFarmerPort overrides the farmer port in the config
-func (c *HTTPClient) SetFarmerPort(p uint16) error {
-	c.farmerPort = p
-	return nil
-}
-
-// SetHarvesterPort overrides the harvester port in the config
-func (c *HTTPClient) SetHarvesterPort(p uint16) error {
-	c.harvesterPort = p
-	return nil
-}
-
-// SetWalletPort overrides the wallet port in the config
-func (c *HTTPClient) SetWalletPort(p uint16) error {
-	c.walletPort = p
-	return nil
-}
-
-// SetCrawlerPort overrides the crawler port in the config
-func (c *HTTPClient) SetCrawlerPort(p uint16) error {
-	c.crawlerPort = p
-	return nil
-}
-
 // NewRequest creates an RPC request for the specified service
 func (c *HTTPClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcinterface.Endpoint, opt interface{}) (*rpcinterface.Request, error) {
 	// Always POST

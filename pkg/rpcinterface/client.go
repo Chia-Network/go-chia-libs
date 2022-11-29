@@ -11,12 +11,6 @@ type Client interface {
 	NewRequest(service ServiceType, rpcEndpoint Endpoint, opt interface{}) (*Request, error)
 	Do(req *Request, v interface{}) (*http.Response, error)
 	SetBaseURL(url *url.URL) error
-	SetDaemonPort(p uint16) error
-	SetNodePort(p uint16) error
-	SetFarmerPort(p uint16) error
-	SetHarvesterPort(p uint16) error
-	SetWalletPort(p uint16) error
-	SetCrawlerPort(p uint16) error
 
 	// The following are added for websocket compatibility
 	// Any implementation that these don't make sense for should just do nothing / return nil as applicable

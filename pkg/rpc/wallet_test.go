@@ -10,18 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func getBytesFromHexString(t *testing.T, hex string) types.Bytes {
-	b, err := types.BytesFromHexString(hex)
-	require.NoError(t, err)
-	return b
-}
-
-func getBytes32FromHexString(t *testing.T, hex string) types.Bytes32 {
-	b, err := types.Bytes32FromHexString(hex)
-	require.NoError(t, err)
-	return b
-}
-
 func TestGetNFTs(t *testing.T) {
 	mux, server, client := setup(t)
 	defer teardown(server)
