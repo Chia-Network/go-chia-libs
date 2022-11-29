@@ -38,8 +38,8 @@ const (
 )
 
 // NewClient returns a new RPC Client
-func NewClient(connectionMode ConnectionMode, options ...rpcinterface.ClientOptionFunc) (*Client, error) {
-	cfg, err := config.GetChiaConfig()
+func NewClient(connectionMode ConnectionMode, configOption rpcinterface.ConfigOptionFunc, options ...rpcinterface.ClientOptionFunc) (*Client, error) {
+	cfg, err := configOption()
 	if err != nil {
 		return nil, err
 	}
