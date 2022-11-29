@@ -18,7 +18,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.NewClient(rpc.ConnectionModeHTTP)
+	client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithAutoConfig())
 	if err != nil {
 		// error happened
 	}
@@ -37,7 +37,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket, rpc.WithAutoConfig())
 	if err != nil {
 		// error happened
 	}
@@ -62,7 +62,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket, rpc.WithAutoConfig())
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -90,7 +90,7 @@ import (
 )
 
 func main() {
-	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket, rpc.WithAutoConfig())
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -118,7 +118,7 @@ There are two helper functions to subscribe to events that come over the websock
 #### HTTP Mode
 
 ```go
-client, err := rpc.NewClient(rpc.ConnectionModeHTTP)
+client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithAutoConfig())
 if err != nil {
 	log.Fatal(err)
 }
@@ -143,7 +143,7 @@ if transactions.Transactions.IsPresent() {
 
 ```go
 func main() {
-	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket)
+	client, err := rpc.NewClient(rpc.ConnectionModeWebsocket, rpc.WithAutoConfig())
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -217,7 +217,7 @@ if state.BlockchainState.IsPresent() {
 When using HTTP mode, there is an optional request cache that can be enabled with a configurable cache duration. To use the cache, initialize the client with the `rpc.WithCache()` option like the following example:
 
 ```go
-client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithCache(60 * time.Second))
+client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithAutoConfig(), rpc.WithCache(60 * time.Second))
 if err != nil {
 	// error happened
 }

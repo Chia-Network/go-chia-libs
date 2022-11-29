@@ -4,9 +4,24 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/httpclient"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 )
+
+// WithAutoConfig automatically loads chia config from CHIA_ROOT
+func WithAutoConfig() rpcinterface.ConfigOptionFunc {
+	return func() (*config.ChiaConfig, error) {
+		return config.GetChiaConfig()
+	}
+}
+
+// WithManualConfig allows supplying a manual configuration for the RPC client
+func WithManualConfig(cfg config.ChiaConfig) rpcinterface.ConfigOptionFunc {
+	return func() (*config.ChiaConfig, error) {
+		return &cfg, nil
+	}
+}
 
 // WithBaseURL sets the host for RPC requests
 func WithBaseURL(url *url.URL) rpcinterface.ClientOptionFunc {
