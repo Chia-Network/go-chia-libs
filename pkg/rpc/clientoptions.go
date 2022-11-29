@@ -39,3 +39,45 @@ func WithTimeout(timeout time.Duration) rpcinterface.ClientOptionFunc {
 		return nil
 	}
 }
+
+// WithDaemonPort sets the port for RPC requests
+func WithDaemonPort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetDaemonPort(port)
+	}
+}
+
+// WithNodePort sets the port for RPC requests
+func WithNodePort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetNodePort(port)
+	}
+}
+
+// WithFarmerPort sets the port for RPC requests
+func WithFarmerPort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetFarmerPort(port)
+	}
+}
+
+// WithHarvesterPort sets the port for RPC requests
+func WithHarvesterPort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetHarvesterPort(port)
+	}
+}
+
+// WithWalletPort sets the port for RPC requests
+func WithWalletPort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetWalletPort(port)
+	}
+}
+
+// WithCrawlerPort sets the port for RPC requests
+func WithCrawlerPort(port uint16) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetCrawlerPort(port)
+	}
+}

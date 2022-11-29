@@ -87,6 +87,37 @@ func (c *WebsocketClient) SetBaseURL(url *url.URL) error {
 	return nil
 }
 
+// SetDaemonPort overrides the daemon port in the config
+func (c *WebsocketClient) SetDaemonPort(p uint16) error {
+	c.daemonPort = p
+	return nil
+}
+
+// SetNodePort overrides the full node port in the config
+func (c *WebsocketClient) SetNodePort(p uint16) error {
+	return nil
+}
+
+// SetFarmerPort overrides the farmer port in the config
+func (c *WebsocketClient) SetFarmerPort(p uint16) error {
+	return nil
+}
+
+// SetHarvesterPort overrides the harvester port in the config
+func (c *WebsocketClient) SetHarvesterPort(p uint16) error {
+	return nil
+}
+
+// SetWalletPort overrides the wallet port in the config
+func (c *WebsocketClient) SetWalletPort(p uint16) error {
+	return nil
+}
+
+// SetCrawlerPort overrides the crawler port in the config
+func (c *WebsocketClient) SetCrawlerPort(p uint16) error {
+	return nil
+}
+
 // NewRequest creates an RPC request for the specified service
 func (c *WebsocketClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcinterface.Endpoint, opt interface{}) (*rpcinterface.Request, error) {
 	request := &rpcinterface.Request{
