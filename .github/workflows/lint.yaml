@@ -9,8 +9,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container: golang:1
-    env:
-      CHIA_SSL_DIR: "/root/.chia/mainnet/config/ssl"
     steps:
       - uses: actions/checkout@v3
 
