@@ -23,6 +23,7 @@ func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
 		t.Fatal(err)
 	}
 	client, err := NewClient(ConnectionModeHTTP,
+		WithAutoConfig(),
 		WithDaemonPort(uint16(p)),
 		WithNodePort(uint16(p)),
 		WithFarmerPort(uint16(p)),
