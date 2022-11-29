@@ -48,8 +48,6 @@ func main() {
 			SSL: config.SSLConfig{
 				PrivateCRT: "config/ssl/full_node/private_full_node.crt",
 				PrivateKey: "config/ssl/full_node/private_full_node.key",
-				PublicCRT:  "config/ssl/full_node/public_full_node.crt",
-				PublicKey:  "config/ssl/full_node/public_full_node.key",
 			},
 		},
 	}))
