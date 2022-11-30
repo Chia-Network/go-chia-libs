@@ -368,7 +368,9 @@ func (s *WalletService) MintNFT(opts *MintNFTOptions) (*MintNFTResponse, *http.R
 
 // GetNFTsOptions represents the options for nft_get_nfts
 type GetNFTsOptions struct {
-	WalletID uint32 `json:"wallet_id"`
+	WalletID   uint32 `json:"wallet_id"`
+	StartIndex *int   `json:"start_index,omitempty"`
+	Num        *int   `json:"num,omitempty"`
 }
 
 // GetNFTsResponse represents the response from nft_get_nfts
