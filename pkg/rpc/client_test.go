@@ -192,3 +192,19 @@ func getBytes32FromHexString(t *testing.T, hex string) types.Bytes32 {
 	require.NoError(t, err)
 	return b
 }
+
+func ExampleNewClient() {
+	client, err := NewClient(ConnectionModeHTTP, WithAutoConfig())
+	if err != nil {
+		panic(err)
+	}
+
+	state, _, err := client.FullNodeService.GetBlockchainState()
+	if err != nil {
+		panic(err)
+	}
+
+	if state.BlockchainState.IsPresent() {
+		fmt.Println(state.BlockchainState.MustGet().Space)
+	}
+}
