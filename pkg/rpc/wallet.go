@@ -208,6 +208,7 @@ type GetWalletTransactionsOptions struct {
 	WalletID  uint32 `json:"wallet_id"`
 	Start     *int   `json:"start,omitempty"`
 	End       *int   `json:"end,omitempty"`
+	Reverse   *bool  `json:"reverse,omitempty"`
 	ToAddress string `json:"to_address,omitempty"`
 }
 
