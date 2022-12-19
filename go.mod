@@ -6,7 +6,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/samber/mo v1.6.0
+	github.com/samber/mo v1.7.0
 	github.com/stretchr/testify v1.8.1
 	gopkg.in/yaml.v2 v2.4.0
 )
