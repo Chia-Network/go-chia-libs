@@ -30,6 +30,22 @@ type GetPublicKeysResponse struct {
 	PublicKeyFingerprints mo.Option[[]int] `json:"public_key_fingerprints"`
 }
 
+// GetConnections returns connections
+func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_connections", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	c := &GetConnectionsResponse{}
+	resp, err := s.Do(request, c)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return c, resp, nil
+}
+
 // GetPublicKeys endpoint
 func (s *WalletService) GetPublicKeys() (*GetPublicKeysResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_public_keys", nil)

@@ -32,6 +32,22 @@ type HarvesterGetPlotsResponse struct {
 	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
 }
 
+// GetConnections returns connections
+func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_connections", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	c := &GetConnectionsResponse{}
+	resp, err := s.Do(request, c)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return c, resp, nil
+}
+
 // GetPlots returns connections
 func (s *HarvesterService) GetPlots() (*HarvesterGetPlotsResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_plots", nil)
