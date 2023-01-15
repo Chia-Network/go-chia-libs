@@ -20,6 +20,7 @@ type Client struct {
 	// Services for the different chia services
 	FullNodeService  *FullNodeService
 	WalletService    *WalletService
+	FarmerService    *FarmerService
 	HarvesterService *HarvesterService
 	CrawlerService   *CrawlerService
 
@@ -63,6 +64,7 @@ func NewClient(connectionMode ConnectionMode, configOption rpcinterface.ConfigOp
 	// Init Services
 	c.FullNodeService = &FullNodeService{client: c}
 	c.WalletService = &WalletService{client: c}
+	c.FarmerService = &FarmerService{client: c}
 	c.HarvesterService = &HarvesterService{client: c}
 	c.CrawlerService = &CrawlerService{client: c}
 
