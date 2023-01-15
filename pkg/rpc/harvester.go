@@ -24,14 +24,6 @@ func (s *HarvesterService) Do(req *rpcinterface.Request, v interface{}) (*http.R
 	return s.client.Do(req, v)
 }
 
-// HarvesterGetPlotsResponse get_plots response format
-type HarvesterGetPlotsResponse struct {
-	Response
-	Plots                 mo.Option[[]types.PlotInfo] `json:"plots"`
-	FailedToOpenFilenames mo.Option[[]string]         `json:"failed_to_open_filenames"`
-	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
-}
-
 // GetConnections returns connections
 func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_connections", opts)
@@ -46,6 +38,14 @@ func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConn
 	}
 
 	return c, resp, nil
+}
+
+// HarvesterGetPlotsResponse get_plots response format
+type HarvesterGetPlotsResponse struct {
+	Response
+	Plots                 mo.Option[[]types.PlotInfo] `json:"plots"`
+	FailedToOpenFilenames mo.Option[[]string]         `json:"failed_to_open_filenames"`
+	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
 }
 
 // GetPlots returns connections

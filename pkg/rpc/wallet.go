@@ -24,12 +24,6 @@ func (s *WalletService) Do(req *rpcinterface.Request, v interface{}) (*http.Resp
 	return s.client.Do(req, v)
 }
 
-// GetPublicKeysResponse response from get_public_keys
-type GetPublicKeysResponse struct {
-	Response
-	PublicKeyFingerprints mo.Option[[]int] `json:"public_key_fingerprints"`
-}
-
 // GetConnections returns connections
 func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_connections", opts)
@@ -44,6 +38,12 @@ func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnect
 	}
 
 	return c, resp, nil
+}
+
+// GetPublicKeysResponse response from get_public_keys
+type GetPublicKeysResponse struct {
+	Response
+	PublicKeyFingerprints mo.Option[[]int] `json:"public_key_fingerprints"`
 }
 
 // GetPublicKeys endpoint
