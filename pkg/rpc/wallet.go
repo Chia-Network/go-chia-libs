@@ -24,6 +24,22 @@ func (s *WalletService) Do(req *rpcinterface.Request, v interface{}) (*http.Resp
 	return s.client.Do(req, v)
 }
 
+// GetConnections returns connections
+func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_connections", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	c := &GetConnectionsResponse{}
+	resp, err := s.Do(request, c)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return c, resp, nil
+}
+
 // GetPublicKeysResponse response from get_public_keys
 type GetPublicKeysResponse struct {
 	Response
