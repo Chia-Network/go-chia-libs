@@ -82,7 +82,7 @@ func GetChiaConfig() (*ChiaConfig, error) {
 
 	configPath := filepath.Join(rootPath, "config", "config.yaml")
 	if _, err = os.Stat(configPath); os.IsNotExist(err) {
-		return nil, fmt.Errorf("config file not found")
+		return nil, fmt.Errorf("chia config file not found at %s. Ensure CHIA_ROOT is set to the correct chia root", configPath)
 	}
 
 	configBytes, err := os.ReadFile(configPath)
