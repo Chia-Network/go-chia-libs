@@ -240,6 +240,37 @@ func (s *FullNodeService) GetCoinRecordsByPuzzleHash(opts *GetCoinRecordsByPuzzl
 	return r, resp, nil
 }
 
+// GetCoinRecordsByPuzzleHashesOptions request options for /get_coin_records_by_puzzle_hash
+type GetCoinRecordsByPuzzleHashesOptions struct {
+	PuzzleHash        []types.Bytes32 `json:"puzzle_hashes"`
+	IncludeSpentCoins bool            `json:"include_spent_coins"`
+	StartHeight       uint32          `json:"start_height,omitempty"`
+	EndHeight         uint32          `json:"end_height,omitempty"`
+}
+
+// GetCoinRecordsByPuzzleHashesResponse Response for /get_coin_records_by_puzzle_hashes
+type GetCoinRecordsByPuzzleHashesResponse struct {
+	Response
+	CoinRecords []types.CoinRecord `json:"coin_records"`
+}
+
+// GetCoinRecordsByPuzzleHashes returns coin records for a specified list of puzzle hashes
+func (s *FullNodeService) GetCoinRecordsByPuzzleHashes(opts *GetCoinRecordsByPuzzleHashesOptions) (*GetCoinRecordsByPuzzleHashesResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_coin_records_by_puzzle_hashes", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetCoinRecordsByPuzzleHashesResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetCoinRecordByNameOptions request options for /get_coin_record_by_name
 type GetCoinRecordByNameOptions struct {
 	Name string `json:"name"`
