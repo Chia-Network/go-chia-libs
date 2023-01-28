@@ -237,6 +237,50 @@ func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) 
 	return r, resp, nil
 }
 
+// FullNodePushTXOptions options for pushing tx to full node mempool
+type FullNodePushTXOptions struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+}
+
+// FullNodePushTXResponse Response from full node push_tx
+type FullNodePushTXResponse struct {
+	Response
+	Status mo.Option[string] `json:"status"`
+}
+
+// PushTX pushes a transaction to the full node
+func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXResponse, *http.Response, error) {
+	request, err := s.NewRequest("push_tx", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &FullNodePushTXResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
+func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions) (*GetPuzzleAndSolutionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_puzzle_and_solution", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	record := &GetPuzzleAndSolutionResponse{}
+	resp, err := s.Do(request, record)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
+}
+
 // GetFeeEstimateOptions inputs to get a fee estimate
 // TargetTimes is a list of values corresponding to "seconds from now" to get a fee estimate for
 // The estimated fee is the estimate of the fee required to complete the TX by the target time seconds
@@ -277,34 +321,6 @@ func (s *FullNodeService) GetFeeEstimate(opts *GetFeeEstimateOptions) (*GetFeeEs
 	return r, resp, nil
 }
 
-// FullNodePushTXOptions options for pushing tx to full node mempool
-type FullNodePushTXOptions struct {
-	SpendBundle types.SpendBundle `json:"spend_bundle"`
-}
-
-// FullNodePushTXResponse Response from full node push_tx
-type FullNodePushTXResponse struct {
-	Response
-	Status mo.Option[string] `json:"status"`
-}
-
-// PushTX pushes a transaction to the full node
-func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXResponse, *http.Response, error) {
-	request, err := s.NewRequest("push_tx", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &FullNodePushTXResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
-}
-
 // GetPuzzleAndSolutionOptions options for get_puzzle_and_solution rpc call
 type GetPuzzleAndSolutionOptions struct {
 	CoinID types.Bytes32 `json:"coin_id"`
@@ -315,20 +331,4 @@ type GetPuzzleAndSolutionOptions struct {
 type GetPuzzleAndSolutionResponse struct {
 	Response
 	CoinSolution mo.Option[types.CoinSpend] `json:"coin_solution"`
-}
-
-// GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
-func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions) (*GetPuzzleAndSolutionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_puzzle_and_solution", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	record := &GetPuzzleAndSolutionResponse{}
-	resp, err := s.Do(request, record)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return record, resp, nil
 }
