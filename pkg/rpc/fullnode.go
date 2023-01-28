@@ -209,6 +209,68 @@ func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetB
 	return block, resp, nil
 }
 
+// GetCoinRecordsByPuzzleHashOptions request options for /get_coin_records_by_puzzle_hash
+type GetCoinRecordsByPuzzleHashOptions struct {
+	PuzzleHash        types.Bytes32 `json:"puzzle_hash"`
+	IncludeSpentCoins bool          `json:"include_spent_coins"`
+	StartHeight       uint32        `json:"start_height,omitempty"`
+	EndHeight         uint32        `json:"end_height,omitempty"`
+}
+
+// GetCoinRecordsByPuzzleHashResponse Response for /get_coin_records_by_puzzle_hash
+type GetCoinRecordsByPuzzleHashResponse struct {
+	Response
+	CoinRecords []types.CoinRecord `json:"coin_records"`
+}
+
+// GetCoinRecordsByPuzzleHash returns coin records for a specified puzzle hash
+func (s *FullNodeService) GetCoinRecordsByPuzzleHash(opts *GetCoinRecordsByPuzzleHashOptions) (*GetCoinRecordsByPuzzleHashResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_coin_records_by_puzzle_hash", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetCoinRecordsByPuzzleHashResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetCoinRecordsByPuzzleHashesOptions request options for /get_coin_records_by_puzzle_hash
+type GetCoinRecordsByPuzzleHashesOptions struct {
+	PuzzleHash        []types.Bytes32 `json:"puzzle_hashes"`
+	IncludeSpentCoins bool            `json:"include_spent_coins"`
+	StartHeight       uint32          `json:"start_height,omitempty"`
+	EndHeight         uint32          `json:"end_height,omitempty"`
+}
+
+// GetCoinRecordsByPuzzleHashesResponse Response for /get_coin_records_by_puzzle_hashes
+type GetCoinRecordsByPuzzleHashesResponse struct {
+	Response
+	CoinRecords []types.CoinRecord `json:"coin_records"`
+}
+
+// GetCoinRecordsByPuzzleHashes returns coin records for a specified list of puzzle hashes
+func (s *FullNodeService) GetCoinRecordsByPuzzleHashes(opts *GetCoinRecordsByPuzzleHashesOptions) (*GetCoinRecordsByPuzzleHashesResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_coin_records_by_puzzle_hashes", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetCoinRecordsByPuzzleHashesResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetCoinRecordByNameOptions request options for /get_coin_record_by_name
 type GetCoinRecordByNameOptions struct {
 	Name string `json:"name"`
@@ -235,6 +297,50 @@ func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) 
 	}
 
 	return r, resp, nil
+}
+
+// FullNodePushTXOptions options for pushing tx to full node mempool
+type FullNodePushTXOptions struct {
+	SpendBundle types.SpendBundle `json:"spend_bundle"`
+}
+
+// FullNodePushTXResponse Response from full node push_tx
+type FullNodePushTXResponse struct {
+	Response
+	Status mo.Option[string] `json:"status"`
+}
+
+// PushTX pushes a transaction to the full node
+func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXResponse, *http.Response, error) {
+	request, err := s.NewRequest("push_tx", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &FullNodePushTXResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
+func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions) (*GetPuzzleAndSolutionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_puzzle_and_solution", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	record := &GetPuzzleAndSolutionResponse{}
+	resp, err := s.Do(request, record)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return record, resp, nil
 }
 
 // GetFeeEstimateOptions inputs to get a fee estimate
@@ -277,34 +383,6 @@ func (s *FullNodeService) GetFeeEstimate(opts *GetFeeEstimateOptions) (*GetFeeEs
 	return r, resp, nil
 }
 
-// FullNodePushTXOptions options for pushing tx to full node mempool
-type FullNodePushTXOptions struct {
-	SpendBundle types.SpendBundle `json:"spend_bundle"`
-}
-
-// FullNodePushTXResponse Response from full node push_tx
-type FullNodePushTXResponse struct {
-	Response
-	Status mo.Option[string] `json:"status"`
-}
-
-// PushTX pushes a transaction to the full node
-func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXResponse, *http.Response, error) {
-	request, err := s.NewRequest("push_tx", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &FullNodePushTXResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
-}
-
 // GetPuzzleAndSolutionOptions options for get_puzzle_and_solution rpc call
 type GetPuzzleAndSolutionOptions struct {
 	CoinID types.Bytes32 `json:"coin_id"`
@@ -315,20 +393,4 @@ type GetPuzzleAndSolutionOptions struct {
 type GetPuzzleAndSolutionResponse struct {
 	Response
 	CoinSolution mo.Option[types.CoinSpend] `json:"coin_solution"`
-}
-
-// GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
-func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions) (*GetPuzzleAndSolutionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_puzzle_and_solution", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	record := &GetPuzzleAndSolutionResponse{}
-	resp, err := s.Do(request, record)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return record, resp, nil
 }
