@@ -209,6 +209,35 @@ func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetB
 	return block, resp, nil
 }
 
+// GetAdditionsAndRemovalsOptions options for get_additions_and_removals
+type GetAdditionsAndRemovalsOptions struct {
+	HeaderHash types.Bytes32 `json:"header_hash"`
+}
+
+// GetAdditionsAndRemovalsResponse response for get_additions_and_removals
+type GetAdditionsAndRemovalsResponse struct {
+	Response
+	Additions []types.CoinRecord `json:"additions"`
+	Removals  []types.CoinRecord `json:"removals"`
+}
+
+// GetAdditionsAndRemovals Gets additions and removals for a particular block hash
+func (s *FullNodeService) GetAdditionsAndRemovals(opts *GetAdditionsAndRemovalsOptions) (*GetAdditionsAndRemovalsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_additions_and_removals", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetAdditionsAndRemovalsResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetCoinRecordsByPuzzleHashOptions request options for /get_coin_records_by_puzzle_hash
 type GetCoinRecordsByPuzzleHashOptions struct {
 	PuzzleHash        types.Bytes32 `json:"puzzle_hash"`
