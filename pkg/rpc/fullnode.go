@@ -107,7 +107,7 @@ type GetBlocksOptions struct {
 	// ExcludeHeaderHash if set to true, omits the `header_hash` key from the response
 	ExcludeHeaderHash bool `json:"exclude_header_hash"`
 	// ExcludeReorged if set to true, excludes reorged blocks from the response
-	ExcludeReorged bool `json:"exclude_reorged"` // If set to true,
+	ExcludeReorged bool `json:"exclude_reorged"`
 }
 
 // GetBlocksResponse response for get_blocks rpc call
