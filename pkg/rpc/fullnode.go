@@ -104,6 +104,10 @@ func (s *FullNodeService) GetBlock(opts *GetBlockOptions) (*GetBlockResponse, *h
 type GetBlocksOptions struct {
 	Start int `json:"start"`
 	End   int `json:"end"`
+	// ExcludeHeaderHash if set to true, omits the `header_hash` key from the response
+	ExcludeHeaderHash bool `json:"exclude_header_hash"`
+	// ExcludeReorged if set to true, excludes reorged blocks from the response
+	ExcludeReorged bool `json:"exclude_reorged"`
 }
 
 // GetBlocksResponse response for get_blocks rpc call
