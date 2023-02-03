@@ -19,13 +19,19 @@ func init() {
 	var err error
 
 	parentCoin, err = types.BytesToBytes32([]byte("---foo---                       "))
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 
 	puzzleHash, err = types.BytesToBytes32([]byte("---bar---                       "))
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 
 	puzzleHash2, err = types.BytesToBytes32([]byte("---bar--- 2                     "))
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 }
 
 // TestCoinID coin id tests adapted from https://github.com/Chia-Network/chia_rs/blob/main/tests/test_coin.py
