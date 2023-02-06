@@ -34,6 +34,7 @@ type FullNodeConfig struct {
 	SSL             SSLConfig `yaml:"ssl"`
 	SelectedNetwork string    `yaml:"selected_network"`
 	DatabasePath    string    `yaml:"database_path"`
+	DNSServers      []string  `yaml:"dns_servers"`
 }
 
 // HarvesterConfig harvester configuration section
