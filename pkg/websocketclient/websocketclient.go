@@ -46,6 +46,9 @@ func NewWebsocketClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOp
 		config: cfg,
 
 		daemonPort: cfg.DaemonPort,
+
+		// Init the map
+		subscriptions: map[string]bool{},
 	}
 
 	// Sets the default host. Can be overridden by client options
