@@ -34,7 +34,7 @@ type WebsocketClient struct {
 	listenSyncActive bool
 
 	// subscriptions Keeps track of subscribed topics, so we can re-subscribe if we lose a connection and reconnect
-	subscriptions []string
+	subscriptions map[string]bool
 
 	disconnectHandlers []rpcinterface.DisconnectHandler
 	reconnectHandlers  []rpcinterface.ReconnectHandler
@@ -46,6 +46,9 @@ func NewWebsocketClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOp
 		config: cfg,
 
 		daemonPort: cfg.DaemonPort,
+
+		// Init the map
+		subscriptions: map[string]bool{},
 	}
 
 	// Sets the default host. Can be overridden by client options
@@ -151,7 +154,10 @@ func (c *WebsocketClient) SubscribeSelf() error {
 
 // Subscribe adds a subscription to a particular service
 func (c *WebsocketClient) Subscribe(service string) error {
-	c.subscriptions = append(c.subscriptions, service)
+	if _, alreadySet := c.subscriptions[service]; alreadySet {
+		return nil
+	}
+	c.subscriptions[service] = true
 
 	return c.doSubscribe(service)
 }
@@ -216,7 +222,7 @@ func (c *WebsocketClient) reconnectLoop() {
 		err := c.ensureConnection()
 		if err == nil {
 			log.Println("Reconnected!")
-			for _, topic := range c.subscriptions {
+			for topic := range c.subscriptions {
 				err = c.doSubscribe(topic)
 				if err != nil {
 					log.Printf("Error subscribing to topic %s: %s\n", topic, err.Error())
