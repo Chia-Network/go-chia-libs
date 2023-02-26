@@ -157,9 +157,14 @@ func (c *WebsocketClient) Subscribe(service string) error {
 	if _, alreadySet := c.subscriptions[service]; alreadySet {
 		return nil
 	}
-	c.subscriptions[service] = true
 
-	return c.doSubscribe(service)
+	err := c.doSubscribe(service)
+	if err != nil {
+		return err
+	}
+
+	c.subscriptions[service] = true
+	return nil
 }
 
 func (c *WebsocketClient) doSubscribe(service string) error {
