@@ -192,7 +192,7 @@ func (s *FullNodeService) GetBlockRecordByHeight(opts *GetBlockByHeightOptions) 
 func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetBlockResponse, *http.Response, error) {
 	// Get Block Record
 	record, resp, err := s.GetBlockRecordByHeight(opts)
-	if err != nil {
+	if err != nil || record == nil {
 		return nil, resp, err
 	}
 
