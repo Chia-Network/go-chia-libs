@@ -332,6 +332,37 @@ func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) 
 	return r, resp, nil
 }
 
+// GetCoinRecordsByHintOptions options for get_coin_records_by_hint
+type GetCoinRecordsByHintOptions struct {
+	Hint              types.Bytes32 `json:"hint"`
+	IncludeSpentCoins bool          `json:"include_spent_coins"`
+	StartHeight       uint32        `json:"start_height,omitempty"`
+	EndHeight         uint32        `json:"end_height,omitempty"`
+}
+
+// GetCoinRecordsByHintResponse Response for /get_coin_records_by_hint
+type GetCoinRecordsByHintResponse struct {
+	Response
+	CoinRecords []types.CoinRecord `json:"coin_records"`
+}
+
+// GetCoinRecordsByHint returns coin records for a specified puzzle hash
+func (s *FullNodeService) GetCoinRecordsByHint(opts *GetCoinRecordsByHintOptions) (*GetCoinRecordsByHintResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_coin_records_by_hint", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetCoinRecordsByHintResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // FullNodePushTXOptions options for pushing tx to full node mempool
 type FullNodePushTXOptions struct {
 	SpendBundle types.SpendBundle `json:"spend_bundle"`
