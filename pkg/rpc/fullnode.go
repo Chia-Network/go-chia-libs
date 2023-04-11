@@ -419,15 +419,15 @@ type GetFeeEstimateOptions struct {
 // GetFeeEstimateResponse response for get_fee_estimate
 type GetFeeEstimateResponse struct {
 	Response
-	Estimates         mo.Option[[]uint64] `json:"estimates"`
-	TargetTimes       mo.Option[[]uint64] `json:"target_times"`
-	CurrentFeeRate    mo.Option[uint64]   `json:"current_fee_rate"`
-	MempoolSize       mo.Option[uint64]   `json:"mempool_size"`
-	MempoolMaxSize    mo.Option[uint64]   `json:"mempool_max_size"`
-	FullNodeSynced    mo.Option[bool]     `json:"full_node_synced"`
-	PeakHeight        mo.Option[uint32]   `json:"peak_height"`
-	LastPeakTimestamp mo.Option[uint64]   `json:"last_peak_timestamp"`
-	NodeTimeUTC       mo.Option[uint64]   `json:"node_time_utc"`
+	Estimates         mo.Option[[]float64] `json:"estimates"`
+	TargetTimes       mo.Option[[]uint64]  `json:"target_times"`
+	CurrentFeeRate    mo.Option[float64]   `json:"current_fee_rate"`
+	MempoolSize       mo.Option[uint64]    `json:"mempool_size"`
+	MempoolMaxSize    mo.Option[uint64]    `json:"mempool_max_size"`
+	FullNodeSynced    mo.Option[bool]      `json:"full_node_synced"`
+	PeakHeight        mo.Option[uint32]    `json:"peak_height"`
+	LastPeakTimestamp mo.Option[uint64]    `json:"last_peak_timestamp"`
+	NodeTimeUTC       mo.Option[uint64]    `json:"node_time_utc"`
 }
 
 // GetFeeEstimate endpoint
