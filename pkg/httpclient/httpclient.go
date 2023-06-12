@@ -334,6 +334,14 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 			}
 		}
 		client = c.crawlerClient
+	case rpcinterface.ServiceDataLayer:
+		if c.datalayerClient == nil {
+			c.datalayerClient, err = c.generateHTTPClientForService(rpcinterface.ServiceDataLayer)
+			if err != nil {
+				return nil, err
+			}
+		}
+		client = c.datalayerClient
 	}
 
 	if client == nil {
