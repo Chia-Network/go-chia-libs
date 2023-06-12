@@ -46,6 +46,10 @@ type HTTPClient struct {
 	crawlerPort    uint16
 	crawlerKeyPair *tls.Certificate
 	crawlerClient  *http.Client
+
+	datalayerPort    uint16
+	datalayerKeyPair *tls.Certificate
+	datalayerClient  *http.Client
 }
 
 // NewHTTPClient returns a new HTTP client that satisfies the rpcinterface.Client interface
@@ -60,6 +64,7 @@ func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionF
 		harvesterPort: cfg.Harvester.RPCPort,
 		walletPort:    cfg.Wallet.RPCPort,
 		crawlerPort:   cfg.Seeder.CrawlerConfig.RPCPort,
+		datalayerPort: cfg.DataLayer.RPCPort,
 	}
 
 	// Sets the default host. Can be overridden by client options
@@ -226,6 +231,14 @@ func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceTy
 			}
 		}
 		keyPair = c.crawlerKeyPair
+	case rpcinterface.ServiceDataLayer:
+		if c.datalayerKeyPair == nil {
+			c.datalayerKeyPair, err = c.config.DataLayer.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
+		keyPair = c.datalayerKeyPair
 	default:
 		return nil, fmt.Errorf("unknown service")
 	}
@@ -266,6 +279,8 @@ func (c *HTTPClient) portForService(service rpcinterface.ServiceType) uint16 {
 		port = c.walletPort
 	case rpcinterface.ServiceCrawler:
 		port = c.crawlerPort
+	case rpcinterface.ServiceDataLayer:
+		port = c.datalayerPort
 	}
 
 	return port

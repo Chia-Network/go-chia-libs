@@ -64,11 +64,11 @@ func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
 			ChiaRoot:   tmpDir,
 			DaemonPort: portConf.RPCPort,
 			DaemonSSL:  sslConf,
-			FullNode: config.FullNodeConfig{
+			Farmer: config.FarmerConfig{
 				PortConfig: portConf,
 				SSL:        sslConf,
 			},
-			Farmer: config.FarmerConfig{
+			FullNode: config.FullNodeConfig{
 				PortConfig: portConf,
 				SSL:        sslConf,
 			},
@@ -85,6 +85,10 @@ func setup(t *testing.T) (*http.ServeMux, *httptest.Server, *Client) {
 					PortConfig: portConf,
 					SSL:        sslConf,
 				},
+			},
+			DataLayer: config.DataLayerConfig{
+				PortConfig: portConf,
+				SSL:        sslConf,
 			},
 		}))
 	if err != nil {
