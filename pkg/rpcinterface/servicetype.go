@@ -27,4 +27,7 @@ const (
 
 	// ServiceCrawler crawler service
 	ServiceCrawler
+
+	// ServiceDataLayer datalayer service
+	ServiceDataLayer
 )

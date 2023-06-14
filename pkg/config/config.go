@@ -19,6 +19,7 @@ type ChiaConfig struct {
 	Harvester       HarvesterConfig `yaml:"harvester"`
 	Wallet          WalletConfig    `yaml:"wallet"`
 	Seeder          SeederConfig    `yaml:"seeder"`
+	DataLayer       DataLayerConfig `yaml:"data_layer"`
 	SelectedNetwork string          `yaml:"selected_network"`
 }
 
@@ -56,6 +57,12 @@ type SeederConfig struct {
 
 // CrawlerConfig is the subsection of the seeder config specific to the crawler
 type CrawlerConfig struct {
+	PortConfig `yaml:",inline"`
+	SSL        SSLConfig `yaml:"ssl"`
+}
+
+// DataLayerConfig datalayer configuration section
+type DataLayerConfig struct {
 	PortConfig `yaml:",inline"`
 	SSL        SSLConfig `yaml:"ssl"`
 }
