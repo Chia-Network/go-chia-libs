@@ -23,6 +23,7 @@ type Client struct {
 	FarmerService    *FarmerService
 	HarvesterService *HarvesterService
 	CrawlerService   *CrawlerService
+	DataLayerService *DataLayerService
 
 	websocketHandlers []rpcinterface.WebsocketResponseHandler
 }
@@ -67,6 +68,7 @@ func NewClient(connectionMode ConnectionMode, configOption rpcinterface.ConfigOp
 	c.FarmerService = &FarmerService{client: c}
 	c.HarvesterService = &HarvesterService{client: c}
 	c.CrawlerService = &CrawlerService{client: c}
+	c.DataLayerService = &DataLayerService{client: c}
 
 	return c, nil
 }
