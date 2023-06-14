@@ -13,7 +13,7 @@ type DataLayerService struct {
 
 // NewRequest returns a new request specific to the wallet service
 func (s *DataLayerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interface{}) (*rpcinterface.Request, error) {
-	return s.client.NewRequest(rpcinterface.ServiceFullNode, rpcEndpoint, opt)
+	return s.client.NewRequest(rpcinterface.ServiceDataLayer, rpcEndpoint, opt)
 }
 
 // Do is just a shortcut to the client's Do method
