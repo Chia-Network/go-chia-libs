@@ -5,8 +5,8 @@ import (
 
 	"github.com/samber/mo"
 
+	"github.com/chia-network/go-chia-libs/pkg/protocols"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
-	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 // HarvesterService encapsulates harvester RPC methods
@@ -43,7 +43,7 @@ func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConn
 // HarvesterGetPlotsResponse get_plots response format
 type HarvesterGetPlotsResponse struct {
 	Response
-	Plots                 mo.Option[[]types.PlotInfo] `json:"plots"`
+	Plots                 mo.Option[[]protocols.Plot] `json:"plots"`
 	FailedToOpenFilenames mo.Option[[]string]         `json:"failed_to_open_filenames"`
 	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
 }
