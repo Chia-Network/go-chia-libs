@@ -4,6 +4,21 @@ import (
 	"github.com/samber/mo"
 )
 
+// EventNewFarmingInfo is the event data for `new_farming_info` from the farmer
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/farmer/farmer_api.py#L535
+type EventNewFarmingInfo struct {
+	FarmingInfo struct {
+		ChallengeHash Bytes32   `json:"challenge_hash"`
+		SignagePoint  Bytes32   `json:"signage_point"`
+		PassedFilter  uint32    `json:"passed_filter"`
+		Proofs        uint32    `json:"proofs"`
+		TotalPlots    uint32    `json:"total_plots"`
+		Timestamp     Timestamp `json:"timestamp"`
+		NodeID        Bytes32   `json:"node_id"`
+		LookupTime    uint64    `json:"lookup_time"`
+	} `json:"farming_info"`
+}
+
 // EventFarmerSubmittedPartial is the event data for `submitted_partial` from the farmer
 // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/farmer/farmer_api.py#L270
 type EventFarmerSubmittedPartial struct {
