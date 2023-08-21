@@ -2,11 +2,25 @@ package types
 
 import (
 	"github.com/samber/mo"
+
+	"github.com/chia-network/go-chia-libs/pkg/tuple"
 )
 
-// EventNewFarmingInfo is the event data for `new_farming_info` from the farmer
+// FarmerMissingSignagePoints is the struct representation of the missing signage points tuple
+type FarmerMissingSignagePoints struct {
+	Timestamp Timestamp // uint64 in the Python Tuple
+	Count     uint32
+}
+
+// EventFarmerNewSignagePoint is the event data for `new_signage_point` in the farmer service
+type EventFarmerNewSignagePoint struct {
+	SPHash               Bytes32 `json:"sp_hash"`
+	MissingSignagePoints mo.Option[tuple.Tuple[FarmerMissingSignagePoints]]
+}
+
+// EventFarmerNewFarmingInfo is the event data for `new_farming_info` from the farmer
 // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/farmer/farmer_api.py#L535
-type EventNewFarmingInfo struct {
+type EventFarmerNewFarmingInfo struct {
 	FarmingInfo struct {
 		ChallengeHash Bytes32   `json:"challenge_hash"`
 		SignagePoint  Bytes32   `json:"signage_point"`
