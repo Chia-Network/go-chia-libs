@@ -12,6 +12,10 @@ type Bytes []byte
 
 // String Converts to hex string
 func (b Bytes) String() string {
+	if len(b) == 0 {
+		return ""
+	}
+
 	return fmt.Sprintf("0x%s", hex.EncodeToString(b))
 }
 
