@@ -129,6 +129,9 @@ func GetChiaRootPath() (string, error) {
 
 // GetFullPath returns the full path to a particular filename within CHIA_ROOT
 func (c *ChiaConfig) GetFullPath(filename string) string {
+	if filepath.IsAbs(filename) {
+		return filename
+	}
 	return filepath.Join(c.ChiaRoot, filename)
 }
 
