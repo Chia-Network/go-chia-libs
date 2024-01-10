@@ -119,6 +119,7 @@ type BlockEvent struct {
 	KSize                         uint8                         `json:"k_size"`
 	HeaderHash                    Bytes32                       `json:"header_hash"`
 	ForkHeight                    uint32                        `json:"fork_height"`
+	RolledBackRecords             uint64                        `json:"rolled_back_records"`
 	Height                        uint32                        `json:"height"`
 	ValidationTime                float64                       `json:"validation_time"`
 	PreValidationTime             float64                       `json:"pre_validation_time"`
