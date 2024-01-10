@@ -118,8 +118,8 @@ type BlockEvent struct {
 	TransactionBlock              bool                          `json:"transaction_block"`
 	KSize                         uint8                         `json:"k_size"`
 	HeaderHash                    Bytes32                       `json:"header_hash"`
-	ForkHeight                    uint32                        `json:"fork_height"`
-	RolledBackRecords             uint64                        `json:"rolled_back_records"`
+	ForkHeight                    mo.Option[uint32]             `json:"fork_height"`
+	RolledBackRecords             mo.Option[uint64]             `json:"rolled_back_records"`
 	Height                        uint32                        `json:"height"`
 	ValidationTime                float64                       `json:"validation_time"`
 	PreValidationTime             float64                       `json:"pre_validation_time"`
