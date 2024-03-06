@@ -40,6 +40,22 @@ func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnect
 	return c, resp, nil
 }
 
+// GetNetworkInfo wallet rpc -> get_network_info
+func (s *WalletService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_network_info", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetNetworkInfoResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetPublicKeysResponse response from get_public_keys
 type GetPublicKeysResponse struct {
 	Response
@@ -200,29 +216,6 @@ func (s *WalletService) GetHeightInfo() (*GetWalletHeightInfoResponse, *http.Res
 	}
 
 	r := &GetWalletHeightInfoResponse{}
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
-}
-
-// GetWalletNetworkInfoResponse response for get_height_info on wallet
-type GetWalletNetworkInfoResponse struct {
-	Response
-	NetworkName   mo.Option[string] `json:"network_name"`
-	NetworkPrefix mo.Option[string] `json:"network_prefix"`
-}
-
-// GetNetworkInfo wallet rpc -> get_network_info
-func (s *WalletService) GetNetworkInfo() (*GetWalletNetworkInfoResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_network_info", nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetWalletNetworkInfoResponse{}
 	resp, err := s.Do(request, r)
 	if err != nil {
 		return nil, resp, err

@@ -51,6 +51,23 @@ func (s *FullNodeService) GetConnections(opts *GetConnectionsOptions) (*GetConne
 	return c, resp, nil
 }
 
+// GetNetworkInfo gets the network name and prefix from the full node
+func (s *FullNodeService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_network_info", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetNetworkInfoResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetBlockchainStateResponse is the blockchain state RPC response
 type GetBlockchainStateResponse struct {
 	Response
@@ -233,33 +250,6 @@ func (s *FullNodeService) GetAdditionsAndRemovals(opts *GetAdditionsAndRemovalsO
 	}
 
 	r := &GetAdditionsAndRemovalsResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
-}
-
-// FullNodeGetNetworkInfoOptions options for get_network_info
-type FullNodeGetNetworkInfoOptions struct{}
-
-// FullNodeGetNetworkInfoResponse Response from get_network_info
-type FullNodeGetNetworkInfoResponse struct {
-	Response
-	NetworkName   string `json:"network_name"`
-	NetworkPrefix string `json:"network_prefix"`
-}
-
-// GetNetworkInfo gets the network name and prefix from the full node
-func (s *FullNodeService) GetNetworkInfo(opts *FullNodeGetNetworkInfoOptions) (*FullNodeGetNetworkInfoResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_network_info", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &FullNodeGetNetworkInfoResponse{}
 
 	resp, err := s.Do(request, r)
 	if err != nil {
