@@ -242,6 +242,33 @@ func (s *FullNodeService) GetAdditionsAndRemovals(opts *GetAdditionsAndRemovalsO
 	return r, resp, nil
 }
 
+// FullNodeGetNetworkInfoOptions options for get_network_info
+type FullNodeGetNetworkInfoOptions struct{}
+
+// FullNodeGetNetworkInfoResponse Response from get_network_info
+type FullNodeGetNetworkInfoResponse struct {
+	Response
+	NetworkName   string `json:"network_name"`
+	NetworkPrefix string `json:"network_prefix"`
+}
+
+// GetNetworkInfo gets the network name and prefix from the full node
+func (s *FullNodeService) GetNetworkInfo(opts *FullNodeGetNetworkInfoOptions) (*FullNodeGetNetworkInfoResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_network_info", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &FullNodeGetNetworkInfoResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetCoinRecordsByPuzzleHashOptions request options for /get_coin_records_by_puzzle_hash
 type GetCoinRecordsByPuzzleHashOptions struct {
 	PuzzleHash        types.Bytes32 `json:"puzzle_hash"`
