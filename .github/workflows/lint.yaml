@@ -16,6 +16,7 @@ jobs:
         run: |
           apt-get update && apt-get install -y unzip
           LATEST_CHIAVDF=$(curl -s https://latest.cmm.io/chiavdf)
+          echo "Latest chiavdf is: $LATEST_CHIAVDF"
           mkdir chiavdfc
           cd chiavdfc || exit 1
           wget https://github.com/Chia-Network/chiavdf/releases/download/$LATEST_CHIAVDF/chiavdfc-ubuntu-intel.zip
