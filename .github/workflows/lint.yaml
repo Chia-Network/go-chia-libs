@@ -12,5 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get latest chiavdf libs
+        run: |
+          apt-get update && apt-get install -y unzip
+          LATEST_CHIAVDF=$(curl -s https://latest.cmm.io/chiavdf)
+          echo "Latest chiavdf is: $LATEST_CHIAVDF"
+          mkdir chiavdfc
+          cd chiavdfc || exit 1
+          wget https://github.com/Chia-Network/chiavdf/releases/download/$LATEST_CHIAVDF/chiavdfc-ubuntu-intel.zip
+          unzip chiavdfc-ubuntu-intel.zip
+          echo "CGO_CFLAGS=-I${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel" >> "$GITHUB_ENV"
+
       - name: Test
         run: make test
