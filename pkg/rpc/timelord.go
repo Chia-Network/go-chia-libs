@@ -6,7 +6,7 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 )
 
-// TimelordService encapsulates crawler RPC methods
+// TimelordService encapsulates timelord RPC methods
 type TimelordService struct {
 	client *Client
 }
