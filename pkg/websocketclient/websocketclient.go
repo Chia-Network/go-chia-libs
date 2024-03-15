@@ -118,13 +118,15 @@ func (c *WebsocketClient) Do(req *rpcinterface.Request, v interface{}) (*http.Re
 	case rpcinterface.ServiceFullNode:
 		destination = "chia_full_node"
 	case rpcinterface.ServiceFarmer:
-		destination = "chia_farmer" // @TODO validate the correct string for this
+		destination = "chia_farmer"
 	case rpcinterface.ServiceHarvester:
-		destination = "chia_harvester" // @TODO validate the correct string for this
+		destination = "chia_harvester"
 	case rpcinterface.ServiceWallet:
 		destination = "chia_wallet"
 	case rpcinterface.ServiceCrawler:
 		destination = "chia_crawler"
+	case rpcinterface.ServiceTimelord:
+		destination = "chia_timelord"
 	default:
 		return nil, fmt.Errorf("unknown service")
 	}

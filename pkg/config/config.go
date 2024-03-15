@@ -20,6 +20,7 @@ type ChiaConfig struct {
 	Wallet          WalletConfig    `yaml:"wallet"`
 	Seeder          SeederConfig    `yaml:"seeder"`
 	DataLayer       DataLayerConfig `yaml:"data_layer"`
+	Timelord        TimelordConfig  `yaml:"timelord"`
 	SelectedNetwork string          `yaml:"selected_network"`
 }
 
@@ -63,6 +64,12 @@ type CrawlerConfig struct {
 
 // DataLayerConfig datalayer configuration section
 type DataLayerConfig struct {
+	PortConfig `yaml:",inline"`
+	SSL        SSLConfig `yaml:"ssl"`
+}
+
+// TimelordConfig timelord configuration section
+type TimelordConfig struct {
 	PortConfig `yaml:",inline"`
 	SSL        SSLConfig `yaml:"ssl"`
 }
