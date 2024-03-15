@@ -20,7 +20,7 @@ type ChiaConfig struct {
 	Wallet          WalletConfig    `yaml:"wallet"`
 	Seeder          SeederConfig    `yaml:"seeder"`
 	DataLayer       DataLayerConfig `yaml:"data_layer"`
-	Timelord        TimelordConfig  `yaml:timelord`
+	Timelord        TimelordConfig  `yaml:"timelord"`
 	SelectedNetwork string          `yaml:"selected_network"`
 }
 
