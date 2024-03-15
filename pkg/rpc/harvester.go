@@ -40,7 +40,7 @@ func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConn
 	return c, resp, nil
 }
 
-// GetNetworkInfo gets the network name and prefix from the full node
+// GetNetworkInfo gets the network name and prefix from the harvester
 func (s *HarvesterService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_network_info", opts)
 	if err != nil {
