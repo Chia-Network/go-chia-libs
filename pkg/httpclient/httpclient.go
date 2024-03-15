@@ -50,6 +50,10 @@ type HTTPClient struct {
 	datalayerPort    uint16
 	datalayerKeyPair *tls.Certificate
 	datalayerClient  *http.Client
+
+	timelordPort    uint16
+	timelordKeyPair *tls.Certificate
+	timelordClient  *http.Client
 }
 
 // NewHTTPClient returns a new HTTP client that satisfies the rpcinterface.Client interface
@@ -65,6 +69,7 @@ func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionF
 		walletPort:    cfg.Wallet.RPCPort,
 		crawlerPort:   cfg.Seeder.CrawlerConfig.RPCPort,
 		datalayerPort: cfg.DataLayer.RPCPort,
+		timelordPort:  cfg.Timelord.RPCPort,
 	}
 
 	// Sets the default host. Can be overridden by client options
@@ -239,6 +244,14 @@ func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceTy
 			}
 		}
 		keyPair = c.datalayerKeyPair
+	case rpcinterface.ServiceTimelord:
+		if c.timelordKeyPair == nil {
+			c.timelordKeyPair, err = c.config.Timelord.SSL.LoadPrivateKeyPair(c.config.ChiaRoot)
+			if err != nil {
+				return nil, err
+			}
+		}
+		keyPair = c.timelordKeyPair
 	default:
 		return nil, fmt.Errorf("unknown service")
 	}
@@ -281,6 +294,8 @@ func (c *HTTPClient) portForService(service rpcinterface.ServiceType) uint16 {
 		port = c.crawlerPort
 	case rpcinterface.ServiceDataLayer:
 		port = c.datalayerPort
+	case rpcinterface.ServiceTimelord:
+		port = c.timelordPort
 	}
 
 	return port
@@ -342,6 +357,14 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 			}
 		}
 		client = c.datalayerClient
+	case rpcinterface.ServiceTimelord:
+		if c.timelordClient == nil {
+			c.timelordClient, err = c.generateHTTPClientForService(rpcinterface.ServiceTimelord)
+			if err != nil {
+				return nil, err
+			}
+		}
+		client = c.timelordClient
 	}
 
 	if client == nil {
