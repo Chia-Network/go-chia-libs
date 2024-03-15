@@ -13,7 +13,7 @@ type TimelordService struct {
 
 // NewRequest returns a new request specific to the crawler service
 func (s *TimelordService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interface{}) (*rpcinterface.Request, error) {
-	return s.client.NewRequest(rpcinterface.ServiceCrawler, rpcEndpoint, opt)
+	return s.client.NewRequest(rpcinterface.ServiceTimelord, rpcEndpoint, opt)
 }
 
 // Do is just a shortcut to the client's Do method
