@@ -41,7 +41,7 @@ func (s *FarmerService) GetConnections(opts *GetConnectionsOptions) (*GetConnect
 	return c, resp, nil
 }
 
-// GetNetworkInfo gets the network name and prefix from the full node
+// GetNetworkInfo gets the network name and prefix from the farmer
 func (s *FarmerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_network_info", opts)
 	if err != nil {
