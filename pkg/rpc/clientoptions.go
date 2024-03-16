@@ -7,6 +7,7 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/httpclient"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+	"github.com/chia-network/go-chia-libs/pkg/websocketclient"
 )
 
 // WithAutoConfig automatically loads chia config from CHIA_ROOT
@@ -20,6 +21,13 @@ func WithAutoConfig() rpcinterface.ConfigOptionFunc {
 func WithManualConfig(cfg config.ChiaConfig) rpcinterface.ConfigOptionFunc {
 	return func() (*config.ChiaConfig, error) {
 		return &cfg, nil
+	}
+}
+
+// WithSyncWebsocket is a helper to making the client and calling SetSyncMode to set the client to sync mode by default
+func WithSyncWebsocket() rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		return c.SetSyncMode()
 	}
 }
 
@@ -46,11 +54,12 @@ func WithCache(validTime time.Duration) rpcinterface.ClientOptionFunc {
 // WithTimeout sets the timeout for the requests
 func WithTimeout(timeout time.Duration) rpcinterface.ClientOptionFunc {
 	return func(c rpcinterface.Client) error {
-		typed, ok := c.(*httpclient.HTTPClient)
-		if ok {
+		switch typed := c.(type) {
+		case *httpclient.HTTPClient:
+			typed.Timeout = timeout
+		case *websocketclient.WebsocketClient:
 			typed.Timeout = timeout
 		}
-
 		return nil
 	}
 }

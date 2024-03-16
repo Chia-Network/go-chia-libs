@@ -1,13 +1,13 @@
 package rpc
 
 import (
-	"log"
 	"net/http"
+
+	"github.com/google/uuid"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/httpclient"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
-	"github.com/chia-network/go-chia-libs/pkg/types"
 	"github.com/chia-network/go-chia-libs/pkg/websocketclient"
 )
 
@@ -25,8 +25,6 @@ type Client struct {
 	CrawlerService   *CrawlerService
 	DataLayerService *DataLayerService
 	TimelordService  *TimelordService
-
-	websocketHandlers []rpcinterface.WebsocketResponseHandler
 }
 
 // ConnectionMode specifies the method used to connect to the server (HTTP or Websocket)
@@ -103,16 +101,13 @@ func (c *Client) Subscribe(service string) error {
 // This is expected to NOT be used in conjunction with ListenSync
 // This will run in the background, and allow other things to happen in the foreground
 // while ListenSync will take over the foreground process
-func (c *Client) AddHandler(handler rpcinterface.WebsocketResponseHandler) error {
-	c.websocketHandlers = append(c.websocketHandlers, handler)
+func (c *Client) AddHandler(handler rpcinterface.WebsocketResponseHandler) (uuid.UUID, error) {
+	return c.activeClient.AddHandler(handler)
+}
 
-	go func() {
-		err := c.ListenSync(c.handlerProxy)
-		if err != nil {
-			log.Printf("Error calling ListenSync: %s\n", err.Error())
-		}
-	}()
-	return nil
+// RemoveHandler removes the handler from the list of active response handlers
+func (c *Client) RemoveHandler(handlerID uuid.UUID) {
+	c.activeClient.RemoveHandler(handlerID)
 }
 
 // AddDisconnectHandler the function to call when the client is disconnected
@@ -125,15 +120,18 @@ func (c *Client) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) 
 	c.activeClient.AddReconnectHandler(onReconnect)
 }
 
-// handlerProxy matches the websocketRespHandler signature to send requests back to any registered handlers
-// Here to support multiple handlers for a single event in the future
-func (c *Client) handlerProxy(resp *types.WebsocketResponse, err error) {
-	for _, handler := range c.websocketHandlers {
-		handler(resp, err)
-	}
+// SetSyncMode sets the client to wait for responses before returning
+// This is default (and only option) for HTTP client
+// Websocket client defaults to async mode
+func (c *Client) SetSyncMode() error {
+	return c.activeClient.SetSyncMode()
 }
 
-// ListenSync Listens for async responses over the connection in a synchronous fashion, blocking anything else
-func (c *Client) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
-	return c.activeClient.ListenSync(handler)
+// SetAsyncMode sets the client to async mode
+// This does not apply to the HTTP client
+// For the websocket client, this is the default mode and means that RPC function calls return immediate with empty
+// versions of the structs that would otherwise contain the response, and you should have an async handler defined
+// to receive the response
+func (c *Client) SetAsyncMode() error {
+	return c.activeClient.SetAsyncMode()
 }

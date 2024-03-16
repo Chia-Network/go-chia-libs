@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/go-querystring/query"
+	"github.com/google/uuid"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
@@ -388,14 +389,28 @@ func (c *HTTPClient) Subscribe(service string) error {
 	return nil
 }
 
-// ListenSync Listens for async responses over the connection in a synchronous fashion, blocking anything else
-// Not applicable on the HTTP connection
-func (c *HTTPClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
-	return nil
+// AddHandler does not apply to HTTP Client
+func (c *HTTPClient) AddHandler(handler rpcinterface.WebsocketResponseHandler) (uuid.UUID, error) {
+	return uuid.Nil, nil
 }
+
+// RemoveHandler does not apply to HTTP Client
+func (c *HTTPClient) RemoveHandler(handlerID uuid.UUID) {}
 
 // AddDisconnectHandler Not applicable to the HTTP client
 func (c *HTTPClient) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandler) {}
 
 // AddReconnectHandler Not applicable to the HTTP client
 func (c *HTTPClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {}
+
+// SetSyncMode enforces synchronous request/response behavior
+// This is the default and only mode for the HTTP client
+func (c *HTTPClient) SetSyncMode() error {
+	return fmt.Errorf("sync mode is the default for HTTP client and does not need to be specifically called")
+}
+
+// SetAsyncMode sets the client to async mode
+// This is not supported on the HTTP client
+func (c *HTTPClient) SetAsyncMode() error {
+	return fmt.Errorf("async mode is not supported on the HTTP client")
+}
