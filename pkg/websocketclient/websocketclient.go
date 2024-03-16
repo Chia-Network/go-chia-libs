@@ -373,12 +373,7 @@ func (c *WebsocketClient) ensureConnection() error {
 		}
 	}
 
-	go func() {
-		err := c.listen()
-		if err != nil {
-			log.Printf("Error calling listen: %s\n", err.Error())
-		}
-	}()
+	go c.listen()
 
 	return nil
 }
@@ -387,7 +382,7 @@ func (c *WebsocketClient) ensureConnection() error {
 // The error returned from this function would only correspond to an error setting up the listener
 // Errors returned by ReadMessage, or some other part of the websocket request/response will be
 // passed to the handler to deal with
-func (c *WebsocketClient) listen() error {
+func (c *WebsocketClient) listen() {
 	if !c.listenSyncActive {
 		c.listenSyncActive = true
 		defer func() {
@@ -426,6 +421,4 @@ func (c *WebsocketClient) listen() error {
 			go c.handlerProxy(resp, err)
 		}
 	}
-
-	return nil
 }
