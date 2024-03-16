@@ -379,13 +379,12 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 
 // The following are here to satisfy the interface, but are not used by the HTTP client
 
-// SubscribeSelf subscribes to events in response to requests from this service
-// Not applicable on the HTTP connection
+// SubscribeSelf does not apply to the HTTP Client
 func (c *HTTPClient) SubscribeSelf() error {
 	return nil
 }
 
-// Subscribe adds a subscription to events from a particular service
+// Subscribe does not apply to the HTTP Client
 // Not applicable on the HTTP connection
 func (c *HTTPClient) Subscribe(service string) error {
 	return nil
@@ -399,20 +398,18 @@ func (c *HTTPClient) AddHandler(handler rpcinterface.WebsocketResponseHandler) (
 // RemoveHandler does not apply to HTTP Client
 func (c *HTTPClient) RemoveHandler(handlerID uuid.UUID) {}
 
-// AddDisconnectHandler Not applicable to the HTTP client
+// AddDisconnectHandler does not apply to the HTTP Client
 func (c *HTTPClient) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandler) {}
 
-// AddReconnectHandler Not applicable to the HTTP client
+// AddReconnectHandler does not apply to the HTTP Client
 func (c *HTTPClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {}
 
-// SetSyncMode enforces synchronous request/response behavior
-// This is the default and only mode for the HTTP client
+// SetSyncMode does not apply to the HTTP Client
 func (c *HTTPClient) SetSyncMode() error {
-	return fmt.Errorf("sync mode is the default for HTTP client and does not need to be specifically called")
+	return nil
 }
 
-// SetAsyncMode sets the client to async mode
-// This is not supported on the HTTP client
+// SetAsyncMode does not apply to the HTTP Client
 func (c *HTTPClient) SetAsyncMode() error {
-	return fmt.Errorf("async mode is not supported on the HTTP client")
+	return nil
 }
