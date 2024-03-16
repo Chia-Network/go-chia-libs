@@ -310,6 +310,8 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 	)
 
 	switch service {
+	case rpcinterface.ServiceDaemon:
+		return nil, fmt.Errorf("daemon RPC calls must be made with the websocket client")
 	case rpcinterface.ServiceFullNode:
 		if c.nodeClient == nil {
 			c.nodeClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFullNode)
