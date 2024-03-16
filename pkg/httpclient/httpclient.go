@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/go-querystring/query"
+	"github.com/google/uuid"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
@@ -309,6 +310,8 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 	)
 
 	switch service {
+	case rpcinterface.ServiceDaemon:
+		return nil, fmt.Errorf("daemon RPC calls must be made with the websocket client")
 	case rpcinterface.ServiceFullNode:
 		if c.nodeClient == nil {
 			c.nodeClient, err = c.generateHTTPClientForService(rpcinterface.ServiceFullNode)
@@ -376,26 +379,37 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 
 // The following are here to satisfy the interface, but are not used by the HTTP client
 
-// SubscribeSelf subscribes to events in response to requests from this service
-// Not applicable on the HTTP connection
+// SubscribeSelf does not apply to the HTTP Client
 func (c *HTTPClient) SubscribeSelf() error {
-	return nil
+	return fmt.Errorf("subscriptions are not supported on the HTTP client - websockets are required for subscriptions")
 }
 
-// Subscribe adds a subscription to events from a particular service
+// Subscribe does not apply to the HTTP Client
 // Not applicable on the HTTP connection
 func (c *HTTPClient) Subscribe(service string) error {
-	return nil
+	return fmt.Errorf("subscriptions are not supported on the HTTP client - websockets are required for subscriptions")
 }
 
-// ListenSync Listens for async responses over the connection in a synchronous fashion, blocking anything else
-// Not applicable on the HTTP connection
-func (c *HTTPClient) ListenSync(handler rpcinterface.WebsocketResponseHandler) error {
-	return nil
+// AddHandler does not apply to HTTP Client
+func (c *HTTPClient) AddHandler(handler rpcinterface.WebsocketResponseHandler) (uuid.UUID, error) {
+	return uuid.Nil, fmt.Errorf("handlers are not supported on the HTTP client - reponses are returned directly from the calling functions")
 }
 
-// AddDisconnectHandler Not applicable to the HTTP client
+// RemoveHandler does not apply to HTTP Client
+func (c *HTTPClient) RemoveHandler(handlerID uuid.UUID) {}
+
+// AddDisconnectHandler does not apply to the HTTP Client
 func (c *HTTPClient) AddDisconnectHandler(onDisconnect rpcinterface.DisconnectHandler) {}
 
-// AddReconnectHandler Not applicable to the HTTP client
+// AddReconnectHandler does not apply to the HTTP Client
 func (c *HTTPClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) {}
+
+// SetSyncMode does not apply to the HTTP Client
+func (c *HTTPClient) SetSyncMode() error {
+	return nil
+}
+
+// SetAsyncMode does not apply to the HTTP Client
+func (c *HTTPClient) SetAsyncMode() error {
+	return fmt.Errorf("async mode is not supported on the HTTP client")
+}
