@@ -381,18 +381,18 @@ func (c *HTTPClient) httpClientForService(service rpcinterface.ServiceType) (*ht
 
 // SubscribeSelf does not apply to the HTTP Client
 func (c *HTTPClient) SubscribeSelf() error {
-	return nil
+	return fmt.Errorf("subscriptions are not supported on the HTTP client - websockets are required for subscriptions")
 }
 
 // Subscribe does not apply to the HTTP Client
 // Not applicable on the HTTP connection
 func (c *HTTPClient) Subscribe(service string) error {
-	return nil
+	return fmt.Errorf("subscriptions are not supported on the HTTP client - websockets are required for subscriptions")
 }
 
 // AddHandler does not apply to HTTP Client
 func (c *HTTPClient) AddHandler(handler rpcinterface.WebsocketResponseHandler) (uuid.UUID, error) {
-	return uuid.Nil, nil
+	return uuid.Nil, fmt.Errorf("handlers are not supported on the HTTP client - reponses are returned directly from the calling functions")
 }
 
 // RemoveHandler does not apply to HTTP Client
@@ -411,5 +411,5 @@ func (c *HTTPClient) SetSyncMode() error {
 
 // SetAsyncMode does not apply to the HTTP Client
 func (c *HTTPClient) SetAsyncMode() error {
-	return nil
+	return fmt.Errorf("async mode is not supported on the HTTP client")
 }
