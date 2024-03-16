@@ -397,11 +397,12 @@ func (c *WebsocketClient) listen() {
 			for {
 				_, message, err := c.conn.ReadMessage()
 				if err != nil {
-					log.Println(err.Error())
+					log.Printf("Error reading message on chia websocket: %s\n", err.Error())
 					if _, isCloseErr := err.(*websocket.CloseError); !isCloseErr {
+						log.Println("Chia websocket sent close message, attempting to close connection...")
 						closeConnErr := c.conn.Close()
 						if closeConnErr != nil {
-							log.Printf("Error closing connection after error: %s\n", closeConnErr.Error())
+							log.Printf("Error closing chia websocket connection: %s\n", closeConnErr.Error())
 						}
 					}
 					c.conn = nil
