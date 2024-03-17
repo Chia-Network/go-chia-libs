@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"log/slog"
 	"net/url"
 	"time"
 
@@ -60,6 +61,14 @@ func WithTimeout(timeout time.Duration) rpcinterface.ClientOptionFunc {
 		case *websocketclient.WebsocketClient:
 			typed.Timeout = timeout
 		}
+		return nil
+	}
+}
+
+// WithLogHandler sets a slog compatible log handler to be used for logging
+func WithLogHandler(handler slog.Handler) rpcinterface.ClientOptionFunc {
+	return func(c rpcinterface.Client) error {
+		c.SetLogHandler(handler)
 		return nil
 	}
 }
