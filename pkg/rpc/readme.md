@@ -189,6 +189,54 @@ There are two helper functions to subscribe to events that come over the websock
 
 `client.Subscribe(service)` - Calling this method, with an appropriate service, subscribes to any events that chia may generate that are not necessarily in responses to requests made from this client (for instance, `metrics` events fire when relevant updates are available that may impact metrics services)
 
+## Logging
+
+By default, a slog compatible text logger set to INFO level will be used to log any information from the RPC clients.
+
+### Change Log Level
+
+To change the log level of the default logger, you can use a client option like the following example:
+
+```go
+package main
+
+import (
+	"github.com/chia-network/go-chia-libs/pkg/rpc"
+	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+)
+
+func main() {
+	client, err := rpc.NewClient(
+		rpc.ConnectionModeWebsocket,
+		rpc.WithAutoConfig(),
+		rpc.WithLogHandler(rpcinterface.SlogDebug()),
+	)
+	if err != nil {
+		// an error occurred
+	}
+}
+```
+
+### Custom Log Handler
+
+The `rpc.WithLogHandler()` method accepts a `slog.Handler` interface. Any logger can be provided as long as it conforms
+to the interface.
+
+## Request Cache
+
+When using HTTP mode, there is an optional request cache that can be enabled with a configurable cache duration. To use the cache, initialize the client with the `rpc.WithCache()` option like the following example:
+
+```go
+client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithAutoConfig(), rpc.WithCache(60 * time.Second))
+if err != nil {
+	// error happened
+}
+```
+
+This example sets the cache time to 60 seconds. Any identical requests within the 60 seconds will be served from the local cache rather than making another RPC call.
+
+## Example RPC Calls
+
 ### Get Transactions
 
 #### HTTP Mode
@@ -287,16 +335,3 @@ if state.BlockchainState.IsPresent() {
     log.Println(state.BlockchainState.MustGet().Space)
 }
 ```
-
-### Request Cache
-
-When using HTTP mode, there is an optional request cache that can be enabled with a configurable cache duration. To use the cache, initialize the client with the `rpc.WithCache()` option like the following example:
-
-```go
-client, err := rpc.NewClient(rpc.ConnectionModeHTTP, rpc.WithAutoConfig(), rpc.WithCache(60 * time.Second))
-if err != nil {
-	// error happened
-}
-```
-
-This example sets the cache time to 60 seconds. Any identical requests within the 60 seconds will be served from the local cache rather than making another RPC call.
