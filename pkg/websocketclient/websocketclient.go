@@ -330,7 +330,9 @@ func (c *WebsocketClient) reconnectLoop() {
 				}
 			}
 			for _, handler := range c.reconnectHandlers {
-				handler()
+				// This must be a goroutine in case the handler relies on a blocking request over the websocket
+				// Without, this blocks the listener from receiving the message and passing it back
+				go handler()
 			}
 			return
 		}
