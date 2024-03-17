@@ -219,8 +219,7 @@ func main() {
 
 ### Custom Log Handler
 
-The `rpc.WithLogHandler()` method accepts a `slog.Handler` interface. Any logger can be provided as long as it conforms
-to the interface.
+The `rpc.WithLogHandler()` method accepts a `slog.Handler` interface. Any logger can be provided as long as it conforms to the interface.
 
 ## Request Cache
 
