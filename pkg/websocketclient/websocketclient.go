@@ -303,17 +303,15 @@ func (c *WebsocketClient) AddReconnectHandler(onReconnect rpcinterface.Reconnect
 
 // SetSyncMode enforces synchronous request/response behavior
 // RPC method calls return the actual expected RPC response when this mode is enabled
-func (c *WebsocketClient) SetSyncMode() error {
+func (c *WebsocketClient) SetSyncMode() {
 	c.syncMode = true
-	return nil
 }
 
 // SetAsyncMode sets the client to async mode (default)
 // RPC method calls return empty versions of the response objects, and you must have your own
 // listeners to get the responses and handle them
-func (c *WebsocketClient) SetAsyncMode() error {
+func (c *WebsocketClient) SetAsyncMode() {
 	c.syncMode = false
-	return nil
 }
 
 func (c *WebsocketClient) reconnectLoop() {

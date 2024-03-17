@@ -28,7 +28,8 @@ func WithManualConfig(cfg config.ChiaConfig) rpcinterface.ConfigOptionFunc {
 // WithSyncWebsocket is a helper to making the client and calling SetSyncMode to set the client to sync mode by default
 func WithSyncWebsocket() rpcinterface.ClientOptionFunc {
 	return func(c rpcinterface.Client) error {
-		return c.SetSyncMode()
+		c.SetSyncMode()
+		return nil
 	}
 }
 

@@ -125,8 +125,8 @@ func (c *Client) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandler) 
 // SetSyncMode sets the client to wait for responses before returning
 // This is default (and only option) for HTTP client
 // Websocket client defaults to async mode
-func (c *Client) SetSyncMode() error {
-	return c.activeClient.SetSyncMode()
+func (c *Client) SetSyncMode() {
+	c.activeClient.SetSyncMode()
 }
 
 // SetAsyncMode sets the client to async mode
@@ -134,6 +134,6 @@ func (c *Client) SetSyncMode() error {
 // For the websocket client, this is the default mode and means that RPC function calls return immediate with empty
 // versions of the structs that would otherwise contain the response, and you should have an async handler defined
 // to receive the response
-func (c *Client) SetAsyncMode() error {
-	return c.activeClient.SetAsyncMode()
+func (c *Client) SetAsyncMode() {
+	c.activeClient.SetAsyncMode()
 }

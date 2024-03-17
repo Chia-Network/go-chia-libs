@@ -45,10 +45,10 @@ type Client interface {
 	// This is default for HTTP client, but websocket default is async, so this forces a different mode
 	// Note that anything received by the websocket in sync mode that is not the current expected response
 	// will be ignored
-	SetSyncMode() error
+	SetSyncMode()
 
 	// SetAsyncMode sets the client to async mode
 	// This is not supported for the HTTP client, but will set the websocket client back to async mode
 	// if it was set to sync mode temporarily
-	SetAsyncMode() error
+	SetAsyncMode()
 }
