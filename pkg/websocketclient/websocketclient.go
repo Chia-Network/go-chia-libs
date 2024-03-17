@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"sync"
@@ -28,6 +29,7 @@ const origin string = "go-chia-rpc"
 type WebsocketClient struct {
 	config  *config.ChiaConfig
 	baseURL *url.URL
+	logger  *slog.Logger
 
 	// Request timeout
 	Timeout time.Duration
@@ -62,6 +64,7 @@ type WebsocketClient struct {
 func NewWebsocketClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionFunc) (*WebsocketClient, error) {
 	c := &WebsocketClient{
 		config: cfg,
+		logger: slog.New(rpcinterface.SlogInfo()),
 
 		Timeout: 10 * time.Second, // Default, overridable with client option
 
@@ -109,6 +112,11 @@ func (c *WebsocketClient) SetBaseURL(url *url.URL) error {
 	c.baseURL = url
 
 	return nil
+}
+
+// SetLogHandler sets a slog compatible log handler
+func (c *WebsocketClient) SetLogHandler(handler slog.Handler) {
+	c.logger = slog.New(handler)
 }
 
 // NewRequest creates an RPC request for the specified service

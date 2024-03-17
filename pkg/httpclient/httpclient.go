@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"time"
@@ -21,6 +22,7 @@ import (
 type HTTPClient struct {
 	config  *config.ChiaConfig
 	baseURL *url.URL
+	logger  *slog.Logger
 
 	// If set > 0, will configure http requests with a cache
 	cacheValidTime time.Duration
@@ -61,6 +63,7 @@ type HTTPClient struct {
 func NewHTTPClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOptionFunc) (*HTTPClient, error) {
 	c := &HTTPClient{
 		config: cfg,
+		logger: slog.New(rpcinterface.SlogInfo()),
 
 		Timeout: 10 * time.Second, // Default, overridable with client option
 
@@ -99,6 +102,11 @@ func (c *HTTPClient) SetBaseURL(url *url.URL) error {
 	c.baseURL = url
 
 	return nil
+}
+
+// SetLogHandler sets a slog compatible log handler
+func (c *HTTPClient) SetLogHandler(handler slog.Handler) {
+	c.logger = slog.New(handler)
 }
 
 // SetCacheValidTime sets how long cache should be valid for
