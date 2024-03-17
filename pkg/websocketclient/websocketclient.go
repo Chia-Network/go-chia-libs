@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -322,14 +321,14 @@ func (c *WebsocketClient) reconnectLoop() {
 		handler()
 	}
 	for {
-		log.Println("Trying to reconnect...")
+		c.logger.Info("Trying to reconnect...")
 		err := c.ensureConnection()
 		if err == nil {
-			log.Println("Reconnected!")
+			c.logger.Info("Reconnected!")
 			for topic := range c.subscriptions {
 				err = c.doSubscribe(topic)
 				if err != nil {
-					log.Printf("Error subscribing to topic %s: %s\n", topic, err.Error())
+					c.logger.Error("Error subscribing to topic", "topic", topic, "error", err.Error())
 				}
 			}
 			for _, handler := range c.reconnectHandlers {
@@ -338,7 +337,7 @@ func (c *WebsocketClient) reconnectLoop() {
 			return
 		}
 
-		log.Printf("Unable to reconnect: %s\n", err.Error())
+		c.logger.Error("Unable to reconnect", "error", err.Error())
 		time.Sleep(5 * time.Second)
 	}
 }
@@ -405,12 +404,12 @@ func (c *WebsocketClient) listen() {
 			for {
 				_, message, err := c.conn.ReadMessage()
 				if err != nil {
-					log.Printf("Error reading message on chia websocket: %s\n", err.Error())
+					c.logger.Error("Error reading message on chia websocket", "error", err.Error())
 					if _, isCloseErr := err.(*websocket.CloseError); !isCloseErr {
-						log.Println("Chia websocket sent close message, attempting to close connection...")
+						c.logger.Debug("Chia websocket sent close message, attempting to close connection...")
 						closeConnErr := c.conn.Close()
 						if closeConnErr != nil {
-							log.Printf("Error closing chia websocket connection: %s\n", closeConnErr.Error())
+							c.logger.Error("Error closing chia websocket connection", "error", closeConnErr.Error())
 						}
 					}
 					c.conn = nil

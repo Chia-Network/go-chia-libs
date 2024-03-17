@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
@@ -13,7 +12,6 @@ func FormatBytes(bytes types.Uint128) string {
 	base := uint64(1024)
 
 	value := bytes.Div64(base)
-	log.Printf("%s %s\n", value.String(), "KiB")
 	for _, label := range labels {
 		if value.FitsInUint64() {
 			valueUint64 := float64(value.Uint64()) / float64(base)
