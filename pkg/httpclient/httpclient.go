@@ -414,7 +414,7 @@ func (c *HTTPClient) AddReconnectHandler(onReconnect rpcinterface.ReconnectHandl
 
 // SetSyncMode does not apply to the HTTP Client
 func (c *HTTPClient) SetSyncMode() {
-	c.logger.Debug("Sync mode is default for HTTP client")
+	c.logger.Debug("Sync mode is default for HTTP client. SetSyncMode call is ignored")
 }
 
 // SetAsyncMode does not apply to the HTTP Client
