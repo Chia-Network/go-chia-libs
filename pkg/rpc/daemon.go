@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 // DaemonService encapsulates direct daemon RPC methods
@@ -29,6 +30,34 @@ func (s *DaemonService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 	}
 
 	r := &GetNetworkInfoResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// GetKeysOptions configures how keys are returned in get_keys
+type GetKeysOptions struct {
+	IncludeSecrets bool `json:"include_secrets"`
+}
+
+// GetKeysResponse response from get_keys RPC call
+type GetKeysResponse struct {
+	Response
+	Keys []types.KeyData `json:"keys"`
+}
+
+// GetKeys returns key information
+func (s *DaemonService) GetKeys(opts *GetKeysOptions) (*GetKeysResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_keys", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetKeysResponse{}
 
 	resp, err := s.Do(request, r)
 	if err != nil {
