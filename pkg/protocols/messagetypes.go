@@ -9,6 +9,15 @@ const (
 
 	// there are many more of these in Chia - only listing the ones current is use for now
 
+	// ProtocolMessageTypeNewPeak new_peak
+	ProtocolMessageTypeNewPeak ProtocolMessageType = 20
+
+	// ProtocolMessageTypeRequestBlock request_block
+	ProtocolMessageTypeRequestBlock ProtocolMessageType = 26
+
+	// ProtocolMessageTypeRespondBlock respond_block
+	ProtocolMessageTypeRespondBlock ProtocolMessageType = 27
+
 	// ProtocolMessageTypeRequestPeers request_peers
 	ProtocolMessageTypeRequestPeers ProtocolMessageType = 43
 

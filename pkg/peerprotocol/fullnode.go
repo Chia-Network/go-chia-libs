@@ -20,3 +20,9 @@ func NewFullNodeProtocol(connection *Connection) (*FullNodeProtocol, error) {
 func (c *FullNodeProtocol) RequestPeers() error {
 	return c.connection.Do(protocols.ProtocolMessageTypeRequestPeers, &protocols.RequestPeers{})
 }
+
+// RequestBlock asks the current peer to respond with a block
+func (c *FullNodeProtocol) RequestBlock(heigth uint32, includeTransactionBlock bool) error {
+	return c.connection.Do(protocols.ProtocolMessageTypeRequestBlock, &protocols.RequestBlock{Height: heigth, IncludeTransactionBlock: includeTransactionBlock})
+}
+
