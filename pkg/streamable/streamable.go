@@ -3,6 +3,7 @@ package streamable
 import (
 	"encoding/binary"
 	"fmt"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 	"reflect"
 	"strings"
 	"unsafe"
@@ -64,7 +65,9 @@ func unmarshalStruct(bytes []byte, t reflect.Type, tv reflect.Value) ([]byte, er
 // Not needed for anything else
 // When recursively calling this on a wrapper type like mo.Option, pass the parent/wrapping StructField
 func unmarshalField(bytes []byte, fieldType reflect.Type, fieldValue reflect.Value, structField reflect.StructField) ([]byte, error) {
-	if _, tagPresent := structField.Tag.Lookup(tagName); !tagPresent {
+	var tagValue string
+	var tagPresent bool
+	if tagValue, tagPresent = structField.Tag.Lookup(tagName); !tagPresent {
 		// Continuing because the tag isn't present
 		return bytes, nil
 	}
@@ -110,6 +113,16 @@ func unmarshalField(bytes []byte, fieldType reflect.Type, fieldValue reflect.Val
 		// Need to init the field to something non-nil before using it
 		fieldValue.Set(reflect.New(fieldValue.Type().Elem()))
 		fieldValue = fieldValue.Elem()
+	}
+
+	if tagValue == "SerializedProgram" {
+		length, err := types.SerializedLengthFromBytesTrusted(bytes)
+		if err != nil {
+			return bytes, err
+		}
+		newVal, bytes = bytes[:length], bytes[length:]
+		fieldValue.SetBytes(newVal)
+		return bytes, nil
 	}
 
 	switch kind := fieldType.Kind(); kind {

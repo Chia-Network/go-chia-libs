@@ -54,7 +54,7 @@ type FullBlock struct {
 	Foliage                      Foliage                            `json:"foliage" streamable:""`
 	FoliageTransactionBlock      mo.Option[FoliageTransactionBlock] `json:"foliage_transaction_block" streamable:""`
 	TransactionsInfo             mo.Option[TransactionsInfo]        `json:"transactions_info" streamable:""`
-	TransactionsGenerator        mo.Option[SerializedProgram]       `json:"transactions_generator" streamable:""`
+	TransactionsGenerator        mo.Option[SerializedProgram]       `json:"transactions_generator" streamable:"SerializedProgram"`
 	TransactionsGeneratorRefList []uint32                           `json:"transactions_generator_ref_list" streamable:""`
 }
 
