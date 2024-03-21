@@ -22,7 +22,6 @@ func (c *FullNodeProtocol) RequestPeers() error {
 }
 
 // RequestBlock asks the current peer to respond with a block
-func (c *FullNodeProtocol) RequestBlock(heigth uint32, includeTransactionBlock bool) error {
-	return c.connection.Do(protocols.ProtocolMessageTypeRequestBlock, &protocols.RequestBlock{Height: heigth, IncludeTransactionBlock: includeTransactionBlock})
+func (c *FullNodeProtocol) RequestBlock(data *protocols.RequestBlock) error {
+	return c.connection.Do(protocols.ProtocolMessageTypeRequestBlock, data)
 }
-
