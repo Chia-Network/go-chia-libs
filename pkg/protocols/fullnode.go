@@ -12,8 +12,8 @@ type RespondPeers struct {
 	PeerList []types.TimestampedPeerInfo `streamable:""`
 }
 
-// NewPeek is the format for the new_peak response
-type NewPeek struct {
+// NewPeak is the format for the new_peak response
+type NewPeak struct {
 	HeaderHash                types.Bytes32 `streamable:""`
 	Height                    uint32        `streamable:""`
 	Weight                    types.Uint128 `streamable:""`
