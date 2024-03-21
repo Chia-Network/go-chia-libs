@@ -42,7 +42,7 @@ type BlockRecord struct {
 }
 
 // FullBlock a full block
-// https://github.com/Chia-Network/chia-blockchain/blob/0befdec071f49708e26c7638656874492c52600a/chia/types/full_block.py#L16
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/fullblock.rs#L13
 type FullBlock struct {
 	FinishedSubSlots             []EndOfSubSlotBundle               `json:"finished_sub_slots" streamable:""`
 	RewardChainBlock             RewardChainBlock                   `json:"reward_chain_block" streamable:""`
@@ -59,7 +59,7 @@ type FullBlock struct {
 }
 
 // RewardChainBlock Reward Chain Block
-// https://github.com/Chia-Network/chia-blockchain/blob/0befdec071f49708e26c7638656874492c52600a/chia/types/blockchain_format/reward_chain_block.py#L30
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/reward_chain_block.rs#L24
 type RewardChainBlock struct {
 	Weight                     Uint128            `json:"weight" streamable:""`
 	Height                     uint32             `json:"height" streamable:""`

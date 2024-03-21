@@ -5,7 +5,7 @@ import (
 )
 
 // ProofOfSpace Proof of Space
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/proof_of_space.py#L20
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/proof_of_space.rs#L6
 type ProofOfSpace struct {
 	Challenge              Bytes32              `json:"challenge" streamable:""`
 	PoolPublicKey          mo.Option[G1Element] `json:"pool_public_key" streamable:""` // Only one of these two should be present

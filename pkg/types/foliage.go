@@ -5,7 +5,7 @@ import (
 )
 
 // FoliageBlockData FoliageBlockData
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/foliage.py#L41
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L31
 type FoliageBlockData struct {
 	UnfinishedRewardBlockHash Bytes32              `json:"unfinished_reward_block_hash" streamable:""`
 	PoolTarget                PoolTarget           `json:"pool_target" streamable:""`
@@ -15,7 +15,7 @@ type FoliageBlockData struct {
 }
 
 // Foliage Foliage
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/foliage.py#L52
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L41
 type Foliage struct {
 	PrevBlockHash                    Bytes32              `json:"prev_block_hash" streamable:""`
 	RewardBlockHash                  Bytes32              `json:"reward_block_hash" streamable:""`
@@ -26,7 +26,7 @@ type Foliage struct {
 }
 
 // FoliageTransactionBlock foliage transaction block
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/foliage.py#L29
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L20
 type FoliageTransactionBlock struct {
 	PrevTransactionBlockHash Bytes32 `json:"prev_transaction_block_hash" streamable:""`
 	Timestamp                uint64  `json:"timestamp" streamable:""`
@@ -37,7 +37,7 @@ type FoliageTransactionBlock struct {
 }
 
 // TransactionsInfo transactions info
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/foliage.py#L17
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L9
 // @TODO Streamable
 type TransactionsInfo struct {
 	GeneratorRoot            Bytes32   `json:"generator_root" streamable:""`

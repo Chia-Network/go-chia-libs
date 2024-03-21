@@ -2,7 +2,7 @@ package types
 
 import "github.com/samber/mo"
 
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/slots.py
+// hhttps://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/slots.rs
 
 // ChallengeBlockInfo is a type of challenge_block_info
 type ChallengeBlockInfo struct {
