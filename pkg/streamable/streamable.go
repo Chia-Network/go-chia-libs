@@ -163,6 +163,8 @@ func unmarshalField(bytes []byte, fieldType reflect.Type, fieldValue reflect.Val
 					return bytes, err
 				}
 			}
+		default:
+			return bytes, fmt.Errorf("unimplemented array type %s", fieldType.Elem().Kind())
 		}
 	case reflect.Slice:
 		var length []byte
@@ -311,7 +313,7 @@ func marshalField(finalBytes []byte, fieldType reflect.Type, fieldValue reflect.
 				}
 			}
 		default:
-			return finalBytes, fmt.Errorf("unimplemented type %s", fieldType.Elem().Kind())
+			return finalBytes, fmt.Errorf("unimplemented array type %s", fieldType.Elem().Kind())
 		}
 	case reflect.Struct:
 		finalBytes, err = marshalStruct(finalBytes, fieldType, fieldValue)
