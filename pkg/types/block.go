@@ -42,41 +42,39 @@ type BlockRecord struct {
 }
 
 // FullBlock a full block
-// https://github.com/Chia-Network/chia-blockchain/blob/0befdec071f49708e26c7638656874492c52600a/chia/types/full_block.py#L16
-// @TODO Streamable
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/fullblock.rs#L13
 type FullBlock struct {
-	FinishedSubSlots             []EndOfSubSlotBundle               `json:"finished_sub_slots"`
-	RewardChainBlock             RewardChainBlock                   `json:"reward_chain_block"`
-	ChallengeChainSPProof        mo.Option[VDFProof]                `json:"challenge_chain_sp_proof"`
-	ChallengeChainIPProof        VDFProof                           `json:"challenge_chain_ip_proof"`
-	RewardChainSPProof           mo.Option[VDFProof]                `json:"reward_chain_sp_proof"`
-	RewardChainIPProof           VDFProof                           `json:"reward_chain_ip_proof"`
-	InfusedChallengeChainIPProof mo.Option[VDFProof]                `json:"infused_challenge_chain_ip_proof"`
-	Foliage                      Foliage                            `json:"foliage"`
-	FoliageTransactionBlock      mo.Option[FoliageTransactionBlock] `json:"foliage_transaction_block"`
-	TransactionsInfo             mo.Option[TransactionsInfo]        `json:"transactions_info"`
-	TransactionsGenerator        mo.Option[SerializedProgram]       `json:"transactions_generator"`
-	TransactionsGeneratorRefList []uint32                           `json:"transactions_generator_ref_list"`
+	FinishedSubSlots             []EndOfSubSlotBundle               `json:"finished_sub_slots" streamable:""`
+	RewardChainBlock             RewardChainBlock                   `json:"reward_chain_block" streamable:""`
+	ChallengeChainSPProof        mo.Option[VDFProof]                `json:"challenge_chain_sp_proof" streamable:""`
+	ChallengeChainIPProof        VDFProof                           `json:"challenge_chain_ip_proof" streamable:""`
+	RewardChainSPProof           mo.Option[VDFProof]                `json:"reward_chain_sp_proof" streamable:""`
+	RewardChainIPProof           VDFProof                           `json:"reward_chain_ip_proof" streamable:""`
+	InfusedChallengeChainIPProof mo.Option[VDFProof]                `json:"infused_challenge_chain_ip_proof" streamable:""`
+	Foliage                      Foliage                            `json:"foliage" streamable:""`
+	FoliageTransactionBlock      mo.Option[FoliageTransactionBlock] `json:"foliage_transaction_block" streamable:""`
+	TransactionsInfo             mo.Option[TransactionsInfo]        `json:"transactions_info" streamable:""`
+	TransactionsGenerator        mo.Option[SerializedProgram]       `json:"transactions_generator" streamable:"SerializedProgram"`
+	TransactionsGeneratorRefList []uint32                           `json:"transactions_generator_ref_list" streamable:""`
 }
 
 // RewardChainBlock Reward Chain Block
-// https://github.com/Chia-Network/chia-blockchain/blob/0befdec071f49708e26c7638656874492c52600a/chia/types/blockchain_format/reward_chain_block.py#L30
-// @TODO Streamable
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/reward_chain_block.rs#L24
 type RewardChainBlock struct {
-	Weight                     Uint128            `json:"weight"`
-	Height                     uint32             `json:"height"`
-	TotalIters                 Uint128            `json:"total_iters"`
-	SignagePointIndex          uint8              `json:"signage_point_index"`
-	POSSSCCChallengeHash       Bytes32            `json:"pos_ss_cc_challenge_hash"`
-	ProofOfSpace               ProofOfSpace       `json:"proof_of_space"`
-	ChallengeChainSPVDF        mo.Option[VDFInfo] `json:"challenge_chain_sp_vdf"`
-	ChallengeChainSPSignature  G2Element          `json:"challenge_chain_sp_signature"`
-	ChallengeChainIPVDF        VDFInfo            `json:"challenge_chain_ip_vdf"`
-	RewardChainSPVDF           mo.Option[VDFInfo] `json:"reward_chain_sp_vdf"` // Not present for first sp in slot
-	RewardChainSPSignature     G2Element          `json:"reward_chain_sp_signature"`
-	RewardChainIPVDF           VDFInfo            `json:"reward_chain_ip_vdf"`
-	InfusedChallengeChainIPVDF mo.Option[VDFInfo] `json:"infused_challenge_chain_ip_vdf"` // Iff deficit < 16
-	IsTransactionBlock         bool               `json:"is_transaction_block"`
+	Weight                     Uint128            `json:"weight" streamable:""`
+	Height                     uint32             `json:"height" streamable:""`
+	TotalIters                 Uint128            `json:"total_iters" streamable:""`
+	SignagePointIndex          uint8              `json:"signage_point_index" streamable:""`
+	POSSSCCChallengeHash       Bytes32            `json:"pos_ss_cc_challenge_hash" streamable:""`
+	ProofOfSpace               ProofOfSpace       `json:"proof_of_space" streamable:""`
+	ChallengeChainSPVDF        mo.Option[VDFInfo] `json:"challenge_chain_sp_vdf" streamable:""`
+	ChallengeChainSPSignature  G2Element          `json:"challenge_chain_sp_signature" streamable:""`
+	ChallengeChainIPVDF        VDFInfo            `json:"challenge_chain_ip_vdf" streamable:""`
+	RewardChainSPVDF           mo.Option[VDFInfo] `json:"reward_chain_sp_vdf" streamable:""` // Not present for first sp in slot
+	RewardChainSPSignature     G2Element          `json:"reward_chain_sp_signature" streamable:""`
+	RewardChainIPVDF           VDFInfo            `json:"reward_chain_ip_vdf" streamable:""`
+	InfusedChallengeChainIPVDF mo.Option[VDFInfo] `json:"infused_challenge_chain_ip_vdf" streamable:""` // Iff deficit < 16
+	IsTransactionBlock         bool               `json:"is_transaction_block" streamable:""`
 }
 
 // BlockCountMetrics metrics from get_block_count_metrics endpoint

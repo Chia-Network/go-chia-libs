@@ -41,7 +41,8 @@ var Uint128Max = NewUint128(math.MaxUint64, math.MaxUint64)
 
 // A Uint128 is an unsigned 128-bit number.
 type Uint128 struct {
-	Lo, Hi uint64
+	Lo uint64 `streamable:""`
+	Hi uint64 `streamable:""`
 }
 
 // IsZero returns true if u == 0.
