@@ -1,18 +1,25 @@
 package types
 
 import (
+	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
-	"fmt"
+	"io"
 )
 
 // SerializedProgram An opaque representation of a clvm program. It has a more limited interface than a full SExp
 // https://github.com/Chia-Network/chia-blockchain/blob/main/chia/types/blockchain_format/program.py#L232
 type SerializedProgram Bytes
 
-const MAX_SINGLE_BYTE byte = 0x7f
-const BACK_REFERENCE byte = 0xfe
-const CONS_BOX_MARKER byte = 0xff
+// MaxSingleByte Max single byte
+const MaxSingleByte byte = 0x7f
+
+// BackReference back referencee marker
+const BackReference byte = 0xfe
+
+// ConsBoxMarker cons box marker
+const ConsBoxMarker byte = 0xff
 
 const (
 	badEncErr   = "bad encoding"
@@ -37,68 +44,76 @@ func (g *SerializedProgram) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// SerializedLengthFromBytesTrusted returns the length
 func SerializedLengthFromBytesTrusted(b []byte) (uint64, error) {
+	reader := bytes.NewReader(b)
 	var opsCounter uint64 = 1
-	var position uint64 = 0
-	start := len(b)
 
 	for opsCounter > 0 {
 		opsCounter--
-		if len(b) == 0 {
-			return 0, errors.New("unexpected end of input")
-		}
-		currentByte := b[0]
-		b = b[1:]
-		position++
 
-		if currentByte == CONS_BOX_MARKER {
-			opsCounter += 2
-		} else if currentByte == BACK_REFERENCE {
-			if len(b) == 0 {
+		var currentByte byte
+		err := binary.Read(reader, binary.BigEndian, &currentByte)
+		if err != nil {
+			if err == io.EOF {
 				return 0, errors.New("unexpected end of input")
 			}
-			firstByte := b[0]
-			b = b[1:]
-			position++
-			if firstByte > MAX_SINGLE_BYTE {
-				_, length, err := decodeSize(b, firstByte)
+			return 0, err
+		}
+
+		if currentByte == ConsBoxMarker {
+			opsCounter += 2
+		} else if currentByte == BackReference {
+			var firstByte byte
+			err = binary.Read(reader, binary.BigEndian, &firstByte)
+			if err != nil {
+				return 0, errors.New("unexpected end of input")
+			}
+			if firstByte > MaxSingleByte {
+				pathSize, err := decodeSize(reader, firstByte)
 				if err != nil {
 					return 0, err
 				}
-				b = b[length:]
-				position += length
+				_, err = reader.Seek(int64(pathSize), io.SeekCurrent)
+				if err != nil {
+					return 0, errors.New("bad encoding")
+				}
 			}
-		} else if currentByte == 0x80 || currentByte <= MAX_SINGLE_BYTE {
-			// This one byte we just read was the whole atom.
-			// or the special case of NIL
+		} else if currentByte == 0x80 || currentByte <= MaxSingleByte {
+			// This one byte we just read was the whole atom or the special case of NIL.
 		} else {
-			_, length, err := decodeSize(b, currentByte)
+			blobSize, err := decodeSize(reader, currentByte)
 			if err != nil {
 				return 0, err
 			}
-			b = b[length:]
-			position += length
+			_, err = reader.Seek(int64(blobSize), io.SeekCurrent)
+			if err != nil {
+				return 0, errors.New("bad encoding")
+			}
 		}
-
 	}
 
-	fmt.Println("read bytes", start, start-len(b), position)
-
-	return position, nil
+	position, err := reader.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, err
+	}
+	return uint64(position), nil
 }
 
-func decodeSize(input []byte, initialB byte) (byte, uint64, error) {
+func decodeSize(reader *bytes.Reader, initialB byte) (uint64, error) {
+	_, length, err := decodeSizeWithOffset(reader, initialB)
+	return length, err
+}
 
+func decodeSizeWithOffset(reader *bytes.Reader, initialB byte) (uint64, uint64, error) {
 	bitMask := byte(0x80)
 
 	if (initialB & bitMask) == 0 {
 		return 0, 0, errors.New(internalErr)
 	}
 
-	var atomStartOffset byte
-
+	var atomStartOffset uint64 = 0
 	b := initialB
-
 	for (b & bitMask) != 0 {
 		atomStartOffset++
 		b &= 0xff ^ bitMask
@@ -109,7 +124,11 @@ func decodeSize(input []byte, initialB byte) (byte, uint64, error) {
 	sizeBlob[0] = b
 
 	if atomStartOffset > 1 {
-		copy(sizeBlob[1:], input)
+		// We need to read atomStartOffset-1 more bytes
+		_, err := io.ReadFull(reader, sizeBlob[1:])
+		if err != nil {
+			return 0, 0, err
+		}
 	}
 
 	var atomSize uint64 = 0

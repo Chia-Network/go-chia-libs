@@ -227,8 +227,10 @@ func TestUnmarshal_ResponseBlock(t *testing.T) {
 	encodedBytes, err := hex.DecodeString(hexStr)
 	assert.NoError(t, err)
 
-	handshake := &protocols.RespondBlock{}
+	respondBlock := &protocols.RespondBlock{}
 
-	err = streamable.Unmarshal(encodedBytes, handshake)
+	err = streamable.Unmarshal(encodedBytes, respondBlock)
 	assert.NoError(t, err)
+
+	assert.Equal(t, 5_109_110, int(respondBlock.Block.RewardChainBlock.Height))
 }

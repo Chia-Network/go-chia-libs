@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"encoding/hex"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -49,6 +50,20 @@ func TestSerializedLengthFromBytesTrusted(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, len(encodedBytes), int(length))
 
+	hexStr = "900cecb8f27d268c2ac73fe5b520db3813"
+	encodedBytes, err = hex.DecodeString(hexStr)
+	assert.NoError(t, err)
+	length, err = SerializedLengthFromBytesTrusted(encodedBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, len(encodedBytes), int(length))
+
+	hexStr = "c059697066733a2f2f62616679626569687478796637737462356b78787473756d77326e6f34326766736871676a687837646d696e706776627468697433616a70336f792f5065706542656172732d25323028333437292e706e67"
+	encodedBytes, err = hex.DecodeString(hexStr)
+	assert.NoError(t, err)
+	length, err = SerializedLengthFromBytesTrusted(encodedBytes)
+	assert.NoError(t, err)
+	assert.Equal(t, len(encodedBytes), int(length))
+
 	length, err = SerializedLengthFromBytesTrusted([]byte{0x7f, 0x00, 0x00, 0x00})
 	assert.NoError(t, err)
 	assert.Equal(t, 1, int(length))
@@ -77,27 +92,27 @@ func TestSerializedLengthFromBytesTrusted(t *testing.T) {
 
 func TestDecodeSize(t *testing.T) {
 
-	_, length, err := decodeSize([]byte{}, 0x80|0x20)
+	length, err := decodeSize(bytes.NewReader([]byte{}), 0x80|0x20)
 	assert.NoError(t, err)
 	assert.Equal(t, 32, int(length))
 
-	_, length, err = decodeSize([]byte{0xaa}, 0b11001111)
+	length, err = decodeSize(bytes.NewReader([]byte{0xaa}), 0b11001111)
 	assert.NoError(t, err)
 	assert.Equal(t, 4010, int(length))
 
-	_, length, err = decodeSize([]byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, 0b11111110)
+	_, err = decodeSize(bytes.NewReader([]byte{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}), 0b11111110)
 	assert.Error(t, err, "bad encoding")
 
-	_, length, err = decodeSize([]byte{0x4, 0, 0, 0, 0}, 0b11111100)
+	_, err = decodeSize(bytes.NewReader([]byte{0x4, 0, 0, 0, 0}), 0b11111100)
 	assert.Error(t, err, "bad encoding")
 
-	_, length, err = decodeSize([]byte{0x3, 0xff, 0xff, 0xff, 0xff}, 0b11111100)
+	length, err = decodeSize(bytes.NewReader([]byte{0x3, 0xff, 0xff, 0xff, 0xff}), 0b11111100)
 	assert.NoError(t, err)
 	assert.Equal(t, 17179869183, int(length))
 
-	_, _, err = decodeSize([]byte{0xff, 0xfe}, 0b11111100)
+	_, err = decodeSize(bytes.NewReader([]byte{0xff, 0xfe}), 0b11111100)
 	assert.Error(t, err, "bad encoding")
 
-	_, _, err = decodeSize([]byte{0x4, 0, 0, 0}, 0b11111100)
+	_, err = decodeSize(bytes.NewReader([]byte{0x4, 0, 0, 0}), 0b11111100)
 	assert.Error(t, err, "bad encoding")
 }
