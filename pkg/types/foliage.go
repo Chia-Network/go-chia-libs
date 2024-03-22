@@ -28,12 +28,12 @@ type Foliage struct {
 // FoliageTransactionBlock foliage transaction block
 // https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L20
 type FoliageTransactionBlock struct {
-	PrevTransactionBlockHash Bytes32 `json:"prev_transaction_block_hash" streamable:""`
-	Timestamp                uint64  `json:"timestamp" streamable:""`
-	FilterHash               Bytes32 `json:"filter_hash" streamable:""`
-	AdditionsRoot            Bytes32 `json:"additions_root" streamable:""`
-	RemovalsRoot             Bytes32 `json:"removals_root" streamable:""`
-	TransactionsInfoHash     Bytes32 `json:"transactions_info_hash" streamable:""`
+	PrevTransactionBlockHash Bytes32   `json:"prev_transaction_block_hash" streamable:""`
+	Timestamp                Timestamp `json:"timestamp" streamable:"Timestamp"`
+	FilterHash               Bytes32   `json:"filter_hash" streamable:""`
+	AdditionsRoot            Bytes32   `json:"additions_root" streamable:""`
+	RemovalsRoot             Bytes32   `json:"removals_root" streamable:""`
+	TransactionsInfoHash     Bytes32   `json:"transactions_info_hash" streamable:""`
 }
 
 // TransactionsInfo transactions info

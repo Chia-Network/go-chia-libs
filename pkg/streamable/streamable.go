@@ -6,6 +6,7 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/types"
 	"reflect"
 	"strings"
+	"time"
 	"unsafe"
 
 	"github.com/chia-network/go-chia-libs/pkg/util"
@@ -122,6 +123,19 @@ func unmarshalField(bytes []byte, fieldType reflect.Type, fieldValue reflect.Val
 		}
 		newVal, bytes = bytes[:length], bytes[length:]
 		fieldValue.SetBytes(newVal)
+		return bytes, nil
+	}
+
+	if tagValue == "Timestamp" {
+		newVal, bytes, err = util.ShiftNBytes(8, bytes)
+		if err != nil {
+			return bytes, err
+		}
+		if !fieldValue.CanSet() {
+			return bytes, fmt.Errorf("field %s is not settable", fieldValue.String())
+		}
+		newInt := util.BytesToUint64(newVal)
+		fieldValue.Field(0).Set(reflect.ValueOf(time.Unix(int64(newInt), 0)))
 		return bytes, nil
 	}
 
