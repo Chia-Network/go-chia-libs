@@ -19,6 +19,7 @@ import (
 type Connection struct {
 	chiaConfig *config.ChiaConfig
 
+	networkID   string
 	peerIP      *net.IP
 	peerPort    uint16
 	peerKeyPair *tls.Certificate
@@ -33,15 +34,8 @@ type PeerResponseHandlerFunc func(*protocols.Message, error)
 
 // NewConnection creates a new connection object with the specified peer
 func NewConnection(ip *net.IP, options ...ConnectionOptionFunc) (*Connection, error) {
-	cfg, err := config.GetChiaConfig()
-	if err != nil {
-		return nil, err
-	}
-
 	c := &Connection{
-		chiaConfig: cfg,
-		peerIP:     ip,
-		peerPort:   cfg.FullNode.Port,
+		peerIP: ip,
 	}
 
 	for _, fn := range options {
@@ -53,21 +47,50 @@ func NewConnection(ip *net.IP, options ...ConnectionOptionFunc) (*Connection, er
 		}
 	}
 
-	err = c.loadKeyPair()
-	if err != nil {
-		return nil, err
+	if c.peerPort == 0 {
+		if err := c.loadChiaConfig(); err != nil {
+			return nil, err
+		}
+		c.peerPort = c.chiaConfig.FullNode.Port
+	}
+
+	if c.peerKeyPair == nil {
+		if err := c.loadChiaConfig(); err != nil {
+			return nil, err
+		}
+		if err := c.loadConfigKeyPair(); err != nil {
+			return nil, err
+		}
+	}
+
+	if len(c.networkID) == 0 {
+		if err := c.loadChiaConfig(); err != nil {
+			return nil, err
+		}
+		c.networkID = c.chiaConfig.SelectedNetwork
 	}
 
 	// Generate the websocket dialer
-	err = c.generateDialer()
-	if err != nil {
+	if err := c.generateDialer(); err != nil {
 		return nil, err
 	}
 
 	return c, nil
 }
 
-func (c *Connection) loadKeyPair() error {
+func (c *Connection) loadChiaConfig() error {
+	if c.chiaConfig != nil {
+		return nil
+	}
+	cfg, err := config.GetChiaConfig()
+	if err != nil {
+		return err
+	}
+	c.chiaConfig = cfg
+	return nil
+}
+
+func (c *Connection) loadConfigKeyPair() error {
 	var err error
 
 	c.peerKeyPair, err = c.chiaConfig.FullNode.SSL.LoadPublicKeyPair(c.chiaConfig.ChiaRoot)
@@ -122,7 +145,7 @@ func (c *Connection) Close() {
 func (c *Connection) Handshake() error {
 	// Handshake
 	handshake := &protocols.Handshake{
-		NetworkID:       c.chiaConfig.SelectedNetwork,
+		NetworkID:       c.networkID,
 		ProtocolVersion: protocols.ProtocolVersion,
 		SoftwareVersion: "2.0.0",
 		ServerPort:      c.peerPort,
