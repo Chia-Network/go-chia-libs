@@ -31,4 +31,3 @@ type RequestBlock struct {
 type RespondBlock struct {
 	Block types.FullBlock `streamable:""`
 }
-
