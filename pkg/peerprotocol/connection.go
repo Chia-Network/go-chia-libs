@@ -171,14 +171,14 @@ func (c *Connection) PeerID() ([32]byte, error) {
 }
 
 // Handshake performs the RPC handshake. This should be called before any other method
-func (c *Connection) Handshake() error {
+func (c *Connection) handshake(nodeType protocols.NodeType) error {
 	// Handshake
 	handshake := &protocols.Handshake{
 		NetworkID:       c.networkID,
 		ProtocolVersion: protocols.ProtocolVersion,
 		SoftwareVersion: "2.0.0",
 		ServerPort:      c.peerPort,
-		NodeType:        protocols.NodeTypeFullNode, // I guess we're a full node
+		NodeType:        nodeType,
 		Capabilities: []protocols.Capability{
 			{
 				Capability: protocols.CapabilityTypeBase,
@@ -188,6 +188,11 @@ func (c *Connection) Handshake() error {
 	}
 
 	return c.Do(protocols.ProtocolMessageTypeHandshake, handshake)
+}
+
+// Connect connects to websocket
+func (c *Connection) Connect() error {
+	return c.ensureConnection()
 }
 
 // Do send a request over the websocket

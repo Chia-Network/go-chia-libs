@@ -6,8 +6,35 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
+// PoolDifficulty
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/harvester_protocol.py#L23
+type PoolDifficulty struct {
+	Difficulty             uint64        `streamable:""`
+	SubSlotIters           uint64        `streamable:""`
+	PoolContractPuzzleHash types.Bytes32 `streamable:""`
+}
+
+// HarvesterHandshake
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/harvester_protocol.py#L31
+type HarvesterHandshake struct {
+	FarmerPublicKeys []types.G1Element `streamable:""`
+	PoolPublicKeys   []types.G1Element `streamable:""`
+}
+
+// NewSignagePointHarvester
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/harvester_protocol.py#L38
+type NewSignagePointHarvester struct {
+	ChallengeHash     types.Bytes32    `streamable:""`
+	Difficulty        uint64           `streamable:""`
+	SubSlotIters      uint64           `streamable:""`
+	SignagePointIndex uint8            `streamable:""`
+	SPHash            types.Bytes32    `streamable:""`
+	PoolDifficulties  []PoolDifficulty `streamable:""`
+	FilterPrefixBits  uint8            `streamable:""`
+}
+
 // Plot is the plot definition in the harvester protocol
-// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/harvester_protocol.py#L78
+// https://github.com/Chia-Network/chia-blockchain/blob/main/chia/protocols/harvester_protocol.py#L114
 type Plot struct {
 	Filename               string                     `json:"filename"`
 	Size                   uint8                      `json:"size"`
