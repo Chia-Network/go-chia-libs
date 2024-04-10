@@ -119,7 +119,11 @@ func (c *Connection) generateDialer() error {
 // ensureConnection ensures there is an open websocket connection
 func (c *Connection) ensureConnection() error {
 	if c.conn == nil {
-		u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", c.peerIP.String(), c.peerPort), Path: "/ws"}
+		host := fmt.Sprintf("%s:%d", c.peerIP.String(), c.peerPort)
+		if c.peerIP.To4() == nil {
+			host = fmt.Sprintf("[%s]:%d", c.peerIP.String(), c.peerPort)
+		}
+		u := url.URL{Scheme: "wss", Host: host, Path: "/ws"}
 		var err error
 		c.conn, _, err = c.peerDialer.Dial(u.String(), nil)
 		if err != nil {
