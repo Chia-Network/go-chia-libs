@@ -18,3 +18,13 @@ func NewFarmerProtocol(connection *Connection) (*FarmerProtocol, error) {
 func (c *FarmerProtocol) Handshake() error {
 	return c.handshake(protocols.NodeTypeFarmer)
 }
+
+// DeclareProofOfSpace sends a DeclareProofOfSpace message to the peer
+func (c *FarmerProtocol) DeclareProofOfSpace(data *protocols.DeclareProofOfSpace) error {
+	return c.Do(protocols.ProtocolMessageTypeDeclareProofOfSpace, data)
+}
+
+func (c *FarmerProtocol) SignedValues(data *protocols.SignedValues) error {
+	return c.Do(protocols.ProtocolMessageTypeSignedValues, data)
+
+}

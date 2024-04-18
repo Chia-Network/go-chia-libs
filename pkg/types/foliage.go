@@ -4,7 +4,7 @@ import (
 	"github.com/samber/mo"
 )
 
-// FoliageBlockData FoliageBlockData
+// FoliageBlockData foliage block data
 // https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L31
 type FoliageBlockData struct {
 	UnfinishedRewardBlockHash Bytes32              `json:"unfinished_reward_block_hash" streamable:""`
@@ -14,7 +14,7 @@ type FoliageBlockData struct {
 	ExtensionData             Bytes32              `json:"extension_data" streamable:""`
 }
 
-// Foliage Foliage
+// Foliage foliage
 // https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/foliage.rs#L41
 type Foliage struct {
 	PrevBlockHash                    Bytes32              `json:"prev_block_hash" streamable:""`

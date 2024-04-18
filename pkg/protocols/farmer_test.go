@@ -80,26 +80,6 @@ func TestNewSignagePoint(t *testing.T) {
 			}
 		})
 	}
-	//hexStr := ""
-	//
-	//// Hex to bytes
-	//encodedBytes, err := hex.DecodeString(hexStr)
-	//assert.NoError(t, err)
-	//
-	//rp := &protocols.NewSignagePoint{}
-	//
-	//err = streamable.Unmarshal(encodedBytes, rp)
-	//assert.NoError(t, err)
-
-	//assert.Equal(t, "69171fb97a11a983e1c45f01393a0755e3b65016be6e92ea776ab8ee5b24b66a", hex.EncodeToString(rp.ChallengeHash[:]))
-	//assert.Equal(t, "73165326a79bf653220e33573ef2cace709b31e8f9939cd9e7e7df7f009d0881", hex.EncodeToString(rp.ChallengeChainSP[:]))
-	//assert.Equal(t, "5c0f452f044d025bf0bb4d51744737e09723ab323731a9bbeed9c687e369ec17", hex.EncodeToString(rp.RewardChainSP[:]))
-	//assert.Equal(t, uint64(11776), rp.Difficulty)
-	//assert.Equal(t, uint64(578813952), rp.SubSlotIters)
-	//assert.Equal(t, uint8(26), rp.SignagePointIndex)
-	//assert.Equal(t, uint32(5198109), rp.PeakHeight)
-	//
-	//assert.NotNil(t, rp.SPSourceData)
 
 	// todo test SPSourceData
 }
