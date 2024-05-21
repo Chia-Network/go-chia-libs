@@ -19,6 +19,13 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON unmarshals from uint64
 func (t *Timestamp) UnmarshalJSON(data []byte) error {
+	// Check if the data is the JSON "null"
+	if string(data) == "null" {
+		// Handle the null case
+		*t = Timestamp{}
+		return nil
+	}
+
 	// Split accounts for unix timestamps in float form (1668050986.646834)
 	// In these cases, we just parse the seconds and ignore the decimal
 	splits := bytes.Split(data, []byte(`.`))
