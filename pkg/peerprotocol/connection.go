@@ -2,6 +2,7 @@ package peerprotocol
 
 import (
 	"context"
+	"crypto/sha256"
 	"crypto/tls"
 	"fmt"
 	"net"
@@ -143,6 +144,30 @@ func (c *Connection) Close() {
 		}
 		c.conn = nil
 	}
+}
+
+// PeerID returns the Peer ID for the remote peer
+func (c *Connection) PeerID() ([32]byte, error) {
+	nullBytes := [32]byte{}
+	err := c.ensureConnection()
+	if err != nil {
+		return nullBytes, err
+	}
+
+	netConn := c.conn.NetConn()
+	tlsConn, ok := netConn.(*tls.Conn)
+	if !ok {
+		return nullBytes, fmt.Errorf("could not get tls.Conn from websocket")
+	}
+
+	// Access the connection state
+	state := tlsConn.ConnectionState()
+	if len(state.PeerCertificates) == 0 {
+		return nullBytes, fmt.Errorf("No certificates in chain")
+	}
+
+	cert := state.PeerCertificates[0]
+	return sha256.Sum256(cert.Raw), nil
 }
 
 // Handshake performs the RPC handshake. This should be called before any other method
