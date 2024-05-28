@@ -163,7 +163,7 @@ func (c *Connection) PeerID() ([32]byte, error) {
 	// Access the connection state
 	state := tlsConn.ConnectionState()
 	if len(state.PeerCertificates) == 0 {
-		return nullBytes, fmt.Errorf("No certificates in chain")
+		return nullBytes, fmt.Errorf("no certificates in chain")
 	}
 
 	cert := state.PeerCertificates[0]
