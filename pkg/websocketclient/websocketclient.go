@@ -22,13 +22,12 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/util"
 )
 
-const origin string = "go-chia-rpc"
-
 // WebsocketClient connects to Chia RPC via websockets
 type WebsocketClient struct {
 	config  *config.ChiaConfig
 	baseURL *url.URL
 	logger  *slog.Logger
+	origin  string
 
 	// Request timeout
 	Timeout time.Duration
@@ -64,6 +63,7 @@ func NewWebsocketClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOp
 	c := &WebsocketClient{
 		config: cfg,
 		logger: slog.New(rpcinterface.SlogInfo()),
+		origin: fmt.Sprintf("go-chia-rpc-%d", time.Now().UnixNano()),
 
 		Timeout: 10 * time.Second, // Default, overridable with client option
 
@@ -165,7 +165,7 @@ func (c *WebsocketClient) Do(req *rpcinterface.Request, v interface{}) (*http.Re
 	}
 	request := &types.WebsocketRequest{
 		Command:     string(req.Endpoint),
-		Origin:      origin,
+		Origin:      c.origin,
 		Destination: destination,
 		Data:        data,
 		RequestID:   util.GenerateRequestID(),
@@ -238,7 +238,7 @@ func (c *WebsocketClient) responseHelper(request *types.WebsocketRequest, v inte
 // Different from Subscribe with a custom service - that is more for subscribing to built in events emitted by Chia
 // This call will subscribe `go-chia-rpc` origin for any requests we specifically make of the server
 func (c *WebsocketClient) SubscribeSelf() error {
-	return c.Subscribe(origin)
+	return c.Subscribe(c.origin)
 }
 
 // Subscribe adds a subscription to a particular service
