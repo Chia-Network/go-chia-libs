@@ -11,7 +11,7 @@ import (
 
 // ChiaConfig the chia config.yaml
 type ChiaConfig struct {
-	ChiaRoot        string
+	ChiaRoot        string          `yaml:"-"`
 	DaemonPort      uint16          `yaml:"daemon_port"`
 	DaemonSSL       SSLConfig       `yaml:"daemon_ssl"`
 	Farmer          FarmerConfig    `yaml:"farmer"`
