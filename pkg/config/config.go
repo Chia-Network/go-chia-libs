@@ -140,7 +140,7 @@ type SeederSOA struct {
 	Refresh      uint32 `yaml:"refresh"`
 	Retry        uint32 `yaml:"retry"`
 	Expire       uint32 `yaml:"expire"`
-	Minimum      uint32 `yaml:"expire"`
+	Minimum      uint32 `yaml:"minimum"`
 }
 
 // CrawlerConfig is the subsection of the seeder config specific to the crawler

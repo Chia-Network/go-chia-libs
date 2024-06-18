@@ -1,6 +1,8 @@
 package config
 
 import (
+	// Need to embed the default config into the library
+	_ "embed"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -8,6 +10,9 @@ import (
 
 	"gopkg.in/yaml.v3"
 )
+
+//go:embed initial-config.yml
+var initialConfig []byte
 
 // GetChiaConfig returns a struct containing the config.yaml values
 func GetChiaConfig() (*ChiaConfig, error) {
@@ -26,9 +31,22 @@ func GetChiaConfig() (*ChiaConfig, error) {
 		return nil, err
 	}
 
+	return commonLoad(configBytes, rootPath)
+}
+
+// LoadDefaultConfig loads the initial-config bundled in go-chia-libs
+func LoadDefaultConfig() (*ChiaConfig, error) {
+	rootPath, err := GetChiaRootPath()
+	if err != nil {
+		return nil, err
+	}
+	return commonLoad(initialConfig, rootPath)
+}
+
+func commonLoad(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	config := &ChiaConfig{}
 
-	err = yaml.Unmarshal(configBytes, config)
+	err := yaml.Unmarshal(configBytes, config)
 	if err != nil {
 		return nil, err
 	}
