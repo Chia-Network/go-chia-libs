@@ -3,8 +3,13 @@ package config
 import (
 	"fmt"
 	"log"
+	"math/big"
 	"os"
+	"reflect"
+	"strconv"
 	"strings"
+
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 // FillValuesFromEnvironment reads environment variables starting with `chia.` and edits the config based on the config path
@@ -21,6 +26,11 @@ func (c *ChiaConfig) FillValuesFromEnvironment() {
 		log.Printf("Key is: %v", key)
 		log.Printf("Path is: %v", pAndV.path)
 		log.Printf("Value is: %s", pAndV.value)
+
+		err := c.SetFieldByPath(pAndV.path, pAndV.value)
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
 	}
 }
 
@@ -54,4 +64,137 @@ func getAllChiaVars() map[string]pathAndValue {
 	}
 
 	return finalVars
+}
+
+// SetFieldByPath iterates through each item in path to find the corresponding `yaml` tag in the struct
+// Once found, we move to the next item in path and look for that key within the first element
+// If any element is not found, an error will be returned
+func (c *ChiaConfig) SetFieldByPath(path []string, value any) error {
+	v := reflect.ValueOf(c).Elem()
+	return setFieldByPath(v, path, value)
+}
+
+func setFieldByPath(v reflect.Value, path []string, value any) error {
+	if len(path) == 0 {
+		return fmt.Errorf("invalid path")
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Type().Field(i)
+		yamlTagRaw := field.Tag.Get("yaml")
+		yamlTag := strings.Split(yamlTagRaw, ",")[0]
+
+		if yamlTagRaw == ",inline" && field.Anonymous {
+			// Check the inline struct
+			if err := setFieldByPath(v.Field(i), path, value); err != nil {
+				return err
+			}
+		} else if yamlTag == path[0] {
+			// We found a match for the current level of "paths"
+			// If we only have 1 element left in paths, then we can set the value
+			// Otherwise, we can recursively call setFieldByPath again, with the remaining elements of path
+			fieldValue := v.Field(i)
+			if len(path) > 1 {
+				if fieldValue.Kind() == reflect.Map {
+					mapKey := reflect.ValueOf(path[1])
+					if !mapKey.Type().ConvertibleTo(fieldValue.Type().Key()) {
+						return fmt.Errorf("invalid map key type %s", mapKey.Type())
+					}
+					mapValue := fieldValue.MapIndex(mapKey)
+					if mapValue.IsValid() {
+						if !mapValue.CanSet() {
+							// Create a new writable map and copy over the existing data
+							newMapValue := reflect.New(fieldValue.Type().Elem()).Elem()
+							newMapValue.Set(mapValue)
+							mapValue = newMapValue
+						}
+						err := setFieldByPath(mapValue, path[2:], value)
+						if err != nil {
+							return err
+						}
+						fieldValue.SetMapIndex(mapKey, mapValue)
+						return nil
+					}
+				} else {
+					return setFieldByPath(fieldValue, path[1:], value)
+				}
+			}
+
+			if !fieldValue.CanSet() {
+				return fmt.Errorf("cannot set field %s", path[0])
+			}
+
+			// Special Cases
+			if fieldValue.Type() == reflect.TypeOf(types.Uint128{}) {
+				strValue, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected string for Uint128 field, got %T", value)
+				}
+				bigIntValue := new(big.Int)
+				_, ok = bigIntValue.SetString(strValue, 10)
+				if !ok {
+					return fmt.Errorf("invalid string for big.Int: %s", strValue)
+				}
+				fieldValue.Set(reflect.ValueOf(types.Uint128FromBig(bigIntValue)))
+				return nil
+			}
+
+			val := reflect.ValueOf(value)
+
+			if fieldValue.Type() != val.Type() {
+				if val.Type().ConvertibleTo(fieldValue.Type()) {
+					val = val.Convert(fieldValue.Type())
+				} else {
+					convertedVal, err := convertValue(value, fieldValue.Type())
+					if err != nil {
+						return err
+					}
+					val = reflect.ValueOf(convertedVal)
+				}
+			}
+
+			fieldValue.Set(val)
+
+			return nil
+		}
+	}
+
+	return nil
+}
+
+func convertValue(value interface{}, targetType reflect.Type) (interface{}, error) {
+	switch targetType.Kind() {
+	case reflect.Uint8:
+		v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		return uint8(v), nil
+	case reflect.Uint16:
+		v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		return uint16(v), nil
+	case reflect.Uint32:
+		v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		return uint32(v), nil
+	case reflect.Uint64:
+		v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
+	case reflect.Bool:
+		v, err := strconv.ParseBool(fmt.Sprintf("%v", value))
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
+	default:
+		return nil, fmt.Errorf("unsupported conversion to %s", targetType.Kind())
+	}
 }
