@@ -22,11 +22,7 @@ import (
 func (c *ChiaConfig) FillValuesFromEnvironment() {
 	valuesToUpdate := getAllChiaVars()
 	log.Printf("%+v", valuesToUpdate)
-	for key, pAndV := range valuesToUpdate {
-		log.Printf("Key is: %v", key)
-		log.Printf("Path is: %v", pAndV.path)
-		log.Printf("Value is: %s", pAndV.value)
-
+	for _, pAndV := range valuesToUpdate {
 		err := c.SetFieldByPath(pAndV.path, pAndV.value)
 		if err != nil {
 			log.Fatalln(err.Error())
