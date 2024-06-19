@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"math/big"
 	"os"
 	"reflect"
@@ -19,15 +18,16 @@ import (
 // # Complex data structures can be passed in as JSON strings and they will be parsed out into the datatype specified for the config prior to being inserted
 //
 // chia.network_overrides.constants.mainnet='{"GENESIS_CHALLENGE":"abc123","GENESIS_PRE_FARM_POOL_PUZZLE_HASH":"xyz789"}'
-func (c *ChiaConfig) FillValuesFromEnvironment() {
+func (c *ChiaConfig) FillValuesFromEnvironment() error {
 	valuesToUpdate := getAllChiaVars()
-	log.Printf("%+v", valuesToUpdate)
 	for _, pAndV := range valuesToUpdate {
 		err := c.SetFieldByPath(pAndV.path, pAndV.value)
 		if err != nil {
-			log.Fatalln(err.Error())
+			return err
 		}
 	}
+
+	return nil
 }
 
 type pathAndValue struct {
