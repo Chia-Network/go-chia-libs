@@ -165,7 +165,7 @@ type HarvesterConfig struct {
 	PortConfig                 `yaml:",inline"`
 	SSL                        SSLConfig `yaml:"ssl"`
 	PrivateSSLCA               CAConfig  `yaml:"private_ssl_ca"`
-	ChiaSSLCA                  CAConfig  `yaml:"chia-ssl_ca"`
+	ChiaSSLCA                  CAConfig  `yaml:"chia_ssl_ca"`
 	ParallelDecompressorCount  uint8     `yaml:"parallel_decompressor_count"`
 	DecompressorThreadCount    uint8     `yaml:"decompressor_thread_count"`
 	DisableCPUAffinity         bool      `yaml:"disable_cpu_affinity"`
