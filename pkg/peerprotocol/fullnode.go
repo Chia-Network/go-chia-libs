@@ -6,22 +6,25 @@ import (
 
 // FullNodeProtocol is for interfacing with full nodes via the peer protocol
 type FullNodeProtocol struct {
-	connection *Connection
+	*Connection
 }
 
 // NewFullNodeProtocol returns a new instance of the full node protocol
 func NewFullNodeProtocol(connection *Connection) (*FullNodeProtocol, error) {
-	fnp := &FullNodeProtocol{connection: connection}
+	return &FullNodeProtocol{connection}, nil
+}
 
-	return fnp, nil
+// Handshake performs the handshake with the peer
+func (c *FullNodeProtocol) Handshake() error {
+	return c.handshake(protocols.NodeTypeFullNode)
 }
 
 // RequestPeers asks the current peer to respond with their current peer list
 func (c *FullNodeProtocol) RequestPeers() error {
-	return c.connection.Do(protocols.ProtocolMessageTypeRequestPeers, &protocols.RequestPeers{})
+	return c.Do(protocols.ProtocolMessageTypeRequestPeers, &protocols.RequestPeers{})
 }
 
 // RequestBlock asks the current peer to respond with a block
 func (c *FullNodeProtocol) RequestBlock(data *protocols.RequestBlock) error {
-	return c.connection.Do(protocols.ProtocolMessageTypeRequestBlock, data)
+	return c.Do(protocols.ProtocolMessageTypeRequestBlock, data)
 }
