@@ -68,13 +68,50 @@ func ParsePathsAndValuesFromStrings(pathStrings []string, requirePrefix bool) ma
 			} else {
 				pair := strings.SplitN(env, "=", 2)
 				if len(pair) == 2 {
-					finalVars[pair[0]] = PathAndValue{
-						Path:  strings.Split(pair[0], sep),
-						Value: pair[1],
+					// Ensure that we don't overwrite something that is already in the finalVars
+					// UNLESS the path is longer than the value already there
+					// Shorter paths can happen if not requiring a prefix and we added the full path
+					// in the first iteration, but actually uses a separator later in the list
+					path := strings.Split(pair[0], sep)
+					if _, set := finalVars[pair[0]]; !set || (set && len(path) > len(finalVars[pair[0]].Path)) {
+						finalVars[pair[0]] = PathAndValue{
+							Path:  path,
+							Value: pair[1],
+						}
 					}
 				}
 			}
 
+		}
+	}
+
+	return finalVars
+}
+
+// ParsePathsFromStrings takes a list of strings and parses out paths
+// requirePrefix determines if the string must be prefixed with chia. or chia__
+// This is typically used when parsing env vars, not so much with flags
+func ParsePathsFromStrings(pathStrings []string, requirePrefix bool) map[string][]string {
+	separators := []string{".", "__"}
+	finalVars := map[string][]string{}
+
+	for _, sep := range separators {
+		prefix := fmt.Sprintf("chia%s", sep)
+		for _, env := range pathStrings {
+			if requirePrefix {
+				if strings.HasPrefix(env, prefix) {
+					finalVars[env[len(prefix):]] = strings.Split(env, sep)[1:]
+				}
+			} else {
+				// Ensure that we don't overwrite something that is already in the finalVars
+				// UNLESS the path is longer than the value already there
+				// Shorter paths can happen if not requiring a prefix and we added the full path
+				// in the first iteration, but actually uses a separator later in the list
+				path := strings.Split(env, sep)
+				if _, set := finalVars[env]; !set || (set && len(path) > len(finalVars[env])) {
+					finalVars[env] = path
+				}
+			}
 		}
 	}
 
