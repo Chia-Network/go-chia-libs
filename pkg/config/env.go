@@ -21,7 +21,7 @@ import (
 func (c *ChiaConfig) FillValuesFromEnvironment() error {
 	valuesToUpdate := getAllChiaVars()
 	for _, pAndV := range valuesToUpdate {
-		err := c.SetFieldByPath(pAndV.path, pAndV.value)
+		err := c.SetFieldByPath(pAndV.Path, pAndV.Value)
 		if err != nil {
 			return err
 		}
@@ -30,30 +30,86 @@ func (c *ChiaConfig) FillValuesFromEnvironment() error {
 	return nil
 }
 
-type pathAndValue struct {
-	path  []string
-	value string
+// PathAndValue is a struct to represent the path minus any prefix and the value to set
+type PathAndValue struct {
+	Path  []string
+	Value string
 }
 
-func getAllChiaVars() map[string]pathAndValue {
+func getAllChiaVars() map[string]PathAndValue {
 	// Most shells don't allow `.` in env names, but docker will and its easier to visualize the `.`, so support both
 	// `.` and `__` as valid path segment separators
 	// chia.full_node.port
 	// chia__full_node__port
-	separators := []string{".", "__"}
 	envVars := os.Environ()
-	finalVars := map[string]pathAndValue{}
+	return ParsePathsAndValuesFromStrings(envVars, true)
+}
+
+// ParsePathsAndValuesFromStrings takes a list of strings and parses out paths and values
+// requirePrefix determines if the string must be prefixed with chia. or chia__
+// This is typically used when parsing env vars, not so much with flags
+func ParsePathsAndValuesFromStrings(pathStrings []string, requirePrefix bool) map[string]PathAndValue {
+	separators := []string{".", "__"}
+	finalVars := map[string]PathAndValue{}
 
 	for _, sep := range separators {
 		prefix := fmt.Sprintf("chia%s", sep)
-		for _, env := range envVars {
-			if strings.HasPrefix(env, prefix) {
+		for _, env := range pathStrings {
+			if requirePrefix {
+				if strings.HasPrefix(env, prefix) {
+					pair := strings.SplitN(env, "=", 2)
+					if len(pair) == 2 {
+						finalVars[pair[0][len(prefix):]] = PathAndValue{
+							Path:  strings.Split(pair[0], sep)[1:], // This is the Path in the config to the Value to edit minus the "chia" prefix
+							Value: pair[1],
+						}
+					}
+				}
+			} else {
 				pair := strings.SplitN(env, "=", 2)
 				if len(pair) == 2 {
-					finalVars[pair[0][len(prefix):]] = pathAndValue{
-						path:  strings.Split(pair[0], sep)[1:], // This is the path in the config to the value to edit minus the "chia" prefix
-						value: pair[1],
+					// Ensure that we don't overwrite something that is already in the finalVars
+					// UNLESS the path is longer than the value already there
+					// Shorter paths can happen if not requiring a prefix and we added the full path
+					// in the first iteration, but actually uses a separator later in the list
+					path := strings.Split(pair[0], sep)
+					if _, set := finalVars[pair[0]]; !set || (set && len(path) > len(finalVars[pair[0]].Path)) {
+						finalVars[pair[0]] = PathAndValue{
+							Path:  path,
+							Value: pair[1],
+						}
 					}
+				}
+			}
+
+		}
+	}
+
+	return finalVars
+}
+
+// ParsePathsFromStrings takes a list of strings and parses out paths
+// requirePrefix determines if the string must be prefixed with chia. or chia__
+// This is typically used when parsing env vars, not so much with flags
+func ParsePathsFromStrings(pathStrings []string, requirePrefix bool) map[string][]string {
+	separators := []string{".", "__"}
+	finalVars := map[string][]string{}
+
+	for _, sep := range separators {
+		prefix := fmt.Sprintf("chia%s", sep)
+		for _, env := range pathStrings {
+			if requirePrefix {
+				if strings.HasPrefix(env, prefix) {
+					finalVars[env[len(prefix):]] = strings.Split(env, sep)[1:]
+				}
+			} else {
+				// Ensure that we don't overwrite something that is already in the finalVars
+				// UNLESS the path is longer than the value already there
+				// Shorter paths can happen if not requiring a prefix and we added the full path
+				// in the first iteration, but actually uses a separator later in the list
+				path := strings.Split(env, sep)
+				if _, set := finalVars[env]; !set || (set && len(path) > len(finalVars[env])) {
+					finalVars[env] = path
 				}
 			}
 		}

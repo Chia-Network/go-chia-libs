@@ -67,3 +67,73 @@ func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	assert.Equal(t, defaultConfig.SelectedNetwork, "unittestnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "INFO")
 }
+
+func TestChiaConfig_ParsePathsAndValuesFromStrings(t *testing.T) {
+	// A mix of paths with and without prefixes with both separators
+	strings := []string{
+		"chia.full_node.port=8444",
+		"chia__full_node__db_sync=auto",
+		"full_node.db_readers=4",
+		"full_node__database_path=testing.db",
+	}
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result := config.ParsePathsAndValuesFromStrings(strings, true)
+	assert.Len(t, result, 2)
+	assert.Contains(t, result, "full_node.port")
+	assert.Equal(t, []string{"full_node", "port"}, result["full_node.port"].Path)
+	assert.Equal(t, "8444", result["full_node.port"].Value)
+	assert.Contains(t, result, "full_node__db_sync")
+	assert.Equal(t, []string{"full_node", "db_sync"}, result["full_node__db_sync"].Path)
+	assert.Equal(t, "auto", result["full_node__db_sync"].Value)
+	assert.NotContains(t, result, "full_node.db_readers")
+	assert.NotContains(t, result, "full_node__database_path")
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result = config.ParsePathsAndValuesFromStrings(strings, false)
+	assert.Len(t, result, 4) // 4 because it won't strip chia prefix if its found
+	assert.Contains(t, result, "chia.full_node.port")
+	assert.Equal(t, []string{"chia", "full_node", "port"}, result["chia.full_node.port"].Path)
+	assert.Equal(t, "8444", result["chia.full_node.port"].Value)
+	assert.Contains(t, result, "chia__full_node__db_sync")
+	assert.Equal(t, []string{"chia", "full_node", "db_sync"}, result["chia__full_node__db_sync"].Path)
+	assert.Equal(t, "auto", result["chia__full_node__db_sync"].Value)
+	assert.Contains(t, result, "full_node.db_readers")
+	assert.Equal(t, []string{"full_node", "db_readers"}, result["full_node.db_readers"].Path)
+	assert.Equal(t, "4", result["full_node.db_readers"].Value)
+	assert.Contains(t, result, "full_node__database_path")
+	assert.Equal(t, []string{"full_node", "database_path"}, result["full_node__database_path"].Path)
+	assert.Equal(t, "testing.db", result["full_node__database_path"].Value)
+}
+
+func TestChiaConfig_ParsePathsFromStrings(t *testing.T) {
+	// A mix of paths with and without prefixes with both separators
+	strings := []string{
+		"chia.full_node.port",
+		"chia__full_node__db_sync",
+		"full_node.db_readers",
+		"full_node__database_path",
+	}
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result := config.ParsePathsFromStrings(strings, true)
+	assert.Len(t, result, 2)
+	assert.Contains(t, result, "full_node.port")
+	assert.Equal(t, []string{"full_node", "port"}, result["full_node.port"])
+	assert.Contains(t, result, "full_node__db_sync")
+	assert.Equal(t, []string{"full_node", "db_sync"}, result["full_node__db_sync"])
+	assert.NotContains(t, result, "full_node.db_readers")
+	assert.NotContains(t, result, "full_node__database_path")
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result = config.ParsePathsFromStrings(strings, false)
+	assert.Len(t, result, 4) // 4 because it won't strip chia prefix if its found
+	assert.Contains(t, result, "chia.full_node.port")
+	assert.Equal(t, []string{"chia", "full_node", "port"}, result["chia.full_node.port"])
+	assert.Contains(t, result, "chia__full_node__db_sync")
+	assert.Equal(t, []string{"chia", "full_node", "db_sync"}, result["chia__full_node__db_sync"])
+	assert.Contains(t, result, "full_node.db_readers")
+	assert.Equal(t, []string{"full_node", "db_readers"}, result["full_node.db_readers"])
+	assert.Contains(t, result, "full_node__database_path")
+	assert.Equal(t, []string{"full_node", "database_path"}, result["full_node__database_path"])
+}
