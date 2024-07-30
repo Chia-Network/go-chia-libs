@@ -21,7 +21,7 @@ import (
 func (c *ChiaConfig) FillValuesFromEnvironment() error {
 	valuesToUpdate := getAllChiaVars()
 	for _, pAndV := range valuesToUpdate {
-		err := c.SetFieldByPath(pAndV.path, pAndV.value)
+		err := c.SetFieldByPath(pAndV.Path, pAndV.Value)
 		if err != nil {
 			return err
 		}
@@ -30,32 +30,51 @@ func (c *ChiaConfig) FillValuesFromEnvironment() error {
 	return nil
 }
 
-type pathAndValue struct {
-	path  []string
-	value string
+// PathAndValue is a struct to represent the path minus any prefix and the value to set
+type PathAndValue struct {
+	Path  []string
+	Value string
 }
 
-func getAllChiaVars() map[string]pathAndValue {
+func getAllChiaVars() map[string]PathAndValue {
 	// Most shells don't allow `.` in env names, but docker will and its easier to visualize the `.`, so support both
 	// `.` and `__` as valid path segment separators
 	// chia.full_node.port
 	// chia__full_node__port
-	separators := []string{".", "__"}
 	envVars := os.Environ()
-	finalVars := map[string]pathAndValue{}
+	return ParsePathsAndValuesFromStrings(envVars, true)
+}
+
+// ParsePathsAndValuesFromStrings takes a list of strings and parses out paths and values
+// requirePrefix determines if the string must be prefixed with chia. or chia__
+// This is typically used when parsing env vars, not so much with flags
+func ParsePathsAndValuesFromStrings(pathStrings []string, requirePrefix bool) map[string]PathAndValue {
+	separators := []string{".", "__"}
+	finalVars := map[string]PathAndValue{}
 
 	for _, sep := range separators {
 		prefix := fmt.Sprintf("chia%s", sep)
-		for _, env := range envVars {
-			if strings.HasPrefix(env, prefix) {
+		for _, env := range pathStrings {
+			if requirePrefix {
+				if strings.HasPrefix(env, prefix) {
+					pair := strings.SplitN(env, "=", 2)
+					if len(pair) == 2 {
+						finalVars[pair[0][len(prefix):]] = PathAndValue{
+							Path:  strings.Split(pair[0], sep)[1:], // This is the Path in the config to the Value to edit minus the "chia" prefix
+							Value: pair[1],
+						}
+					}
+				}
+			} else {
 				pair := strings.SplitN(env, "=", 2)
 				if len(pair) == 2 {
-					finalVars[pair[0][len(prefix):]] = pathAndValue{
-						path:  strings.Split(pair[0], sep)[1:], // This is the path in the config to the value to edit minus the "chia" prefix
-						value: pair[1],
+					finalVars[pair[0]] = PathAndValue{
+						Path:  strings.Split(pair[0], sep),
+						Value: pair[1],
 					}
 				}
 			}
+
 		}
 	}
 

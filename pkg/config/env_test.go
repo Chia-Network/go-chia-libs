@@ -67,3 +67,27 @@ func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	assert.Equal(t, defaultConfig.SelectedNetwork, "unittestnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "INFO")
 }
+
+func TestChiaConfig_ParsePathsAndValuesFromStrings(t *testing.T) {
+	// A mix of paths with and without prefixes with both separators
+	strings := []string{
+		"chia.full_node.port=8444",
+		"chia__full_node__db_sync=auto",
+		"full_node.db_readers=4",
+		"full_node__database_path=testing.db",
+	}
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result := config.ParsePathsAndValuesFromStrings(strings, true)
+	assert.Len(t, result, 2)
+	assert.Contains(t, result, "full_node.port")
+	assert.Equal(t, result["full_node.port"].Value, "8444")
+	assert.Contains(t, result, "full_node__db_sync")
+	assert.Equal(t, result["full_node__db_sync"].Value, "auto")
+	assert.NotContains(t, result, "full_node.db_readers")
+	assert.NotContains(t, result, "full_node__database_path")
+
+	// Test that both strings with prefixes are matched with requirePrefix
+	result = config.ParsePathsAndValuesFromStrings(strings, false)
+	assert.Len(t, result, 4) // 4 because it won't strip chia prefix if its found
+}
