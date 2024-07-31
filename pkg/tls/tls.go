@@ -129,7 +129,7 @@ func ParsePemKey(keyPem []byte) (*rsa.PrivateKey, error) {
 		return nil, fmt.Errorf("failed to decode CA private key PEM")
 	}
 	if len(rest) != 0 {
-		return nil, fmt.Errorf("cert file had extra data at the end")
+		return nil, fmt.Errorf("key file had extra data at the end")
 	}
 	parsedKey, err := x509.ParsePKCS8PrivateKey(caKeyBlock.Bytes)
 	if err != nil {
