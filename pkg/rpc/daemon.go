@@ -39,6 +39,22 @@ func (s *DaemonService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 	return r, resp, nil
 }
 
+// GetVersion returns the application version for the service
+func (s *DaemonService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_version", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetVersionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetKeysOptions configures how keys are returned in get_keys
 type GetKeysOptions struct {
 	IncludeSecrets bool `json:"include_secrets"`
