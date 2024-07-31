@@ -146,3 +146,5 @@ main
 bin/
 test/
 .idea/*
+/*.crt
+/*.key
