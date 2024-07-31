@@ -74,6 +74,22 @@ type GetBlockchainStateResponse struct {
 	BlockchainState mo.Option[types.BlockchainState] `json:"blockchain_state,omitempty"`
 }
 
+// GetVersion returns the application version for the service
+func (s *FullNodeService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_version", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetVersionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // GetBlockchainState returns blockchain state
 func (s *FullNodeService) GetBlockchainState() (*GetBlockchainStateResponse, *http.Response, error) {
 	request, err := s.NewRequest("get_blockchain_state", nil)

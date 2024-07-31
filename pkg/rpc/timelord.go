@@ -53,3 +53,19 @@ func (s *TimelordService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwo
 
 	return r, resp, nil
 }
+
+// GetVersion returns the application version for the service
+func (s *TimelordService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_version", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetVersionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}

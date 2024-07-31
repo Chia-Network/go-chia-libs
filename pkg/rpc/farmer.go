@@ -58,6 +58,22 @@ func (s *FarmerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 	return r, resp, nil
 }
 
+// GetVersion returns the application version for the service
+func (s *FarmerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_version", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &GetVersionResponse{}
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // FarmerGetHarvestersOptions optoins for get_harvesters endpoint. Currently, accepts no options
 type FarmerGetHarvestersOptions struct{}
 
