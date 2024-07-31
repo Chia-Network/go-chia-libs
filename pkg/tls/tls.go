@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	// Need to embed the default config into the library
 	_ "embed"
 	"encoding/pem"
 	"fmt"
@@ -162,6 +163,7 @@ func WriteCertAndKey(certDER []byte, certKey *rsa.PrivateKey, certKeyBase string
 	return certPemBytes, keyPemBytes, nil
 }
 
+// GenerateNewCA generates a new CA
 func GenerateNewCA(certKeyBase string) ([]byte, []byte, error) {
 	// Generate a new RSA private key
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -199,6 +201,7 @@ func GenerateNewCA(certKeyBase string) ([]byte, []byte, error) {
 	return WriteCertAndKey(certDER, privateKey, certKeyBase)
 }
 
+// GenerateCASignedCert generates a new key/cert signed by the given CA
 func GenerateCASignedCert(caCert *x509.Certificate, caKey *rsa.PrivateKey, certKeyBase string) ([]byte, []byte, error) {
 	// Generate new private key
 	certKey, err := rsa.GenerateKey(rand.Reader, 2048)
