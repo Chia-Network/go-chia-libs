@@ -106,7 +106,10 @@ func GenerateAllCerts(outDir string) error {
 // ParsePemCertificate parses a certificate
 func ParsePemCertificate(certPem []byte) (*x509.Certificate, error) {
 	// Load CA certificate
-	caCertBlock, _ := pem.Decode(certPem)
+	caCertBlock, rest := pem.Decode(certPem)
+	if len(rest) != 0 {
+		return nil, fmt.Errorf("cert file had extra data at the end")
+	}
 	if caCertBlock == nil || caCertBlock.Type != "CERTIFICATE" {
 		return nil, fmt.Errorf("failed to decode CA certificate PEM")
 	}
@@ -121,7 +124,10 @@ func ParsePemCertificate(certPem []byte) (*x509.Certificate, error) {
 // ParsePemKey parses a key
 func ParsePemKey(keyPem []byte) (*rsa.PrivateKey, error) {
 	// Load CA private key
-	caKeyBlock, _ := pem.Decode(keyPem)
+	caKeyBlock, rest := pem.Decode(keyPem)
+	if len(rest) != 0 {
+		return nil, fmt.Errorf("cert file had extra data at the end")
+	}
 	if caKeyBlock == nil || caKeyBlock.Type != "PRIVATE KEY" {
 		return nil, fmt.Errorf("failed to decode CA private key PEM")
 	}
