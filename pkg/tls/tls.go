@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"math/big"
 	"os"
+	"path"
 	"time"
 )
 
@@ -42,35 +43,60 @@ var (
 
 // GenerateAllCerts generates the full set of required certs for chia blockchain
 func GenerateAllCerts(outDir string) error {
+	// First, ensure that all output directories exist
+	allNodes := append(privateNodeNames, publicNodeNames...)
+	for _, subdir := range append(allNodes, "ca") {
+		err := os.MkdirAll(path.Join(outDir, subdir), 0700)
+		if err != nil {
+			return fmt.Errorf("error making output directory for certs: %w", err)
+		}
+	}
+
+	// Next, copy the chia_ca cert/key
+	err := os.WriteFile(path.Join(outDir, "ca", "chia_ca.crt"), chiaCACrtBytes, 0600)
+	if err != nil {
+		return fmt.Errorf("error copying chia_ca.crt: %w", err)
+	}
+	err = os.WriteFile(path.Join(outDir, "ca", "chia_ca.key"), chiaCAKeyBytes, 0600)
+	if err != nil {
+		return fmt.Errorf("error copying chia_ca.key: %w", err)
+	}
+
 	chiaCACert, err := ParsePemCertificate(chiaCACrtBytes)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing chia_ca.crt")
 	}
 
 	chiaCAKey, err := ParsePemKey(chiaCAKeyBytes)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing chia_ca.key")
 	}
 
-	privateCACertBytes, privateCAKeyBytes, err := GenerateNewCA("private_ca")
+	privateCACertBytes, privateCAKeyBytes, err := GenerateNewCA(path.Join(outDir, "ca", "private_ca"))
+	if err != nil {
+		return fmt.Errorf("error creating private ca pair: %w", err)
+	}
 	privateCACert, err := ParsePemCertificate(privateCACertBytes)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing generated private_ca.crt: %w", err)
 	}
-
 	privateCAKey, err := ParsePemKey(privateCAKeyBytes)
 	if err != nil {
-		return err
+		return fmt.Errorf("error parsing generated private_ca.key: %w", err)
 	}
 
-	_, _, err = GenerateCASignedCert(chiaCACert, chiaCAKey, "public_test")
-	if err != nil {
-		return err
+	for _, node := range publicNodeNames {
+		_, _, err = GenerateCASignedCert(chiaCACert, chiaCAKey, path.Join(outDir, node, fmt.Sprintf("public_%s", node)))
+		if err != nil {
+			return fmt.Errorf("error generating public pair for %s: %w", node, err)
+		}
 	}
 
-	_, _, err = GenerateCASignedCert(privateCACert, privateCAKey, "private_test")
-	if err != nil {
-		return err
+	for _, node := range privateNodeNames {
+		_, _, err = GenerateCASignedCert(privateCACert, privateCAKey, path.Join(outDir, node, fmt.Sprintf("private_%s", node)))
+		if err != nil {
+			return fmt.Errorf("error generating private pair for %s: %w", node, err)
+		}
 	}
 
 	return nil
@@ -170,7 +196,7 @@ func GenerateNewCA(certKeyBase string) ([]byte, []byte, error) {
 		return nil, nil, err
 	}
 
-	return WriteCertAndKey(certDER, privateKey, "private_ca")
+	return WriteCertAndKey(certDER, privateKey, certKeyBase)
 }
 
 func GenerateCASignedCert(caCert *x509.Certificate, caKey *rsa.PrivateKey, certKeyBase string) ([]byte, []byte, error) {

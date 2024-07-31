@@ -148,3 +148,4 @@ test/
 .idea/*
 /*.crt
 /*.key
+/test-cert-gen
