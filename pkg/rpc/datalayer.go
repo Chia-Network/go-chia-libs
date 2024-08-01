@@ -36,3 +36,35 @@ func (s *DataLayerService) GetVersion(opts *GetVersionOptions) (*GetVersionRespo
 
 	return r, resp, nil
 }
+
+// DatalayerGetSubscriptionsOptions options for get_subscriptions
+type DatalayerGetSubscriptionsOptions struct{}
+
+// DatalayerGetSubscriptionsResponse response for get_subscriptions
+type DatalayerGetSubscriptionsResponse struct {
+	Response
+	StoreIDs []string `json:"store_ids"`
+}
+
+// GetSubscriptions is just an alias for Subscriptions, since the CLI command is get_subscriptions
+// Makes this easier to find
+func (s *DataLayerService) GetSubscriptions(opts *DatalayerGetSubscriptionsOptions) (*DatalayerGetSubscriptionsResponse, *http.Response, error) {
+	return s.Subscriptions(opts)
+}
+
+// Subscriptions calls the subscriptions endpoint to list all subscriptions
+func (s *DataLayerService) Subscriptions(opts *DatalayerGetSubscriptionsOptions) (*DatalayerGetSubscriptionsResponse, *http.Response, error) {
+	request, err := s.NewRequest("subscriptions", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerGetSubscriptionsResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
