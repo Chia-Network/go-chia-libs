@@ -68,3 +68,29 @@ func (s *DataLayerService) Subscriptions(opts *DatalayerGetSubscriptionsOptions)
 
 	return r, resp, nil
 }
+
+// DatalayerGetOwnedStoresOptions Options for get_owned_stores
+type DatalayerGetOwnedStoresOptions struct {}
+
+// DatalayerGetOwnedStoresResponse Response for get_owned_stores
+type DatalayerGetOwnedStoresResponse struct {
+	Response
+	StoreIDs []string `json:"store_ids"`
+}
+
+// GetOwnedStores RPC endpoint get_owned_stores
+func (s *DataLayerService) GetOwnedStores(opts *DatalayerGetOwnedStoresOptions) (*DatalayerGetOwnedStoresResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_owned_stores", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerGetOwnedStoresResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
