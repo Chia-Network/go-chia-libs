@@ -151,3 +151,33 @@ func (s *DataLayerService) DeleteMirror(opts *DatalayerDeleteMirrorOptions) (*Da
 
 	return r, resp, nil
 }
+
+// DatalayerAddMirrorOptions options for delete_mirror RPC call
+type DatalayerAddMirrorOptions struct {
+	ID     string   `json:"id"` // hex string datastore ID
+	URLs   []string `json:"urls"`
+	Amount uint64   `json:"amount"`
+	Fee    uint64   `json:"fee"`
+}
+
+// DatalayerAddMirrorResponse response data for add_mirror
+type DatalayerAddMirrorResponse struct {
+	Response
+}
+
+// AddMirror deletes a datalayer mirror
+func (s *DataLayerService) AddMirror(opts *DatalayerAddMirrorOptions) (*DatalayerAddMirrorResponse, *http.Response, error) {
+	request, err := s.NewRequest("add_mirror", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerAddMirrorResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
