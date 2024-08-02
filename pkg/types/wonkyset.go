@@ -23,7 +23,7 @@ func (ws *WonkySet) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	// Attempt to unmarshal into a map.
 	var m map[string]string
 	if mapErr = unmarshal(&m); mapErr != nil {
-		return fmt.Errorf("failed to unmarshal as either string slice of map: slice err: %s | map err: %s", sliceErr.Error(), mapErr.Error())
+		return fmt.Errorf("failed to unmarshal as either string slice or map: slice err: %s | map err: %s", sliceErr.Error(), mapErr.Error())
 	}
 
 	*ws = m
