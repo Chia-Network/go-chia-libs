@@ -10,7 +10,7 @@ import (
 )
 
 // TestWonkySet_UnmarshalYAML ensures that this will unmarshal both empty list [] and dict {} into empty map[string]string
-// And also ensures an actal !!set as it would show up in the yaml unmarshals correctly
+// And also ensures an actual !!set as it would show up in the yaml unmarshals correctly
 func TestWonkySet_UnmarshalYAML(t *testing.T) {
 	var yamlWithList = []byte(`
 farmer:
