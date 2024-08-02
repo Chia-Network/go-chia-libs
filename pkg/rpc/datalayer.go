@@ -181,3 +181,31 @@ func (s *DataLayerService) AddMirror(opts *DatalayerAddMirrorOptions) (*Datalaye
 
 	return r, resp, nil
 }
+
+// DatalayerUnsubscribeOptions options for unsubscribing to a datastore
+type DatalayerUnsubscribeOptions struct {
+	ID         string `json:"id"` // hex string datastore id
+	RetainData bool   `json:"retain"`
+}
+
+// DatalayerUnsubscribeResponse response data for unsubscribe
+type DatalayerUnsubscribeResponse struct {
+	Response
+}
+
+// Unsubscribe deletes a datalayer mirror
+func (s *DataLayerService) Unsubscribe(opts *DatalayerUnsubscribeOptions) (*DatalayerUnsubscribeResponse, *http.Response, error) {
+	request, err := s.NewRequest("unsubscribe", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerUnsubscribeResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
