@@ -123,3 +123,31 @@ func (s *DataLayerService) GetMirrors(opts *DatalayerGetMirrorsOptions) (*Datala
 
 	return r, resp, nil
 }
+
+// DatalayerDeleteMirrorOptions options for delete_mirror RPC call
+type DatalayerDeleteMirrorOptions struct {
+	CoinID string `json:"coin_id"` // hex string
+	Fee    uint64 `json:"fee"`     // not required
+}
+
+// DatalayerDeleteMirrorResponse response data for delete_mirror
+type DatalayerDeleteMirrorResponse struct {
+	Response
+}
+
+// DeleteMirror deletes a datalayer mirror
+func (s *DataLayerService) DeleteMirror(opts *DatalayerDeleteMirrorOptions) (*DatalayerDeleteMirrorResponse, *http.Response, error) {
+	request, err := s.NewRequest("delete_mirror", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerDeleteMirrorResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
