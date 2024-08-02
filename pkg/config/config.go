@@ -195,7 +195,7 @@ type PoolConfig struct {
 // FarmerConfig farmer configuration section
 type FarmerConfig struct {
 	FullNodePeers      []Peer           `yaml:"full_node_peers"`
-	PoolPublicKeys     []string         `yaml:"pool_public_keys"` // @TODO test if the !!set notation parses correctly
+	PoolPublicKeys     types.WonkySet   `yaml:"pool_public_keys"`
 	XCHTargetAddress   string           `yaml:"xch_target_address,omitempty"`
 	StartRPCServer     bool             `yaml:"start_rpc_server"`
 	EnableProfiler     bool             `yaml:"enable_profiler"`
