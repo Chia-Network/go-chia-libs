@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 // DataLayerService encapsulates data layer RPC methods
@@ -70,7 +71,7 @@ func (s *DataLayerService) Subscriptions(opts *DatalayerGetSubscriptionsOptions)
 }
 
 // DatalayerGetOwnedStoresOptions Options for get_owned_stores
-type DatalayerGetOwnedStoresOptions struct {}
+type DatalayerGetOwnedStoresOptions struct{}
 
 // DatalayerGetOwnedStoresResponse Response for get_owned_stores
 type DatalayerGetOwnedStoresResponse struct {
@@ -86,6 +87,34 @@ func (s *DataLayerService) GetOwnedStores(opts *DatalayerGetOwnedStoresOptions) 
 	}
 
 	r := &DatalayerGetOwnedStoresResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// DatalayerGetMirrorsOptions Options for get_mirrors
+type DatalayerGetMirrorsOptions struct {
+	ID string `json:"id"` // Hex String
+}
+
+// DatalayerGetMirrorsResponse Response from the get_mirrors RPC
+type DatalayerGetMirrorsResponse struct {
+	Response
+	Mirrors []types.DatalayerMirror `json:"mirrors"`
+}
+
+// GetMirrors lists the mirrors for the given datalayer store
+func (s *DataLayerService) GetMirrors(opts *DatalayerGetMirrorsOptions) (*DatalayerGetMirrorsResponse, *http.Response, error) {
+	request, err := s.NewRequest("get_mirrors", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerGetMirrorsResponse{}
 
 	resp, err := s.Do(request, r)
 	if err != nil {
