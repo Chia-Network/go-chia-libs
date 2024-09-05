@@ -16,13 +16,16 @@ func CreateDiscriminant(seed []byte, length int) string {
 	cSeed := C.CBytes(seed)
 	defer C.free(cSeed)
 
-	cResultStr := C.create_discriminant_wrapper((*C.uint8_t)(cSeed), C.size_t(len(seed)), C.int(length))
-	defer C.free(unsafe.Pointer(cResultStr))
+	resultSize := (length + 7) / 8
+	result := make([]byte, resultSize)
+	C.create_discriminant_wrapper(
+		(*C.uint8_t)(cSeed),
+		C.size_t(len(seed)),
+		C.size_t(length),
+		(*C.uint8_t)(unsafe.Pointer(&result[0])),
+	)
 
-	// Convert the C-string to a Go string
-	resultStr := C.GoString(cResultStr)
-
-	return resultStr
+	return string(result)
 }
 
 // Prove generates a proof
@@ -33,7 +36,14 @@ func Prove(challengeHash []byte, initialEL []byte, discriminantSizeBits int, num
 	cInitialEL := C.CBytes(initialEL)
 	defer C.free(cInitialEL)
 
-	cResult := C.prove_wrapper((*C.uint8_t)(cChallengeHash), C.size_t(len(challengeHash)), (*C.uint8_t)(cInitialEL), C.size_t(len(initialEL)), C.int(discriminantSizeBits), C.uint64_t(numIterations))
+	cResult := C.prove_wrapper(
+		(*C.uint8_t)(cChallengeHash),
+		C.size_t(len(challengeHash)),
+		(*C.uint8_t)(cInitialEL),
+		C.size_t(len(initialEL)),
+		C.size_t(discriminantSizeBits),
+		C.uint64_t(numIterations),
+	)
 	defer C.free(unsafe.Pointer(cResult.data))
 
 	// Convert C.ByteArray to Go []byte
@@ -54,7 +64,15 @@ func VerifyNWesolowski(discriminant string, xS, proofBlob []byte, numIterations,
 	cProofBlob := C.CBytes(proofBlob)
 	defer C.free(cProofBlob)
 
-	result := C.verify_n_wesolowski_wrapper((*C.char)(cDiscriminant), C.size_t(len(discriminant)), (*C.char)(cXS), C.size_t(len(xS)), (*C.char)(cProofBlob), C.size_t(len(proofBlob)), C.uint64_t(numIterations), C.uint64_t(discSizeBits), C.uint64_t(recursion))
+	result := C.verify_n_wesolowski_wrapper(
+		(*C.uchar)(unsafe.Pointer(cDiscriminant)),
+		C.size_t(len(discriminant)),
+		(*C.uchar)(cXS),
+		(*C.uchar)(cProofBlob),
+		C.size_t(len(proofBlob)),
+		C.uint64_t(numIterations),
+		C.uint64_t(recursion),
+	)
 
-	return result == 1
+	return bool(result)
 }
