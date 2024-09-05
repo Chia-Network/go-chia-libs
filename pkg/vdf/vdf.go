@@ -8,6 +8,7 @@ package vdf
 */
 import "C"
 import (
+	"encoding/hex"
 	"unsafe"
 )
 
@@ -25,7 +26,7 @@ func CreateDiscriminant(seed []byte, length int) string {
 		(*C.uint8_t)(unsafe.Pointer(&result[0])),
 	)
 
-	return string(result)
+	return hex.EncodeToString(result)
 }
 
 // Prove generates a proof
@@ -55,8 +56,10 @@ func Prove(challengeHash []byte, initialEL []byte, discriminantSizeBits int, num
 
 // VerifyNWesolowski checks an N Wesolowski proof.
 func VerifyNWesolowski(discriminant string, xS, proofBlob []byte, numIterations, discSizeBits, recursion uint64) bool {
-	cDiscriminant := C.CString(discriminant)
-	defer C.free(unsafe.Pointer(cDiscriminant))
+	discriminantBytes, err := hex.DecodeString(discriminant)
+	if err != nil {
+		return false
+	}
 
 	cXS := C.CBytes(xS)
 	defer C.free(cXS)
@@ -65,8 +68,8 @@ func VerifyNWesolowski(discriminant string, xS, proofBlob []byte, numIterations,
 	defer C.free(cProofBlob)
 
 	result := C.verify_n_wesolowski_wrapper(
-		(*C.uchar)(unsafe.Pointer(cDiscriminant)),
-		C.size_t(len(discriminant)),
+		(*C.uint8_t)(unsafe.Pointer(&discriminantBytes[0])),
+		C.size_t(len(discriminantBytes)),
 		(*C.uchar)(cXS),
 		(*C.uchar)(cProofBlob),
 		C.size_t(len(proofBlob)),
