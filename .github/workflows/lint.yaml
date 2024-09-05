@@ -22,7 +22,7 @@ jobs:
           wget https://github.com/Chia-Network/chiavdf/releases/download/$LATEST_CHIAVDF/chiavdfc-ubuntu-intel.zip
           unzip chiavdfc-ubuntu-intel.zip
           echo "CGO_CFLAGS=-I${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel" >> "$GITHUB_ENV"
-          echo "CGO_LDLAGS=-L${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel/static" >> "$GITHUB_ENV"
+          echo "CGO_LDFLAGS=-L${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel/static" >> "$GITHUB_ENV"
 
       - name: Test
         run: make test
