@@ -167,3 +167,28 @@ func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *
 
 	return r, resp, nil
 }
+
+// DaemonDeleteAllKeysOpts options for delete all keys request
+type DaemonDeleteAllKeysOpts struct {}
+
+// DaemonDeleteAllKeysResponse response when deleting all keys
+type DaemonDeleteAllKeysResponse struct {
+	Response
+}
+
+// DeleteAllKeys deletes all keys from the keychain
+func (s *DaemonService) DeleteAllKeys(opts *DaemonDeleteAllKeysOpts) (*DaemonDeleteAllKeysResponse, *http.Response, error) {
+	request, err := s.NewRequest("delete_all_keys", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DaemonDeleteAllKeysResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
