@@ -2,7 +2,7 @@ package vdf
 
 /*
 #cgo CXXFLAGS: -std=c++17
-#cgo LDFLAGS: -lstdc++ -lchiavdfc
+#cgo LDFLAGS: -lstdc++ -lchiavdfc -lgmp -lstdc++ -lm
 #include "c_wrapper.h"
 #include <stdlib.h>
 */
