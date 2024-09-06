@@ -2,12 +2,13 @@ package vdf
 
 /*
 #cgo CXXFLAGS: -std=c++17
-#cgo LDFLAGS: -lstdc++ -lchiavdfc
+#cgo LDFLAGS: -lstdc++ -lchiavdfc -lgmp -lstdc++ -lm
 #include "c_wrapper.h"
 #include <stdlib.h>
 */
 import "C"
 import (
+	"encoding/hex"
 	"unsafe"
 )
 
@@ -16,13 +17,16 @@ func CreateDiscriminant(seed []byte, length int) string {
 	cSeed := C.CBytes(seed)
 	defer C.free(cSeed)
 
-	cResultStr := C.create_discriminant_wrapper((*C.uint8_t)(cSeed), C.size_t(len(seed)), C.int(length))
-	defer C.free(unsafe.Pointer(cResultStr))
+	resultSize := (length + 7) / 8
+	result := make([]byte, resultSize)
+	C.create_discriminant_wrapper(
+		(*C.uint8_t)(cSeed),
+		C.size_t(len(seed)),
+		C.size_t(length),
+		(*C.uint8_t)(unsafe.Pointer(&result[0])),
+	)
 
-	// Convert the C-string to a Go string
-	resultStr := C.GoString(cResultStr)
-
-	return resultStr
+	return hex.EncodeToString(result)
 }
 
 // Prove generates a proof
@@ -33,7 +37,14 @@ func Prove(challengeHash []byte, initialEL []byte, discriminantSizeBits int, num
 	cInitialEL := C.CBytes(initialEL)
 	defer C.free(cInitialEL)
 
-	cResult := C.prove_wrapper((*C.uint8_t)(cChallengeHash), C.size_t(len(challengeHash)), (*C.uint8_t)(cInitialEL), C.size_t(len(initialEL)), C.int(discriminantSizeBits), C.uint64_t(numIterations))
+	cResult := C.prove_wrapper(
+		(*C.uint8_t)(cChallengeHash),
+		C.size_t(len(challengeHash)),
+		(*C.uint8_t)(cInitialEL),
+		C.size_t(len(initialEL)),
+		C.size_t(discriminantSizeBits),
+		C.uint64_t(numIterations),
+	)
 	defer C.free(unsafe.Pointer(cResult.data))
 
 	// Convert C.ByteArray to Go []byte
@@ -45,8 +56,10 @@ func Prove(challengeHash []byte, initialEL []byte, discriminantSizeBits int, num
 
 // VerifyNWesolowski checks an N Wesolowski proof.
 func VerifyNWesolowski(discriminant string, xS, proofBlob []byte, numIterations, discSizeBits, recursion uint64) bool {
-	cDiscriminant := C.CString(discriminant)
-	defer C.free(unsafe.Pointer(cDiscriminant))
+	discriminantBytes, err := hex.DecodeString(discriminant)
+	if err != nil {
+		return false
+	}
 
 	cXS := C.CBytes(xS)
 	defer C.free(cXS)
@@ -54,7 +67,15 @@ func VerifyNWesolowski(discriminant string, xS, proofBlob []byte, numIterations,
 	cProofBlob := C.CBytes(proofBlob)
 	defer C.free(cProofBlob)
 
-	result := C.verify_n_wesolowski_wrapper((*C.char)(cDiscriminant), C.size_t(len(discriminant)), (*C.char)(cXS), C.size_t(len(xS)), (*C.char)(cProofBlob), C.size_t(len(proofBlob)), C.uint64_t(numIterations), C.uint64_t(discSizeBits), C.uint64_t(recursion))
+	result := C.verify_n_wesolowski_wrapper(
+		(*C.uint8_t)(unsafe.Pointer(&discriminantBytes[0])),
+		C.size_t(len(discriminantBytes)),
+		(*C.uchar)(cXS),
+		(*C.uchar)(cProofBlob),
+		C.size_t(len(proofBlob)),
+		C.uint64_t(numIterations),
+		C.uint64_t(recursion),
+	)
 
-	return result == 1
+	return bool(result)
 }

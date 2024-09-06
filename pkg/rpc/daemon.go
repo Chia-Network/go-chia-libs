@@ -82,3 +82,88 @@ func (s *DaemonService) GetKeys(opts *GetKeysOptions) (*GetKeysResponse, *http.R
 
 	return r, resp, nil
 }
+
+// StartServiceOptions start service options
+type StartServiceOptions struct {
+	Service ServiceFullName `json:"service"`
+}
+
+// StartServiceResponse start service response
+type StartServiceResponse struct {
+	Response
+	Service ServiceFullName `json:"service"`
+}
+
+// StartService starts the given service
+func (s *DaemonService) StartService(opts *StartServiceOptions) (*StartServiceResponse, *http.Response, error) {
+	request, err := s.NewRequest("start_service", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &StartServiceResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// StopServiceOptions start service options
+type StopServiceOptions struct {
+	Service ServiceFullName `json:"service"`
+}
+
+// StopServiceResponse stop service response
+type StopServiceResponse struct {
+	Response
+	Service ServiceFullName `json:"service"`
+}
+
+// StopService stops the given service
+func (s *DaemonService) StopService(opts *StopServiceOptions) (*StopServiceResponse, *http.Response, error) {
+	request, err := s.NewRequest("stop_service", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &StopServiceResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
+// IsRunningOptions is service running options
+type IsRunningOptions struct {
+	Service ServiceFullName `json:"service"`
+}
+
+// IsRunningResponse is service running response
+type IsRunningResponse struct {
+	Response
+	ServiceName ServiceFullName `json:"service_name"`
+	IsRunning   bool            `json:"is_running"`
+}
+
+// IsRunning returns whether a service is running
+func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *http.Response, error) {
+	request, err := s.NewRequest("is_running", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &IsRunningResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
