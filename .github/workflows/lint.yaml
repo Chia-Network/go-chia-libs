@@ -14,7 +14,7 @@ jobs:
 
       - name: Get latest chiavdf libs
         run: |
-          apt-get update && apt-get install -y unzip
+          apt-get update && apt-get install -y unzip libgmp-dev
           LATEST_CHIAVDF=$(curl -s https://latest.cmm.io/chiavdf)
           echo "Latest chiavdf is: $LATEST_CHIAVDF"
           mkdir chiavdfc
