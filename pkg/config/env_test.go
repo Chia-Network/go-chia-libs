@@ -43,6 +43,36 @@ func TestChiaConfig_SetFieldByPath(t *testing.T) {
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "INFO")
 }
 
+// TestChiaConfig_SetFieldByPath_FullObjects Tests that we can pass in and correctly parse a whole section of config
+// as json or yaml and that it gets set properly
+func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
+	defaultConfig, err := config.LoadDefaultConfig()
+	assert.NoError(t, err)
+	// Make assertions about the default state, to ensure the assumed initial values are correct
+	assert.Equal(t, uint16(8444), defaultConfig.FullNode.Port)
+	assert.Equal(t, uint16(8555), defaultConfig.FullNode.RPCPort)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
+	assert.Equal(t, defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor, types.Uint128{})
+	assert.Equal(t, defaultConfig.SelectedNetwork, "mainnet")
+	assert.Equal(t, defaultConfig.Logging.LogLevel, "WARNING")
+
+	// Test passing in json blobs
+	err = defaultConfig.SetFieldByPath([]string{"network_overrides", "constants"}, `{"jsonnet":{"DIFFICULTY_CONSTANT_FACTOR":44445555,"GENESIS_CHALLENGE":e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806}}`)
+	assert.NoError(t, err)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["jsonnet"])
+	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["jsonnet"].DifficultyConstantFactor)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+
+	// Test passing in yaml blobs
+	err = defaultConfig.SetFieldByPath([]string{"network_overrides", "constants"}, `yamlnet:
+  DIFFICULTY_CONSTANT_FACTOR: 44445555
+  GENESIS_CHALLENGE: e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806`)
+	assert.NoError(t, err)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["yamlnet"])
+	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["yamlnet"].DifficultyConstantFactor)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.NetworkOverrides.Constants["yamlnet"].GenesisChallenge)
+}
+
 func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	defaultConfig, err := config.LoadDefaultConfig()
 	assert.NoError(t, err)
