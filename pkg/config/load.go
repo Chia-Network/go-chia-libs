@@ -26,6 +26,12 @@ func GetChiaConfig() (*ChiaConfig, error) {
 		return nil, fmt.Errorf("chia config file not found at %s. Ensure CHIA_ROOT is set to the correct chia root", configPath)
 	}
 
+	return LoadConfigAtRoot(configPath, rootPath)
+}
+
+// LoadConfigAtRoot loads the given configPath into a ChiaConfig
+// chiaRoot is required to fill the database paths in the config
+func LoadConfigAtRoot(configPath, rootPath string) (*ChiaConfig, error) {
 	configBytes, err := os.ReadFile(configPath)
 	if err != nil {
 		return nil, err
