@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	"gopkg.in/yaml.v3"
+
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
@@ -188,6 +190,18 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 					return fmt.Errorf("invalid string for big.Int: %s", strValue)
 				}
 				fieldValue.Set(reflect.ValueOf(types.Uint128FromBig(bigIntValue)))
+				return nil
+			}
+
+			// Handle YAML (and therefore JSON) parsing for passing in entire structs/maps
+			// This is particularly useful if you want to pass in a whole blob of network constants at once
+			if fieldValue.Kind() == reflect.Struct || fieldValue.Kind() == reflect.Map {
+				if strValue, ok := value.(string); ok {
+					yamlData := []byte(strValue)
+					if err := yaml.Unmarshal(yamlData, fieldValue.Addr().Interface()); err != nil {
+						return fmt.Errorf("failed to unmarshal yaml into field: %w", err)
+					}
+				}
 				return nil
 			}
 

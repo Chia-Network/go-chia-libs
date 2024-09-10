@@ -169,7 +169,7 @@ func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *
 }
 
 // DaemonDeleteAllKeysOpts options for delete all keys request
-type DaemonDeleteAllKeysOpts struct {}
+type DaemonDeleteAllKeysOpts struct{}
 
 // DaemonDeleteAllKeysResponse response when deleting all keys
 type DaemonDeleteAllKeysResponse struct {
