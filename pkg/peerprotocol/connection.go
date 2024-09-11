@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -68,7 +69,10 @@ func NewConnection(ip *net.IP, options ...ConnectionOptionFunc) (*Connection, er
 		if err := c.loadChiaConfig(); err != nil {
 			return nil, err
 		}
-		c.networkID = c.chiaConfig.SelectedNetwork
+		if c.chiaConfig.SelectedNetwork == nil {
+			return nil, errors.New("selected_network empty in config")
+		}
+		c.networkID = *c.chiaConfig.SelectedNetwork
 	}
 
 	// Generate the websocket dialer

@@ -133,6 +133,11 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 		return fmt.Errorf("invalid path")
 	}
 
+	// Deal with pointers
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Type().Field(i)
 		yamlTagRaw := field.Tag.Get("yaml")
@@ -148,6 +153,9 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 			// If we only have 1 element left in paths, then we can set the value
 			// Otherwise, we can recursively call setFieldByPath again, with the remaining elements of path
 			fieldValue := v.Field(i)
+			if fieldValue.Kind() == reflect.Ptr {
+				fieldValue = fieldValue.Elem()
+			}
 			if len(path) > 1 {
 				if fieldValue.Kind() == reflect.Map {
 					mapKey := reflect.ValueOf(path[1])
