@@ -18,7 +18,7 @@ func TestChiaConfig_SetFieldByPath(t *testing.T) {
 	assert.Equal(t, uint16(8555), defaultConfig.FullNode.RPCPort)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor, types.Uint128{})
-	assert.Equal(t, defaultConfig.SelectedNetwork, "mainnet")
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "mainnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "WARNING")
 
 	err = defaultConfig.SetFieldByPath([]string{"full_node", "port"}, "1234")
@@ -36,7 +36,18 @@ func TestChiaConfig_SetFieldByPath(t *testing.T) {
 
 	err = defaultConfig.SetFieldByPath([]string{"selected_network"}, "unittestnet")
 	assert.NoError(t, err)
-	assert.Equal(t, defaultConfig.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "unittestnet")
+	// Ensure all the other selected networks got set too
+	assert.Equal(t, *defaultConfig.Seeder.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Harvester.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Pool.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Farmer.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Timelord.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.FullNode.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.UI.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Introducer.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.Wallet.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.DataLayer.SelectedNetwork, "unittestnet")
 
 	err = defaultConfig.SetFieldByPath([]string{"logging", "log_level"}, "INFO")
 	assert.NoError(t, err)
@@ -53,7 +64,7 @@ func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
 	assert.Equal(t, uint16(8555), defaultConfig.FullNode.RPCPort)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor, types.Uint128{})
-	assert.Equal(t, defaultConfig.SelectedNetwork, "mainnet")
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "mainnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "WARNING")
 
 	// Test passing in json blobs
@@ -62,15 +73,25 @@ func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["jsonnet"])
 	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["jsonnet"].DifficultyConstantFactor)
 	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	// Ensure this applied to the other areas of config as well
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Seeder.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Harvester.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Pool.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Farmer.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Timelord.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.FullNode.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.UI.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Introducer.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Wallet.NetworkOverrides.Constants["jsonnet"].GenesisChallenge)
 
 	// Test passing in yaml blobs
 	err = defaultConfig.SetFieldByPath([]string{"network_overrides", "constants"}, `yamlnet:
   DIFFICULTY_CONSTANT_FACTOR: 44445555
-  GENESIS_CHALLENGE: e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806`)
+  GENESIS_CHALLENGE: 9eb3cec765fb3b3508f82e090374d5913d24806e739da31bcc4ab1767d9f1ca9`)
 	assert.NoError(t, err)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["yamlnet"])
 	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["yamlnet"].DifficultyConstantFactor)
-	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.NetworkOverrides.Constants["yamlnet"].GenesisChallenge)
+	assert.Equal(t, "9eb3cec765fb3b3508f82e090374d5913d24806e739da31bcc4ab1767d9f1ca9", defaultConfig.NetworkOverrides.Constants["yamlnet"].GenesisChallenge)
 }
 
 func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
@@ -81,7 +102,7 @@ func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	assert.Equal(t, uint16(8555), defaultConfig.FullNode.RPCPort)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor, types.Uint128{})
-	assert.Equal(t, defaultConfig.SelectedNetwork, "mainnet")
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "mainnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "WARNING")
 
 	assert.NoError(t, os.Setenv("chia.full_node.port", "1234"))
@@ -94,7 +115,7 @@ func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	assert.Equal(t, uint16(1234), defaultConfig.FullNode.Port)
 	assert.Equal(t, uint16(5678), defaultConfig.FullNode.RPCPort)
 	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor)
-	assert.Equal(t, defaultConfig.SelectedNetwork, "unittestnet")
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "unittestnet")
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "INFO")
 }
 
