@@ -94,11 +94,10 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 		return errors.New("you must provide the CA cert and key if providing a CA, or set both to nil and a new CA will be generated")
 	} else {
 		// Must have non-nil values for both, so ensure the cert and key match
-		if ! CertMatchesPrivateKey(privateCACert, privateCAKey) {
+		if !CertMatchesPrivateKey(privateCACert, privateCAKey) {
 			return errors.New("provided private CA Cert and Key do not match")
 		}
 	}
-
 
 	for _, node := range publicNodeNames {
 		_, _, err = GenerateCASignedCert(chiaCACert, chiaCAKey, path.Join(outDir, node, fmt.Sprintf("public_%s", node)))
