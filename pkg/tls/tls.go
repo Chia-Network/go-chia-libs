@@ -77,7 +77,8 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 
 	if privateCACert == nil && privateCAKey == nil {
 		// If privateCACert and privateCAKey are both nil, we will generate a new one
-		privateCACertDER, privateCAKey, err := GenerateNewCA()
+		var privateCACertDER []byte
+		privateCACertDER, privateCAKey, err = GenerateNewCA()
 		if err != nil {
 			return fmt.Errorf("error creating private ca pair: %w", err)
 		}
