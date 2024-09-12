@@ -81,17 +81,13 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 		if err != nil {
 			return fmt.Errorf("error creating private ca pair: %w", err)
 		}
-		privateCACertBytes, privateCAKeyBytes, err := WriteCertAndKey(privateCACertDER, privateCAKey, path.Join(outDir, "ca", "private_ca"))
+		privateCACertBytes, _, err := WriteCertAndKey(privateCACertDER, privateCAKey, path.Join(outDir, "ca", "private_ca"))
 		if err != nil {
 			return fmt.Errorf("error writing private ca: %w", err)
 		}
 		privateCACert, err = ParsePemCertificate(privateCACertBytes)
 		if err != nil {
 			return fmt.Errorf("error parsing generated private_ca.crt: %w", err)
-		}
-		privateCAKey, err = ParsePemKey(privateCAKeyBytes)
-		if err != nil {
-			return fmt.Errorf("error parsing generated private_ca.key: %w", err)
 		}
 	} else if privateCACert == nil || privateCAKey == nil {
 		// If only one of them is nil, we can't continue
