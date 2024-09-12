@@ -77,17 +77,18 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 
 	if privateCACert == nil && privateCAKey == nil {
 		// If privateCACert and privateCAKey are both nil, we will generate a new one
-		privateCACertBytes, privateCAKeyBytes, err := GenerateNewCA(path.Join(outDir, "ca", "private_ca"))
+		var privateCACertDER []byte
+		privateCACertDER, privateCAKey, err = GenerateNewCA()
 		if err != nil {
 			return fmt.Errorf("error creating private ca pair: %w", err)
+		}
+		privateCACertBytes, _, err := WriteCertAndKey(privateCACertDER, privateCAKey, path.Join(outDir, "ca", "private_ca"))
+		if err != nil {
+			return fmt.Errorf("error writing private ca: %w", err)
 		}
 		privateCACert, err = ParsePemCertificate(privateCACertBytes)
 		if err != nil {
 			return fmt.Errorf("error parsing generated private_ca.crt: %w", err)
-		}
-		privateCAKey, err = ParsePemKey(privateCAKeyBytes)
-		if err != nil {
-			return fmt.Errorf("error parsing generated private_ca.key: %w", err)
 		}
 	} else if privateCACert == nil || privateCAKey == nil {
 		// If only one of them is nil, we can't continue
@@ -222,7 +223,7 @@ func WriteCertAndKey(certDER []byte, certKey *rsa.PrivateKey, certKeyBase string
 }
 
 // GenerateNewCA generates a new CA
-func GenerateNewCA(certKeyBase string) ([]byte, []byte, error) {
+func GenerateNewCA() ([]byte, *rsa.PrivateKey, error) {
 	// Generate a new RSA private key
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -256,7 +257,7 @@ func GenerateNewCA(certKeyBase string) ([]byte, []byte, error) {
 		return nil, nil, err
 	}
 
-	return WriteCertAndKey(certDER, privateKey, certKeyBase)
+	return certDER, privateKey, nil
 }
 
 // GenerateCASignedCert generates a new key/cert signed by the given CA
