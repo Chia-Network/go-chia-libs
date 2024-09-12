@@ -116,6 +116,11 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 	return nil
 }
 
+// GetChiaCACertAndKey returns the cert and key bytes for chia_ca.crt and chia_ca.key
+func GetChiaCACertAndKey() ([]byte, []byte) {
+	return chiaCACrtBytes, chiaCAKeyBytes
+}
+
 // CertMatchesPrivateKey tests to make the sure cert and private key match
 func CertMatchesPrivateKey(cert *x509.Certificate, privateKey *rsa.PrivateKey) bool {
 	publicKey := &privateKey.PublicKey
