@@ -149,3 +149,4 @@ test/
 /*.crt
 /*.key
 /test-cert-gen
+/pkg/config/config.yml
