@@ -22,8 +22,8 @@ type ChiaConfig struct {
 	OutboundRateLimitPercent uint8                  `yaml:"outbound_rate_limit_percent"`
 	NetworkOverrides         *NetworkOverrides      `yaml:"network_overrides"`
 	SelectedNetwork          *string                `yaml:"selected_network"`
-	AlertsURL                string                 `yaml:"ALERTS_URL"`
-	ChiaAlertsPubkey         string                 `yaml:"CHIA_ALERTS_PUBKEY"`
+	AlertsURL                string                 `yaml:"ALERTS_URL,omitempty"`
+	ChiaAlertsPubkey         string                 `yaml:"CHIA_ALERTS_PUBKEY,omitempty"`
 	PrivateSSLCA             CAConfig               `yaml:"private_ssl_ca"`
 	ChiaSSLCA                CAConfig               `yaml:"chia_ssl_ca"`
 	DaemonSSL                SSLConfig              `yaml:"daemon_ssl"`
@@ -40,12 +40,16 @@ type ChiaConfig struct {
 	Wallet                   WalletConfig           `yaml:"wallet"`
 	DataLayer                DataLayerConfig        `yaml:"data_layer"`
 	Simulator                SimulatorConfig        `yaml:"simulator"`
+	// Simulator Fork Settings
+	HardForkHeight  uint32 `yaml:"HARD_FORK_HEIGHT"`
+	SoftFork4Height uint32 `yaml:"SOFT_FORK4_HEIGHT"`
+	SoftFork5Height uint32 `yaml:"SOFT_FORK5_HEIGHT"`
 }
 
 // PortConfig common port settings found in many sections of the config
 type PortConfig struct {
 	Port    uint16 `yaml:"port,omitempty"`
-	RPCPort uint16 `yaml:"rpc_port"`
+	RPCPort uint16 `yaml:"rpc_port,omitempty"`
 }
 
 // CAConfig config keys for CA
@@ -56,10 +60,10 @@ type CAConfig struct {
 
 // SSLConfig common ssl settings found in many sections of the config
 type SSLConfig struct {
-	PrivateCRT string `yaml:"private_crt"`
-	PrivateKey string `yaml:"private_key"`
-	PublicCRT  string `yaml:"public_crt"`
-	PublicKey  string `yaml:"public_key"`
+	PrivateCRT string `yaml:"private_crt,omitempty"`
+	PrivateKey string `yaml:"private_key,omitempty"`
+	PublicCRT  string `yaml:"public_crt,omitempty"`
+	PublicKey  string `yaml:"public_key,omitempty"`
 }
 
 // Peer is a host/port for a peer
@@ -110,7 +114,7 @@ type NetworkConstants struct {
 // NetworkConfig specific network configuration settings
 type NetworkConfig struct {
 	AddressPrefix       string `yaml:"address_prefix"`
-	DefaultFullNodePort uint16 `yaml:"default_full_node_port"`
+	DefaultFullNodePort uint16 `yaml:"default_full_node_port,omitempty"`
 }
 
 // LoggingConfig configuration settings for the logger
@@ -171,6 +175,7 @@ type SeederSOA struct {
 type CrawlerConfig struct {
 	StartRPCServer bool `yaml:"start_rpc_server"`
 	PortConfig     `yaml:",inline"`
+	PrunePeerDays  uint32    `yaml:"prune_peer_days"`
 	SSL            SSLConfig `yaml:"ssl"`
 }
 
@@ -398,6 +403,7 @@ type DataLayerConfig struct {
 	DatabasePath                string         `yaml:"database_path"`
 	ServerFilesLocation         string         `yaml:"server_files_location"`
 	ClientTimeout               uint16         `yaml:"client_timeout"`
+	ConnectTimeout              uint16         `yaml:"connect_timeout"`
 	ProxyURL                    string         `yaml:"proxy_url,omitempty"`
 	HostIP                      string         `yaml:"host_ip"`
 	HostPort                    uint16         `yaml:"host_port"`
