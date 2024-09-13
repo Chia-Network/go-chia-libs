@@ -1,6 +1,8 @@
 package config
 
 import (
+	"gopkg.in/yaml.v3"
+
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
@@ -69,8 +71,9 @@ type Peer struct {
 
 // NetworkOverrides is all network settings
 type NetworkOverrides struct {
-	Constants map[string]NetworkConstants `yaml:"constants"`
-	Config    map[string]NetworkConfig    `yaml:"config"`
+	YamlAnchor *yaml.Node                  `yaml:"-"` // Helps with serializing the anchors to yaml
+	Constants  map[string]NetworkConstants `yaml:"constants"`
+	Config     map[string]NetworkConfig    `yaml:"config"`
 }
 
 // NetworkConstants the constants for each network
