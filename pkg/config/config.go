@@ -81,6 +81,7 @@ func (nc *NetworkOverrides) AnchorNode() *yaml.Node {
 	return nc.yamlAnchor
 }
 
+// SetAnchorNode sets the yaml.Node reference when marshaling
 func (nc *NetworkOverrides) SetAnchorNode(node *yaml.Node) {
 	nc.yamlAnchor = node
 }
@@ -131,6 +132,7 @@ func (lc *LoggingConfig) AnchorNode() *yaml.Node {
 	return lc.yamlAnchor
 }
 
+// SetAnchorNode sets the yaml.Node reference when marshaling
 func (lc *LoggingConfig) SetAnchorNode(node *yaml.Node) {
 	lc.yamlAnchor = node
 }
