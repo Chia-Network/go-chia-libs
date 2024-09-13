@@ -1,6 +1,8 @@
 package config
 
 import (
+	"gopkg.in/yaml.v3"
+
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
@@ -25,7 +27,7 @@ type ChiaConfig struct {
 	PrivateSSLCA             CAConfig               `yaml:"private_ssl_ca"`
 	ChiaSSLCA                CAConfig               `yaml:"chia_ssl_ca"`
 	DaemonSSL                SSLConfig              `yaml:"daemon_ssl"`
-	Logging                  LoggingConfig          `yaml:"logging"` // @TODO this would usually be an anchor
+	Logging                  *LoggingConfig         `yaml:"logging"`
 	Seeder                   SeederConfig           `yaml:"seeder"`
 	Harvester                HarvesterConfig        `yaml:"harvester"`
 	Pool                     PoolConfig             `yaml:"pool"`
@@ -69,8 +71,19 @@ type Peer struct {
 
 // NetworkOverrides is all network settings
 type NetworkOverrides struct {
-	Constants map[string]NetworkConstants `yaml:"constants"`
-	Config    map[string]NetworkConfig    `yaml:"config"`
+	yamlAnchor *yaml.Node                  `yaml:"-"` // Helps with serializing the anchors to yaml
+	Constants  map[string]NetworkConstants `yaml:"constants"`
+	Config     map[string]NetworkConfig    `yaml:"config"`
+}
+
+// AnchorNode returns the node to be used in yaml anchors
+func (nc *NetworkOverrides) AnchorNode() *yaml.Node {
+	return nc.yamlAnchor
+}
+
+// SetAnchorNode sets the yaml.Node reference when marshaling
+func (nc *NetworkOverrides) SetAnchorNode(node *yaml.Node) {
+	nc.yamlAnchor = node
 }
 
 // NetworkConstants the constants for each network
@@ -102,15 +115,26 @@ type NetworkConfig struct {
 
 // LoggingConfig configuration settings for the logger
 type LoggingConfig struct {
-	LogStdout           bool   `yaml:"log_stdout"`
-	LogFilename         string `yaml:"log_filename"`
-	LogLevel            string `yaml:"log_level"`
-	LogMaxFilesRotation uint8  `yaml:"log_maxfilesrotation"`
-	LogMaxBytesRotation uint32 `yaml:"log_maxbytesrotation"`
-	LogUseGzip          bool   `yaml:"log_use_gzip"`
-	LogSyslog           bool   `yaml:"log_syslog"`
-	LogSyslogHost       string `yaml:"log_syslog_host"`
-	LogSyslogPort       uint16 `yaml:"log_syslog_port"`
+	yamlAnchor          *yaml.Node `yaml:"-"` // Helps with serializing the anchors to yaml
+	LogStdout           bool       `yaml:"log_stdout"`
+	LogFilename         string     `yaml:"log_filename"`
+	LogLevel            string     `yaml:"log_level"`
+	LogMaxFilesRotation uint8      `yaml:"log_maxfilesrotation"`
+	LogMaxBytesRotation uint32     `yaml:"log_maxbytesrotation"`
+	LogUseGzip          bool       `yaml:"log_use_gzip"`
+	LogSyslog           bool       `yaml:"log_syslog"`
+	LogSyslogHost       string     `yaml:"log_syslog_host"`
+	LogSyslogPort       uint16     `yaml:"log_syslog_port"`
+}
+
+// AnchorNode returns the node to be used in yaml anchors
+func (lc *LoggingConfig) AnchorNode() *yaml.Node {
+	return lc.yamlAnchor
+}
+
+// SetAnchorNode sets the yaml.Node reference when marshaling
+func (lc *LoggingConfig) SetAnchorNode(node *yaml.Node) {
+	lc.yamlAnchor = node
 }
 
 // SeederConfig seeder configuration section
@@ -129,7 +153,7 @@ type SeederConfig struct {
 	SOA                 SeederSOA         `yaml:"soa"`
 	NetworkOverrides    *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork     *string           `yaml:"selected_network"`
-	Logging             LoggingConfig     `yaml:"logging"`
+	Logging             *LoggingConfig    `yaml:"logging"`
 	CrawlerConfig       CrawlerConfig     `yaml:"crawler"`
 }
 
@@ -157,7 +181,7 @@ type HarvesterConfig struct {
 	NumThreads                 uint8                 `yaml:"num_threads"`
 	PlotsRefreshParameter      PlotsRefreshParameter `yaml:"plots_refresh_parameter"`
 	ParallelRead               bool                  `yaml:"parallel_read"`
-	Logging                    LoggingConfig         `yaml:"logging"`
+	Logging                    *LoggingConfig        `yaml:"logging"`
 	NetworkOverrides           *NetworkOverrides     `yaml:"network_overrides"`
 	SelectedNetwork            *string               `yaml:"selected_network"`
 	PlotDirectories            []string              `yaml:"plot_directories"`
@@ -187,7 +211,7 @@ type PlotsRefreshParameter struct {
 // PoolConfig configures pool settings
 type PoolConfig struct {
 	XCHTargetAddress string            `yaml:"xch_target_address,omitempty"`
-	Logging          LoggingConfig     `yaml:"logging"`
+	Logging          *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork  *string           `yaml:"selected_network"`
 }
@@ -200,7 +224,7 @@ type FarmerConfig struct {
 	StartRPCServer     bool              `yaml:"start_rpc_server"`
 	EnableProfiler     bool              `yaml:"enable_profiler"`
 	PoolShareThreshold uint32            `yaml:"pool_share_threshold"`
-	Logging            LoggingConfig     `yaml:"logging"`
+	Logging            *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides   *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork    *string           `yaml:"selected_network"`
 	PortConfig         `yaml:",inline"`
@@ -209,10 +233,10 @@ type FarmerConfig struct {
 
 // TimelordLauncherConfig settings for vdf_client launcher
 type TimelordLauncherConfig struct {
-	Host         string        `yaml:"host"`
-	Port         uint16        `yaml:"port"`
-	ProcessCount uint8         `yaml:"process_count"`
-	Logging      LoggingConfig `yaml:"logging"`
+	Host         string         `yaml:"host"`
+	Port         uint16         `yaml:"port"`
+	ProcessCount uint8          `yaml:"process_count"`
+	Logging      *LoggingConfig `yaml:"logging"`
 }
 
 // TimelordConfig timelord configuration section
@@ -221,7 +245,7 @@ type TimelordConfig struct {
 	FullNodePeers              []Peer            `yaml:"full_node_peers"`
 	MaxConnectionTime          uint16            `yaml:"max_connection_time"`
 	VDFServer                  Peer              `yaml:"vdf_server"`
-	Logging                    LoggingConfig     `yaml:"logging"`
+	Logging                    *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides           *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork            *string           `yaml:"selected_network"`
 	FastAlgorithm              bool              `yaml:"fast_algorithm"`
@@ -282,7 +306,7 @@ type FullNodeConfig struct {
 	TrustedMaxSubscribeResponseItems uint32            `yaml:"trusted_max_subscribe_response_items"`
 	DNSServers                       []string          `yaml:"dns_servers"`
 	IntroducerPeer                   Peer              `yaml:"introducer_peer"`
-	Logging                          LoggingConfig     `yaml:"logging"`
+	Logging                          *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides                 *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork                  *string           `yaml:"selected_network"`
 	TrustedPeers                     map[string]string `yaml:"trusted_peers"`
@@ -294,7 +318,7 @@ type FullNodeConfig struct {
 type UIConfig struct {
 	PortConfig       `yaml:",inline"`
 	SSHFilename      string            `yaml:"ssh_filename"`
-	Logging          LoggingConfig     `yaml:"logging"`
+	Logging          *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork  *string           `yaml:"selected_network"`
 	DaemonHost       string            `yaml:"daemon_host"`
@@ -308,7 +332,7 @@ type IntroducerConfig struct {
 	PortConfig          `yaml:",inline"`
 	MaxPeersToSend      uint16            `yaml:"max_peers_to_send"`
 	RecentPeerThreshold uint16            `yaml:"recent_peer_threshold"`
-	Logging             LoggingConfig     `yaml:"logging"`
+	Logging             *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides    *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork     *string           `yaml:"selected_network"`
 	SSL                 SSLConfig         `yaml:"ssl"`
@@ -334,7 +358,7 @@ type WalletConfig struct {
 	WalletPeersPath                string            `yaml:"wallet_peers_path"`
 	WalletPeersFilePath            string            `yaml:"wallet_peers_file_path"`
 	LogSqliteCmds                  bool              `yaml:"log_sqlite_cmds"`
-	Logging                        LoggingConfig     `yaml:"logging"`
+	Logging                        *LoggingConfig    `yaml:"logging"`
 	NetworkOverrides               *NetworkOverrides `yaml:"network_overrides"`
 	SelectedNetwork                *string           `yaml:"selected_network"`
 	TargetPeerCount                uint16            `yaml:"target_peer_count"`
@@ -370,20 +394,20 @@ type AutoClaim struct {
 
 // DataLayerConfig datalayer configuration section
 type DataLayerConfig struct {
-	WalletPeer                  Peer          `yaml:"wallet_peer"`
-	DatabasePath                string        `yaml:"database_path"`
-	ServerFilesLocation         string        `yaml:"server_files_location"`
-	ClientTimeout               uint16        `yaml:"client_timeout"`
-	ProxyURL                    string        `yaml:"proxy_url,omitempty"`
-	HostIP                      string        `yaml:"host_ip"`
-	HostPort                    uint16        `yaml:"host_port"`
-	ManageDataInterval          uint16        `yaml:"manage_data_interval"`
-	SelectedNetwork             *string       `yaml:"selected_network"`
-	StartRPCServer              bool          `yaml:"start_rpc_server"`
-	RPCServerMaxRequestBodySize uint32        `yaml:"rpc_server_max_request_body_size"`
-	LogSqliteCmds               bool          `yaml:"log_sqlite_cmds"`
-	EnableBatchAutoinsert       bool          `yaml:"enable_batch_autoinsert"`
-	Logging                     LoggingConfig `yaml:"logging"`
+	WalletPeer                  Peer           `yaml:"wallet_peer"`
+	DatabasePath                string         `yaml:"database_path"`
+	ServerFilesLocation         string         `yaml:"server_files_location"`
+	ClientTimeout               uint16         `yaml:"client_timeout"`
+	ProxyURL                    string         `yaml:"proxy_url,omitempty"`
+	HostIP                      string         `yaml:"host_ip"`
+	HostPort                    uint16         `yaml:"host_port"`
+	ManageDataInterval          uint16         `yaml:"manage_data_interval"`
+	SelectedNetwork             *string        `yaml:"selected_network"`
+	StartRPCServer              bool           `yaml:"start_rpc_server"`
+	RPCServerMaxRequestBodySize uint32         `yaml:"rpc_server_max_request_body_size"`
+	LogSqliteCmds               bool           `yaml:"log_sqlite_cmds"`
+	EnableBatchAutoinsert       bool           `yaml:"enable_batch_autoinsert"`
+	Logging                     *LoggingConfig `yaml:"logging"`
 	PortConfig                  `yaml:",inline"`
 	SSL                         SSLConfig        `yaml:"ssl"`
 	Plugins                     DataLayerPlugins `yaml:"plugins"`

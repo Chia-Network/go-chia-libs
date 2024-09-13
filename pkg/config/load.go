@@ -175,4 +175,19 @@ func (c *ChiaConfig) dealWithAnchors() {
 	c.Introducer.SelectedNetwork = c.SelectedNetwork
 	c.Wallet.SelectedNetwork = c.SelectedNetwork
 	c.DataLayer.SelectedNetwork = c.SelectedNetwork
+
+	if c.Logging == nil {
+		c.Logging = &LoggingConfig{}
+	}
+	c.Seeder.Logging = c.Logging
+	c.Harvester.Logging = c.Logging
+	c.Pool.Logging = c.Logging
+	c.Farmer.Logging = c.Logging
+	c.TimelordLauncher.Logging = c.Logging
+	c.Timelord.Logging = c.Logging
+	c.FullNode.Logging = c.Logging
+	c.UI.Logging = c.Logging
+	c.Introducer.Logging = c.Logging
+	c.Wallet.Logging = c.Logging
+	c.DataLayer.Logging = c.Logging
 }
