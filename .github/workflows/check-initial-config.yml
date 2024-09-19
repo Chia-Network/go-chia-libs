@@ -1,0 +1,40 @@
+name: "Check for updates on initial config"
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 11 * * *"
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  update-initial-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest initial-config file
+        run: |
+          curl -s https://raw.githubusercontent.com/Chia-Network/chia-blockchain/refs/heads/latest/chia/util/initial-config.yaml -o ./pkg/config/initial-config.yml
+
+      - name: Set up commit signing
+        uses: Chia-Network/actions/commit-sign/gpg@main
+        with:
+          gpg_private_key: ${{ secrets.CHIA_AUTOMATION_PRIVATE_GPG_KEY }}
+          passphrase: ${{ secrets.CHIA_AUTOMATION_PRIVATE_GPG_PASSPHRASE }}
+
+      - name: "Create Pull Request"
+        uses: peter-evans/create-pull-request@v6
+        with:
+          base: main
+          branch: initial-config-update
+          commit-message: "Add updated initial config from chia-blockchain"
+          delete-branch: true
+          reviewers: "cmmarslender"
+          assignees: "cmmarslender"
+          title: "Initial Config Update"
+          body: "Add updated initial config from chia-blockchain\n\nThis PR likely needs to be accompanied by manual config type updates"
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          committer: "ChiaAutomation <automation@chia.net>"
+          author: "ChiaAutomation <automation@chia.net>"
