@@ -7,6 +7,7 @@ import (
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/httpclient"
+	"github.com/chia-network/go-chia-libs/pkg/publichttpclient"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
 	"github.com/chia-network/go-chia-libs/pkg/websocketclient"
 )
@@ -37,6 +38,9 @@ const (
 
 	// ConnectionModeWebsocket uses websockets for requests to the RPC server
 	ConnectionModeWebsocket
+
+	// ConnectionModePublicHTTP is for use with public http(s) servers that don't require cert auth but otherwise mirror the RPCs
+	ConnectionModePublicHTTP
 )
 
 // NewClient returns a new RPC Client
@@ -56,6 +60,8 @@ func NewClient(connectionMode ConnectionMode, configOption rpcinterface.ConfigOp
 		activeClient, err = httpclient.NewHTTPClient(cfg, options...)
 	case ConnectionModeWebsocket:
 		activeClient, err = websocketclient.NewWebsocketClient(cfg, options...)
+	case ConnectionModePublicHTTP:
+		activeClient, err = publichttpclient.NewHTTPClient(options...)
 	}
 	if err != nil {
 		return nil, err

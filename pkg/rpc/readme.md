@@ -54,6 +54,33 @@ func main() {
 }
 ```
 
+### Public HTTP Mode
+
+Public HTTP mode is for servers that conform to the interface of the chia rpc server, but do not require certs to connect (such as coinset). To use Public HTTP mode, create a new client and specify `ConnectionModePublicHTTP` and provide the URL:
+
+```go
+package main
+
+import (
+	"net/url"
+
+	"github.com/chia-network/go-chia-libs/pkg/rpc"
+)
+
+func main() {
+	client, err := rpc.NewClient(rpc.ConnectionModePublicHTTP, rpc.WithPublicConfig(), rpc.WithBaseURL(&url.URL{
+		Scheme: "https",
+		Host:   "api.coinset.org",
+	}))
+	if err != nil {
+		// error happened
+	}
+
+	// Get the blockchain state from the public server
+	state, resp, err := client.FullNodeService.GetBlockchainState()
+}
+```
+
 ### Websocket Mode
 
 To use Websocket mode, specify ConnectionModeWebsocket when creating the client:
