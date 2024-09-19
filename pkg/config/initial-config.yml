@@ -1,5 +1,3 @@
-# This is the default chia config as of 2.4.3
-# https://github.com/Chia-Network/chia-blockchain/blob/2.4.3/chia/util/initial-config.yaml
 min_mainnet_k_size: 32
 
 # Send a ping to all peers after ping_interval seconds
