@@ -191,6 +191,29 @@ func (s *DaemonService) RunningServices() (*RunningServicesResponse, *http.Respo
 	return r, resp, nil
 }
 
+// ExitResponse shows information about the services that were stopped
+type ExitResponse struct {
+	Response
+	ServicesStopped []ServiceFullName `json:"services_stopped"`
+}
+
+// Exit tells the daemon to exit
+func (s *DaemonService) Exit() (*ExitResponse, *http.Response, error) {
+	request, err := s.NewRequest("exit", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &ExitResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // DaemonDeleteAllKeysOpts options for delete all keys request
 type DaemonDeleteAllKeysOpts struct{}
 
