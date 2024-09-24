@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -38,4 +39,26 @@ func TestDealWithAnchors(t *testing.T) {
 	assert.Equal(t, "unittestnet", *cfg.Introducer.SelectedNetwork)
 	assert.Equal(t, "unittestnet", *cfg.Wallet.SelectedNetwork)
 	assert.Equal(t, "unittestnet", *cfg.DataLayer.SelectedNetwork)
+}
+
+func TestFillDatabasePath(t *testing.T) {
+	def, err := config.LoadDefaultConfig()
+	assert.NoError(t, err)
+	assert.Equal(t, "db/blockchain_v2_mainnet.sqlite", def.FullNode.DatabasePath)
+
+	tmpDir, err := os.MkdirTemp("", "testfs")
+	if err != nil {
+		t.Fatalf("Failed to create temporary directory: %v", err)
+	}
+	defer func(path string) {
+		err := os.RemoveAll(path)
+		if err != nil {
+			t.Fatalf("Error cleaning up test directory: %v", err)
+		}
+	}(tmpDir)
+
+	tmpFilePath := tmpDir + "/tempfile.txt"
+	err = def.SavePath(tmpFilePath)
+	assert.NoError(t, err)
+	assert.Equal(t, "db/blockchain_v2_CHALLENGE.sqlite", def.FullNode.DatabasePath)
 }
