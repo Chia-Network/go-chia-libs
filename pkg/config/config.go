@@ -8,6 +8,8 @@ import (
 
 // ChiaConfig the chia config.yaml
 type ChiaConfig struct {
+	// Tracks where the config was loaded from so we can call Save()
+	configPath               string
 	ChiaRoot                 string                 `yaml:"-" json:"-"`
 	MinMainnetKSize          uint8                  `yaml:"min_mainnet_k_size" json:"min_mainnet_k_size"`
 	PingInterval             uint16                 `yaml:"ping_interval" json:"ping_interval"`

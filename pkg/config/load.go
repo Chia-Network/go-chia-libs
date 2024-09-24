@@ -3,6 +3,7 @@ package config
 import (
 	// Need to embed the default config into the library
 	_ "embed"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -37,7 +38,12 @@ func LoadConfigAtRoot(configPath, rootPath string) (*ChiaConfig, error) {
 		return nil, err
 	}
 
-	return commonLoad(configBytes, rootPath)
+	cfg, err := commonLoad(configBytes, rootPath)
+	if err != nil {
+		return nil, err
+	}
+	cfg.configPath = configPath
+	return cfg, nil
 }
 
 // LoadDefaultConfig loads the initial-config bundled in go-chia-libs
@@ -62,6 +68,30 @@ func commonLoad(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	config.dealWithAnchors()
 
 	return config, nil
+}
+
+// Save saves the config at the path it was loaded from originally
+func (c *ChiaConfig) Save() error {
+	if c.configPath == "" {
+		return errors.New("configPath is not set on config. Save can only be used with a config that was loaded by this library. Try SavePath(path) instead")
+	}
+
+	return c.SavePath(c.configPath)
+}
+
+// SavePath saves the config at the given path
+func (c *ChiaConfig) SavePath(configPath string) error {
+	out, err := yaml.Marshal(c)
+	if err != nil {
+		return fmt.Errorf("error marshalling config: %w", err)
+	}
+
+	err = os.WriteFile(configPath, out, 0655)
+	if err != nil {
+		return fmt.Errorf("error writing output file: %w", err)
+	}
+
+	return nil
 }
 
 // GetChiaRootPath returns the root path for the chia installation
