@@ -168,6 +168,29 @@ func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *
 	return r, resp, nil
 }
 
+// RunningServicesResponse is service running response
+type RunningServicesResponse struct {
+	Response
+	RunningServices []ServiceFullName `json:"running_services"`
+}
+
+// RunningServices returns all running services
+func (s *DaemonService) RunningServices() (*RunningServicesResponse, *http.Response, error) {
+	request, err := s.NewRequest("running_services", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &RunningServicesResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // DaemonDeleteAllKeysOpts options for delete all keys request
 type DaemonDeleteAllKeysOpts struct{}
 
