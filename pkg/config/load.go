@@ -81,6 +81,7 @@ func (c *ChiaConfig) Save() error {
 
 // SavePath saves the config at the given path
 func (c *ChiaConfig) SavePath(configPath string) error {
+	c.unfillDatabasePath()
 	out, err := yaml.Marshal(c)
 	if err != nil {
 		return fmt.Errorf("error marshalling config: %w", err)
@@ -120,6 +121,10 @@ func (c *ChiaConfig) GetFullPath(filename string) string {
 
 func (c *ChiaConfig) fillDatabasePath() {
 	c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, "CHALLENGE", *c.FullNode.SelectedNetwork, 1)
+}
+
+func (c *ChiaConfig) unfillDatabasePath() {
+	c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, *c.FullNode.SelectedNetwork, "CHALLENGE", 1)
 }
 
 // dealWithAnchors swaps out the distinct sections of the config with pointers to a shared instance
