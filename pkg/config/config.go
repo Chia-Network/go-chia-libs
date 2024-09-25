@@ -105,12 +105,13 @@ type NetworkConstants struct {
 	MinPlotSize                    uint8         `yaml:"MIN_PLOT_SIZE,omitempty" json:"MIN_PLOT_SIZE,omitempty"`
 	NetworkType                    uint8         `yaml:"NETWORK_TYPE,omitempty" json:"NETWORK_TYPE,omitempty"`
 	SubSlotItersStarting           uint64        `yaml:"SUB_SLOT_ITERS_STARTING,omitempty" json:"SUB_SLOT_ITERS_STARTING,omitempty"`
-	HardForkHeight                 uint32        `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
-	SoftFork4Height                uint32        `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
-	SoftFork5Height                uint32        `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
-	PlotFilter128Height            uint32        `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
-	PlotFilter64Height             uint32        `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
-	PlotFilter32Height             uint32        `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
+	// All pointers that that 0 is an allowed value when marshaling with omitempty, but they will still be omitted from configs that dont have them defined
+	HardForkHeight      *uint32 `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
+	SoftFork4Height     *uint32 `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
+	SoftFork5Height     *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
+	PlotFilter128Height *uint32 `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
+	PlotFilter64Height  *uint32 `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
+	PlotFilter32Height  *uint32 `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
 }
 
 // NetworkConfig specific network configuration settings
