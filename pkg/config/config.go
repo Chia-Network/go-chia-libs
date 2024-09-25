@@ -384,12 +384,12 @@ type WalletConfig struct {
 	ResetSyncForFingerprint        *int              `yaml:"reset_sync_for_fingerprint" json:"reset_sync_for_fingerprint"`
 	SpamFilterAfterNTxs            uint16            `yaml:"spam_filter_after_n_txs" json:"spam_filter_after_n_txs"`
 	XCHSpamAmount                  uint64            `yaml:"xch_spam_amount" json:"xch_spam_amount"`
-	EnableNotifications            bool              `yaml:"enable_notifications" json:"enable_notifications"`
+	EnableNotifications            *bool             `yaml:"enable_notifications,omitempty" json:"enable_notifications"`
 	RequiredNotificationAmount     uint64            `yaml:"required_notification_amount" json:"required_notification_amount"`
 	UseDeltaSync                   bool              `yaml:"use_delta_sync" json:"use_delta_sync"`
 	// PuzzleDecorators
 	AutoClaim   AutoClaim `yaml:"auto_claim" json:"auto_claim"`
-	AutoSignTxs bool      `yaml:"auto_sign_txs" json:"auto_sign_txs"`
+	AutoSignTxs *bool     `yaml:"auto_sign_txs,omitempty" json:"auto_sign_txs,omitempty"`
 }
 
 // AutoClaim settings for auto claim in wallet
