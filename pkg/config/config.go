@@ -320,6 +320,9 @@ type FullNodeConfig struct {
 	TrustedPeers                     map[string]string `yaml:"trusted_peers" json:"trusted_peers"`
 	SSL                              SSLConfig         `yaml:"ssl" json:"ssl"`
 	UseChiaLoopPolicy                bool              `yaml:"use_chia_loop_policy" json:"use_chia_loop_policy"`
+	// trusted_cidrs allows marking certain nodes as "trusted" in the full node and wallet
+	// Not in the initial config anywhere, since it's a more advanced option
+	TrustedCIDRs []string `yaml:"trusted_cidrs,omitempty" json:"trusted_cidrs,omitempty"`
 }
 
 // UIConfig settings for the UI
@@ -390,6 +393,9 @@ type WalletConfig struct {
 	// PuzzleDecorators
 	AutoClaim   AutoClaim `yaml:"auto_claim" json:"auto_claim"`
 	AutoSignTxs *bool     `yaml:"auto_sign_txs,omitempty" json:"auto_sign_txs,omitempty"`
+	// trusted_cidrs allows marking certain nodes as "trusted" in the full node and wallet
+	// Not in the initial config anywhere, since it's a more advanced option
+	TrustedCIDRs []string `yaml:"trusted_cidrs,omitempty" json:"trusted_cidrs,omitempty"`
 }
 
 // AutoClaim settings for auto claim in wallet
