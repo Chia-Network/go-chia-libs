@@ -182,6 +182,34 @@ func (s *DataLayerService) AddMirror(opts *DatalayerAddMirrorOptions) (*Datalaye
 	return r, resp, nil
 }
 
+// DatalayerSubscribeOptions options for subscribe
+type DatalayerSubscribeOptions struct {
+	ID   string   `json:"id"` // hex string datastore id
+	URLs []string `json:"urls,omitempty"`
+}
+
+// DatalayerSubscribeResponse Response from subscribe. Always empty aside from standard fields
+type DatalayerSubscribeResponse struct {
+	Response
+}
+
+// Subscribe deletes a datalayer mirror
+func (s *DataLayerService) Subscribe(opts *DatalayerSubscribeOptions) (*DatalayerSubscribeResponse, *http.Response, error) {
+	request, err := s.NewRequest("subscribe", opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	r := &DatalayerSubscribeResponse{}
+
+	resp, err := s.Do(request, r)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return r, resp, nil
+}
+
 // DatalayerUnsubscribeOptions options for unsubscribing to a datastore
 type DatalayerUnsubscribeOptions struct {
 	ID         string `json:"id"` // hex string datastore id
