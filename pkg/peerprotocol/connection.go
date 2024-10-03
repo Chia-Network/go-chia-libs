@@ -21,14 +21,16 @@ import (
 type Connection struct {
 	chiaConfig *config.ChiaConfig
 
-	networkID   string
-	peerIP      *net.IP
-	peerPort    uint16
-	peerKeyPair *tls.Certificate
-	peerDialer  *websocket.Dialer
+	networkID    string
+	peerIP       *net.IP
+	peerPort     uint16
+	peerKeyPair  *tls.Certificate
+	peerDialer   *websocket.Dialer
+	PeerCertHash []byte
 
 	handshakeTimeout time.Duration
 	conn             *websocket.Conn
+	serverPort       uint16
 }
 
 // PeerResponseHandlerFunc is a function that will be called when a response is returned from a peer
@@ -49,11 +51,19 @@ func NewConnection(ip *net.IP, options ...ConnectionOptionFunc) (*Connection, er
 		}
 	}
 
+	// peerPort != local Full Node Port
 	if c.peerPort == 0 {
 		if err := c.loadChiaConfig(); err != nil {
 			return nil, err
 		}
 		c.peerPort = c.chiaConfig.FullNode.Port
+	}
+
+	if c.serverPort == 0 {
+		if err := c.loadChiaConfig(); err != nil {
+			return nil, err
+		}
+		c.serverPort = c.chiaConfig.FullNode.Port
 	}
 
 	if c.peerKeyPair == nil {
@@ -80,6 +90,23 @@ func NewConnection(ip *net.IP, options ...ConnectionOptionFunc) (*Connection, er
 		return nil, err
 	}
 
+	return c, nil
+}
+
+// NewServerConnection creates a new connection object with the specified peer
+func NewServerConnection(conn *websocket.Conn, options ...ConnectionOptionFunc) (*Connection, error) {
+	c := &Connection{
+		conn: conn,
+	}
+
+	for _, fn := range options {
+		if fn == nil {
+			continue
+		}
+		if err := fn(c); err != nil {
+			return nil, err
+		}
+	}
 	return c, nil
 }
 
@@ -175,14 +202,14 @@ func (c *Connection) PeerID() ([32]byte, error) {
 }
 
 // Handshake performs the RPC handshake. This should be called before any other method
-func (c *Connection) Handshake() error {
+func (c *Connection) handshake(nodeType protocols.NodeType) error {
 	// Handshake
 	handshake := &protocols.Handshake{
 		NetworkID:       c.networkID,
 		ProtocolVersion: protocols.ProtocolVersion,
-		SoftwareVersion: "2.0.0",
-		ServerPort:      c.peerPort,
-		NodeType:        protocols.NodeTypeFullNode, // I guess we're a full node
+		SoftwareVersion: "2.2.1",
+		ServerPort:      c.serverPort,
+		NodeType:        nodeType,
 		Capabilities: []protocols.Capability{
 			{
 				Capability: protocols.CapabilityTypeBase,
@@ -192,6 +219,11 @@ func (c *Connection) Handshake() error {
 	}
 
 	return c.Do(protocols.ProtocolMessageTypeHandshake, handshake)
+}
+
+// Connect connects to websocket
+func (c *Connection) Connect() error {
+	return c.ensureConnection()
 }
 
 // Do send a request over the websocket

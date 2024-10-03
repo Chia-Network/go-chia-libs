@@ -24,6 +24,14 @@ func WithPeerPort(port uint16) ConnectionOptionFunc {
 	}
 }
 
+// WithServerPort sets the port for the peer
+func WithServerPort(port uint16) ConnectionOptionFunc {
+	return func(c *Connection) error {
+		c.serverPort = port
+		return nil
+	}
+}
+
 // WithPeerKeyPair sets the keypair for the peer
 func WithPeerKeyPair(keypair tls.Certificate) ConnectionOptionFunc {
 	return func(c *Connection) error {
