@@ -427,6 +427,7 @@ type DataLayerConfig struct {
 	SSL                         SSLConfig        `yaml:"ssl" json:"ssl"`
 	Plugins                     DataLayerPlugins `yaml:"plugins" json:"plugins"`
 	MaximumFullFileCount        uint16           `yaml:"maximum_full_file_count" json:"maximum_full_file_count"`
+	GroupFilesByStore           bool             `yaml:"group_files_by_store" json:"group_files_by_store"` // False is default, so non-ptr is fine here
 }
 
 // DataLayerPlugins Settings for data layer plugins
