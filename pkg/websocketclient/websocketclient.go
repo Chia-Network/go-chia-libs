@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -405,7 +406,8 @@ func (c *WebsocketClient) listen() {
 				_, message, err := c.conn.ReadMessage()
 				if err != nil {
 					c.logger.Error("Error reading message on chia websocket", "error", err.Error())
-					if _, isCloseErr := err.(*websocket.CloseError); !isCloseErr {
+					var closeError *websocket.CloseError
+					if !errors.As(err, &closeError) {
 						c.logger.Debug("Chia websocket sent close message, attempting to close connection...")
 						closeConnErr := c.conn.Close()
 						if closeConnErr != nil {
