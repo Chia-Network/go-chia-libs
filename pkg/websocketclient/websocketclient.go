@@ -40,6 +40,9 @@ type WebsocketClient struct {
 	conn *websocket.Conn
 	lock sync.Mutex
 
+	// listenCancel is the cancel method of the listen context to stop listening
+	listenCancel context.CancelFunc
+
 	// listenSyncActive is tracking whether a client has opted to temporarily listen in sync mode for ALL requests
 	listenSyncActive bool
 
@@ -186,6 +189,17 @@ func (c *WebsocketClient) Do(req *rpcinterface.Request, v interface{}) (*http.Re
 	}
 
 	return c.responseHelper(request, v)
+}
+
+// Close closes the client/websocket
+func (c *WebsocketClient) Close() error {
+	if c.listenCancel != nil {
+		c.listenCancel()
+	}
+	if c.conn != nil {
+		return c.conn.Close()
+	}
+	return nil
 }
 
 // responseHelper implements the logic to either immediately return in async mode
@@ -399,6 +413,8 @@ func (c *WebsocketClient) ensureConnection() error {
 // passed to the handler to deal with
 func (c *WebsocketClient) listen() {
 	if !c.listenSyncActive {
+		var ctx context.Context
+		ctx, c.listenCancel = context.WithCancel(context.Background())
 		c.listenSyncActive = true
 		defer func() {
 			c.listenSyncActive = false
@@ -412,18 +428,23 @@ func (c *WebsocketClient) listen() {
 			for {
 				_, message, err := c.conn.ReadMessage()
 				if err != nil {
-					c.logger.Error("Error reading message on chia websocket", "error", err.Error())
-					var closeError *websocket.CloseError
-					if !errors.As(err, &closeError) {
-						c.logger.Debug("Chia websocket sent close message, attempting to close connection...")
-						closeConnErr := c.conn.Close()
-						if closeConnErr != nil {
-							c.logger.Error("Error closing chia websocket connection", "error", closeConnErr.Error())
+					select {
+					case <-ctx.Done():
+						return
+					default:
+						c.logger.Error("Error reading message on chia websocket", "error", err.Error())
+						var closeError *websocket.CloseError
+						if !errors.As(err, &closeError) {
+							c.logger.Debug("Chia websocket sent close message, attempting to close connection...")
+							closeConnErr := c.conn.Close()
+							if closeConnErr != nil {
+								c.logger.Error("Error closing chia websocket connection", "error", closeConnErr.Error())
+							}
 						}
+						c.conn = nil
+						c.reconnectLoop()
+						continue
 					}
-					c.conn = nil
-					c.reconnectLoop()
-					continue
 				}
 				messageChan <- message
 			}

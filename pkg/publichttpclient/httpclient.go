@@ -154,6 +154,11 @@ func (c *HTTPClient) Do(req *rpcinterface.Request, v interface{}) (*http.Respons
 	return resp, err
 }
 
+// Close closes the connection. Not applicable for the HTTPClient, so just returns no error
+func (c *HTTPClient) Close() error {
+	return nil
+}
+
 func (c *HTTPClient) generateHTTPClientForService(service rpcinterface.ServiceType) (*http.Client, error) {
 	var transport http.RoundTripper
 

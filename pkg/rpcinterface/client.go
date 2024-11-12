@@ -13,6 +13,7 @@ import (
 type Client interface {
 	NewRequest(service ServiceType, rpcEndpoint Endpoint, opt interface{}) (*Request, error)
 	Do(req *Request, v interface{}) (*http.Response, error)
+	Close() error
 	SetBaseURL(url *url.URL) error
 
 	// SetLogHandler sets a slog compatible log handler

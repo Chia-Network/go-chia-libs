@@ -91,6 +91,11 @@ func (c *Client) Do(req *rpcinterface.Request, v interface{}) (*http.Response, e
 	return c.activeClient.Do(req, v)
 }
 
+// Close calls the close method on the active client
+func (c *Client) Close() error {
+	return c.activeClient.Close()
+}
+
 // The following has a bunch of methods that are currently only used for the websocket implementation
 
 // SubscribeSelf subscribes to responses to requests from this service
