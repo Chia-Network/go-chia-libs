@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -104,6 +105,12 @@ func NewWebsocketClient(cfg *config.ChiaConfig, options ...rpcinterface.ClientOp
 	}
 
 	return c, nil
+}
+
+// resetOrigin so we get a unique identifier if we have to establish a new connection
+// Helps ensure that we don't end up getting duplicate messages
+func (c *WebsocketClient) resetOrigin() {
+	c.origin = fmt.Sprintf("go-chia-rpc-%d", time.Now().UnixNano())
 }
 
 // SetBaseURL sets the base URL for API requests to a custom endpoint.
@@ -372,6 +379,7 @@ func (c *WebsocketClient) generateDialer() error {
 // ensureConnection ensures there is an open websocket connection and the listener is listening
 func (c *WebsocketClient) ensureConnection() error {
 	if c.conn == nil {
+		c.resetOrigin()
 		u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", c.baseURL.Host, c.daemonPort), Path: "/"}
 		var err error
 		c.conn, _, err = c.daemonDialer.Dial(u.String(), nil)
@@ -405,7 +413,8 @@ func (c *WebsocketClient) listen() {
 				_, message, err := c.conn.ReadMessage()
 				if err != nil {
 					c.logger.Error("Error reading message on chia websocket", "error", err.Error())
-					if _, isCloseErr := err.(*websocket.CloseError); !isCloseErr {
+					var closeError *websocket.CloseError
+					if !errors.As(err, &closeError) {
 						c.logger.Debug("Chia websocket sent close message, attempting to close connection...")
 						closeConnErr := c.conn.Close()
 						if closeConnErr != nil {
