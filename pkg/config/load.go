@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -58,6 +59,7 @@ func LoadDefaultConfig() (*ChiaConfig, error) {
 func commonLoad(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	config := &ChiaConfig{}
 
+	configBytes = FixBackCompat(configBytes)
 	err := yaml.Unmarshal(configBytes, config)
 	if err != nil {
 		return nil, err
@@ -68,6 +70,16 @@ func commonLoad(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	config.dealWithAnchors()
 
 	return config, nil
+}
+
+// FixBackCompat fixes any back compat issues with configs that might have been loaded by old versions of this package
+func FixBackCompat(configBytes []byte) []byte {
+	// soa serial number incorrectly had string as a type for a while, and ended up quoted as a result
+	// remove the quotes since it's supposed to be a number
+	regex := regexp.MustCompile(`serial_number:\s*["'](\d+)["']`)
+	configBytes = regex.ReplaceAll(configBytes, []byte(`serial_number: $1`))
+
+	return configBytes
 }
 
 // Save saves the config at the path it was loaded from originally
