@@ -2,6 +2,7 @@ package config_test
 
 import (
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -61,4 +62,30 @@ func TestFillDatabasePath(t *testing.T) {
 	err = def.SavePath(tmpFilePath)
 	assert.NoError(t, err)
 	assert.Equal(t, "db/blockchain_v2_CHALLENGE.sqlite", def.FullNode.DatabasePath)
+}
+
+func TestBackCompatSOASerialNumber(t *testing.T) {
+	badConfig := `seeder:
+  port: 8444
+  other_peers_port: 8444
+  dns_port: 53
+  peer_connect_timeout: 2
+  crawler_db_path: "crawler.db"
+  bootstrap_peers:
+    - "node.chia.net"
+  minimum_height: 240000
+  minimum_version_count: 100
+  domain_name: "seeder.example.com."
+  nameserver: "example.com."
+  ttl: 300
+  soa:
+    rname: "hostmaster.example.com"
+    serial_number: "1619105223"
+    refresh: 10800
+    retry: 10800
+    expire: 604800
+    minimum: 1800`
+
+	cfg := config.FixBackCompat([]byte(badConfig))
+	assert.True(t, strings.Contains(string(cfg), "serial_number: 1619105223"))
 }
