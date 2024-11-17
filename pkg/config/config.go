@@ -167,7 +167,7 @@ type SeederConfig struct {
 // SeederSOA dns SOA for seeder
 type SeederSOA struct {
 	Rname        string `yaml:"rname" json:"rname"`
-	SerialNumber string `yaml:"serial_number" json:"serial_number"`
+	SerialNumber uint32 `yaml:"serial_number" json:"serial_number"`
 	Refresh      uint32 `yaml:"refresh" json:"refresh"`
 	Retry        uint32 `yaml:"retry" json:"retry"`
 	Expire       uint32 `yaml:"expire" json:"expire"`
