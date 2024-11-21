@@ -203,7 +203,7 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 
 			// Handle YAML (and therefore JSON) parsing for passing in entire structs/maps
 			// This is particularly useful if you want to pass in a whole blob of network constants at once
-			if fieldValue.Kind() == reflect.Struct || fieldValue.Kind() == reflect.Map {
+			if fieldValue.Kind() == reflect.Struct || fieldValue.Kind() == reflect.Map || fieldValue.Kind() == reflect.Slice {
 				if strValue, ok := value.(string); ok {
 					yamlData := []byte(strValue)
 					if err := yaml.Unmarshal(yamlData, fieldValue.Addr().Interface()); err != nil {

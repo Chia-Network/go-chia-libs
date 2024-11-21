@@ -94,6 +94,27 @@ func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
 	assert.Equal(t, "9eb3cec765fb3b3508f82e090374d5913d24806e739da31bcc4ab1767d9f1ca9", defaultConfig.NetworkOverrides.Constants["yamlnet"].GenesisChallenge)
 }
 
+// TestChiaConfig_SetFieldByPath_FullObjects Tests that we can pass in and correctly parse a whole section of config
+// as json or yaml and that it gets set properly
+func TestChiaConfig_SetFieldByPath_Lists(t *testing.T) {
+	defaultConfig, err := config.LoadDefaultConfig()
+	assert.NoError(t, err)
+	// Make assertions about the default state, to ensure the assumed initial values are correct
+	assert.Equal(t, []string{}, defaultConfig.Seeder.StaticPeers)
+	assert.Equal(t, []config.Peer{}, defaultConfig.FullNode.FullNodePeers)
+
+	err = defaultConfig.SetFieldByPath([]string{"seeder", "static_peers"}, `["node-test.chia.net","node-test-2.chia.net"]`)
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"node-test.chia.net", "node-test-2.chia.net"}, defaultConfig.Seeder.StaticPeers)
+
+	err = defaultConfig.SetFieldByPath([]string{"full_node", "full_node_peers"}, `[{"host":"testnode.example.com","port":1234},{"host":"testnode2.example.com","port":5678}]`)
+	assert.NoError(t, err)
+	assert.Equal(t, []config.Peer{
+		{Host: "testnode.example.com", Port: 1234},
+		{Host: "testnode2.example.com", Port: 5678},
+	}, defaultConfig.FullNode.FullNodePeers)
+}
+
 func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
 	defaultConfig, err := config.LoadDefaultConfig()
 	assert.NoError(t, err)
