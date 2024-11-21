@@ -103,11 +103,32 @@ func TestChiaConfig_SetFieldByPath_Lists(t *testing.T) {
 	assert.Equal(t, []string{}, defaultConfig.Seeder.StaticPeers)
 	assert.Equal(t, []config.Peer{}, defaultConfig.FullNode.FullNodePeers)
 
+	// Test json encoded version
 	err = defaultConfig.SetFieldByPath([]string{"seeder", "static_peers"}, `["node-test.chia.net","node-test-2.chia.net"]`)
 	assert.NoError(t, err)
 	assert.Equal(t, []string{"node-test.chia.net", "node-test-2.chia.net"}, defaultConfig.Seeder.StaticPeers)
 
+	// Test with the actual type as the data to set
+	// First reset
+	defaultConfig.Seeder.StaticPeers = []string{}
+	assert.Equal(t, []string{}, defaultConfig.Seeder.StaticPeers)
+	err = defaultConfig.SetFieldByPath([]string{"seeder", "static_peers"}, []string{"node-test.chia.net","node-test-2.chia.net"})
+	assert.NoError(t, err)
+	assert.Equal(t, []string{"node-test.chia.net", "node-test-2.chia.net"}, defaultConfig.Seeder.StaticPeers)
+
 	err = defaultConfig.SetFieldByPath([]string{"full_node", "full_node_peers"}, `[{"host":"testnode.example.com","port":1234},{"host":"testnode2.example.com","port":5678}]`)
+	assert.NoError(t, err)
+	assert.Equal(t, []config.Peer{
+		{Host: "testnode.example.com", Port: 1234},
+		{Host: "testnode2.example.com", Port: 5678},
+	}, defaultConfig.FullNode.FullNodePeers)
+
+	defaultConfig.FullNode.FullNodePeers = []config.Peer{}
+	assert.Equal(t, []config.Peer{}, defaultConfig.FullNode.FullNodePeers)
+	err = defaultConfig.SetFieldByPath([]string{"full_node", "full_node_peers"}, []config.Peer{
+		{Host: "testnode.example.com",Port:1234},
+		{Host:"testnode2.example.com",Port:5678},
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, []config.Peer{
 		{Host: "testnode.example.com", Port: 1234},
