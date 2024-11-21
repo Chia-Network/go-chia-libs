@@ -209,8 +209,9 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 					if err := yaml.Unmarshal(yamlData, fieldValue.Addr().Interface()); err != nil {
 						return fmt.Errorf("failed to unmarshal yaml into field: %w", err)
 					}
+					// If we successfully replaced by doing yaml parsing into the field, then we should not try anything else
+					return nil
 				}
-				return nil
 			}
 
 			val := reflect.ValueOf(value)
