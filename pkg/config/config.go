@@ -124,6 +124,7 @@ type NetworkConfig struct {
 type LoggingConfig struct {
 	yamlAnchor          *yaml.Node `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
 	LogStdout           bool       `yaml:"log_stdout" json:"log_stdout"`
+	LogBackcompat       bool       `yaml:"log_backcompat" json:"log_backcompat"`
 	LogFilename         string     `yaml:"log_filename" json:"log_filename"`
 	LogLevel            string     `yaml:"log_level" json:"log_level"`
 	LogMaxFilesRotation uint8      `yaml:"log_maxfilesrotation" json:"log_maxfilesrotation"`
@@ -152,6 +153,7 @@ type SeederConfig struct {
 	PeerConnectTimeout  uint16            `yaml:"peer_connect_timeout" json:"peer_connect_timeout"`
 	CrawlerDBPath       string            `yaml:"crawler_db_path" json:"crawler_db_path"`
 	BootstrapPeers      []string          `yaml:"bootstrap_peers" json:"bootstrap_peers"`
+	StaticPeers         []string          `yaml:"static_peers" json:"static_peers"`
 	MinimumHeight       uint32            `yaml:"minimum_height" json:"minimum_height"`
 	MinimumVersionCount uint32            `yaml:"minimum_version_count" json:"minimum_version_count"`
 	DomainName          string            `yaml:"domain_name" json:"domain_name"`
@@ -194,6 +196,7 @@ type HarvesterConfig struct {
 	SelectedNetwork            *string               `yaml:"selected_network" json:"selected_network"`
 	PlotDirectories            []string              `yaml:"plot_directories" json:"plot_directories"`
 	RecursivePlotScan          bool                  `yaml:"recursive_plot_scan" json:"recursive_plot_scan"`
+	RecursiveFollowLinks       bool                  `yaml:"recursive_follow_links" json:"recursive_follow_links"`
 	PortConfig                 `yaml:",inline" json:",inline"`
 	SSL                        SSLConfig `yaml:"ssl" json:"ssl"`
 	PrivateSSLCA               CAConfig  `yaml:"private_ssl_ca" json:"private_ssl_ca"`
@@ -352,6 +355,7 @@ type IntroducerConfig struct {
 // WalletConfig wallet configuration section
 type WalletConfig struct {
 	PortConfig                     `yaml:",inline" json:",inline"`
+	StartRPCServer                 bool              `yaml:"start_rpc_server" json:"start_rpc_server"`
 	EnableProfiler                 bool              `yaml:"enable_profiler" json:"enable_profiler"`
 	EnableMemoryProfiler           bool              `yaml:"enable_memory_profiler" json:"enable_memory_profiler"`
 	DBSync                         string            `yaml:"db_sync" json:"db_sync"`
@@ -383,6 +387,7 @@ type WalletConfig struct {
 	OutboundRateLimitPercent       uint8             `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
 	WeightProofTimeout             uint16            `yaml:"weight_proof_timeout" json:"weight_proof_timeout"`
 	AutomaticallyAddUnknownCats    bool              `yaml:"automatically_add_unknown_cats" json:"automatically_add_unknown_cats"`
+	DIDAutoAddLimit                *int              `yaml:"did_auto_add_limit,omitempty" json:"did_auto_add_limit,omitempty"`
 	TxResendTimeoutSecs            uint16            `yaml:"tx_resend_timeout_secs" json:"tx_resend_timeout_secs"`
 	ResetSyncForFingerprint        *int              `yaml:"reset_sync_for_fingerprint" json:"reset_sync_for_fingerprint"`
 	SpamFilterAfterNTxs            uint16            `yaml:"spam_filter_after_n_txs" json:"spam_filter_after_n_txs"`
