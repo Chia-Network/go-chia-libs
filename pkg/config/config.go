@@ -355,7 +355,7 @@ type IntroducerConfig struct {
 // WalletConfig wallet configuration section
 type WalletConfig struct {
 	PortConfig                     `yaml:",inline" json:",inline"`
-	StartRPCServer                 bool              `yaml:"start_rpc_server" json:"start_rpc_server"`
+	StartRPCServer                 *bool             `yaml:"start_rpc_server" json:"start_rpc_server"`
 	EnableProfiler                 bool              `yaml:"enable_profiler" json:"enable_profiler"`
 	EnableMemoryProfiler           bool              `yaml:"enable_memory_profiler" json:"enable_memory_profiler"`
 	DBSync                         string            `yaml:"db_sync" json:"db_sync"`
