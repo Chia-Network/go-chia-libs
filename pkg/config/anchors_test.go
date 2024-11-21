@@ -23,6 +23,7 @@ func TestLoggingConfigAnchors(t *testing.T) {
 
 	expected := `logging1: &logging
     log_stdout: false
+    log_backcompat: false
     log_filename: ""
     log_level: ""
     log_maxfilesrotation: 0
