@@ -41,6 +41,14 @@ type BlockRecord struct {
 	SubEpochSummaryIncluded mo.Option[SubEpochSummary] `json:"sub_epoch_summary_included"`
 }
 
+// IsTransactionBlock returns true if the block is considered a transaction block
+// Only transaction blocks have timestamps
+// Also matches how chia determines what is a transaction block
+// https://github.com/Chia-Network/chia-blockchain/blob/dfaf70895a0923d5ac60774dd1d64a200f445e6a/chia/consensus/block_record.py#L31
+func (b *BlockRecord) IsTransactionBlock() bool {
+	return b.Timestamp.IsPresent()
+}
+
 // FullBlock a full block
 // https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/fullblock.rs#L13
 type FullBlock struct {
