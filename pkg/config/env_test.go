@@ -112,7 +112,7 @@ func TestChiaConfig_SetFieldByPath_Lists(t *testing.T) {
 	// First reset
 	defaultConfig.Seeder.StaticPeers = []string{}
 	assert.Equal(t, []string{}, defaultConfig.Seeder.StaticPeers)
-	err = defaultConfig.SetFieldByPath([]string{"seeder", "static_peers"}, []string{"node-test.chia.net","node-test-2.chia.net"})
+	err = defaultConfig.SetFieldByPath([]string{"seeder", "static_peers"}, []string{"node-test.chia.net", "node-test-2.chia.net"})
 	assert.NoError(t, err)
 	assert.Equal(t, []string{"node-test.chia.net", "node-test-2.chia.net"}, defaultConfig.Seeder.StaticPeers)
 
@@ -126,8 +126,8 @@ func TestChiaConfig_SetFieldByPath_Lists(t *testing.T) {
 	defaultConfig.FullNode.FullNodePeers = []config.Peer{}
 	assert.Equal(t, []config.Peer{}, defaultConfig.FullNode.FullNodePeers)
 	err = defaultConfig.SetFieldByPath([]string{"full_node", "full_node_peers"}, []config.Peer{
-		{Host: "testnode.example.com",Port:1234},
-		{Host:"testnode2.example.com",Port:5678},
+		{Host: "testnode.example.com", Port: 1234},
+		{Host: "testnode2.example.com", Port: 5678},
 	})
 	assert.NoError(t, err)
 	assert.Equal(t, []config.Peer{
