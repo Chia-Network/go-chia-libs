@@ -213,11 +213,6 @@ func (s *FullNodeService) GetBlockRecordByHeight(opts *GetBlockByHeightOptions) 
 		return nil, resp, err
 	}
 
-	// I believe this happens when the node is not yet synced to this height
-	if record == nil || record.BlockRecord.IsAbsent() {
-		return nil, nil, nil
-	}
-
 	return record, resp, nil
 }
 
