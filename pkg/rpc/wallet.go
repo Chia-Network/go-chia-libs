@@ -177,7 +177,7 @@ type GetWalletTransactionCountResponse struct {
 
 // GetTransactionCount returns the total count of transactions for the specific wallet ID
 func (s *WalletService) GetTransactionCount(opts *GetWalletTransactionCountOptions) (*GetWalletTransactionCountResponse, *http.Response, error) {
-	return Do(s, "get_wallet_transaction_count", opts, &GetWalletTransactionCountResponse{})
+	return Do(s, "get_transaction_count", opts, &GetWalletTransactionCountResponse{})
 }
 
 // GetWalletTransactionsOptions options for get wallet transactions
