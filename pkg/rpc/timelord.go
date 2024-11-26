@@ -16,43 +16,22 @@ func (s *TimelordService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inte
 	return s.client.NewRequest(rpcinterface.ServiceTimelord, rpcEndpoint, opt)
 }
 
-// Do is just a shortcut to the client's Do method
-func (s *TimelordService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
-	return s.client.Do(req, v)
+// GetClient returns the active client for the service
+func (s *TimelordService) GetClient() rpcinterface.Client {
+	return s.client
 }
 
 // GetConnections returns connections
 func (s *TimelordService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_connections", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetConnectionsResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_connections", opts, &GetConnectionsResponse{})
 }
 
 // GetNetworkInfo gets the network name and prefix from the full node
 func (s *TimelordService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_network_info", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetNetworkInfoResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_network_info", opts, &GetNetworkInfoResponse{})
 }
 
 // GetVersion returns the application version for the service
 func (s *TimelordService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_version", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetVersionResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_version", opts, &GetVersionResponse{})
 }

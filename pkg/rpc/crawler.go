@@ -19,33 +19,19 @@ func (s *CrawlerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inter
 	return s.client.NewRequest(rpcinterface.ServiceCrawler, rpcEndpoint, opt)
 }
 
-// Do is just a shortcut to the client's Do method
-func (s *CrawlerService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
-	return s.client.Do(req, v)
+// GetClient returns the active client for the service
+func (s *CrawlerService) GetClient() rpcinterface.Client {
+	return s.client
 }
 
 // GetNetworkInfo gets the network name and prefix from the full node
 func (s *CrawlerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_network_info", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetNetworkInfoResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_network_info", opts, &GetNetworkInfoResponse{})
 }
 
 // GetVersion returns the application version for the service
 func (s *CrawlerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_version", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetVersionResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_version", opts, &GetVersionResponse{})
 }
 
 // GetPeerCountsResponse Response for get_get_peer_counts on crawler
@@ -56,14 +42,7 @@ type GetPeerCountsResponse struct {
 
 // GetPeerCounts crawler rpc -> get_peer_counts
 func (s *CrawlerService) GetPeerCounts() (*GetPeerCountsResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_peer_counts", nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetPeerCountsResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_peer_counts", nil, &GetPeerCountsResponse{})
 }
 
 // GetIPsAfterTimestampOptions Options for the get_ips_after_timestamp RPC call
@@ -82,12 +61,5 @@ type GetIPsAfterTimestampResponse struct {
 
 // GetIPsAfterTimestamp Returns IP addresses seen by the network after a particular timestamp
 func (s *CrawlerService) GetIPsAfterTimestamp(opts *GetIPsAfterTimestampOptions) (*GetIPsAfterTimestampResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_ips_after_timestamp", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetIPsAfterTimestampResponse{}
-	resp, err := s.Do(request, r)
-	return r, resp, err
+	return Do(s, "get_ips_after_timestamp", opts, &GetIPsAfterTimestampResponse{})
 }
