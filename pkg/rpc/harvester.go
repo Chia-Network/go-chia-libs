@@ -20,7 +20,7 @@ func (s *HarvesterService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt int
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *HarvesterService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *HarvesterService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -31,13 +31,9 @@ func (s *HarvesterService) GetConnections(opts *GetConnectionsOptions) (*GetConn
 		return nil, nil, err
 	}
 
-	c := &GetConnectionsResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	r := &GetConnectionsResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetNetworkInfo gets the network name and prefix from the harvester
@@ -48,13 +44,8 @@ func (s *HarvesterService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetw
 	}
 
 	r := &GetNetworkInfoResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetVersion returns the application version for the service
@@ -66,11 +57,7 @@ func (s *HarvesterService) GetVersion(opts *GetVersionOptions) (*GetVersionRespo
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // HarvesterGetPlotsResponse get_plots response format
@@ -88,11 +75,7 @@ func (s *HarvesterService) GetPlots() (*HarvesterGetPlotsResponse, *http.Respons
 		return nil, nil, err
 	}
 
-	p := &HarvesterGetPlotsResponse{}
-	resp, err := s.Do(request, p)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return p, resp, nil
+	r := &HarvesterGetPlotsResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }

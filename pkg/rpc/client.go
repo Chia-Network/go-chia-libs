@@ -87,8 +87,12 @@ func (c *Client) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcint
 }
 
 // Do is a helper that wraps the activeClient's Do method
-func (c *Client) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
-	return c.activeClient.Do(req, v)
+func (c *Client) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+	resp, err := c.activeClient.Do(req, v)
+	if !v.isSuccessful() {
+		return resp, &ChiaRPCError{Message: v.getError()}
+	}
+	return resp, err
 }
 
 // Close calls the close method on the active client

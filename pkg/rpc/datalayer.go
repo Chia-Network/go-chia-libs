@@ -18,7 +18,7 @@ func (s *DataLayerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt int
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *DataLayerService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *DataLayerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -31,11 +31,7 @@ func (s *DataLayerService) GetVersion(opts *GetVersionOptions) (*GetVersionRespo
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerGetSubscriptionsOptions options for get_subscriptions
@@ -61,13 +57,8 @@ func (s *DataLayerService) Subscriptions(opts *DatalayerGetSubscriptionsOptions)
 	}
 
 	r := &DatalayerGetSubscriptionsResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerGetOwnedStoresOptions Options for get_owned_stores
@@ -87,13 +78,8 @@ func (s *DataLayerService) GetOwnedStores(opts *DatalayerGetOwnedStoresOptions) 
 	}
 
 	r := &DatalayerGetOwnedStoresResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerGetMirrorsOptions Options for get_mirrors
@@ -115,13 +101,8 @@ func (s *DataLayerService) GetMirrors(opts *DatalayerGetMirrorsOptions) (*Datala
 	}
 
 	r := &DatalayerGetMirrorsResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerDeleteMirrorOptions options for delete_mirror RPC call
@@ -143,13 +124,8 @@ func (s *DataLayerService) DeleteMirror(opts *DatalayerDeleteMirrorOptions) (*Da
 	}
 
 	r := &DatalayerDeleteMirrorResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerAddMirrorOptions options for delete_mirror RPC call
@@ -173,13 +149,8 @@ func (s *DataLayerService) AddMirror(opts *DatalayerAddMirrorOptions) (*Datalaye
 	}
 
 	r := &DatalayerAddMirrorResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerSubscribeOptions options for subscribe
@@ -201,13 +172,8 @@ func (s *DataLayerService) Subscribe(opts *DatalayerSubscribeOptions) (*Datalaye
 	}
 
 	r := &DatalayerSubscribeResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DatalayerUnsubscribeOptions options for unsubscribing to a datastore
@@ -229,11 +195,6 @@ func (s *DataLayerService) Unsubscribe(opts *DatalayerUnsubscribeOptions) (*Data
 	}
 
 	r := &DatalayerUnsubscribeResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }

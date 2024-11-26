@@ -20,7 +20,7 @@ func (s *CrawlerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inter
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *CrawlerService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *CrawlerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -32,13 +32,8 @@ func (s *CrawlerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwor
 	}
 
 	r := &GetNetworkInfoResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetVersion returns the application version for the service
@@ -50,11 +45,7 @@ func (s *CrawlerService) GetVersion(opts *GetVersionOptions) (*GetVersionRespons
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetPeerCountsResponse Response for get_get_peer_counts on crawler
@@ -72,11 +63,7 @@ func (s *CrawlerService) GetPeerCounts() (*GetPeerCountsResponse, *http.Response
 
 	r := &GetPeerCountsResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetIPsAfterTimestampOptions Options for the get_ips_after_timestamp RPC call
@@ -102,9 +89,5 @@ func (s *CrawlerService) GetIPsAfterTimestamp(opts *GetIPsAfterTimestampOptions)
 
 	r := &GetIPsAfterTimestampResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }

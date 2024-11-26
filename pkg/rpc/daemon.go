@@ -18,7 +18,7 @@ func (s *DaemonService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *DaemonService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *DaemonService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -30,13 +30,8 @@ func (s *DaemonService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 	}
 
 	r := &GetNetworkInfoResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetVersion returns the application version for the service
@@ -48,11 +43,7 @@ func (s *DaemonService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetKeysOptions configures how keys are returned in get_keys
@@ -76,11 +67,7 @@ func (s *DaemonService) GetKeys(opts *GetKeysOptions) (*GetKeysResponse, *http.R
 	r := &GetKeysResponse{}
 
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // StartServiceOptions start service options
@@ -102,13 +89,8 @@ func (s *DaemonService) StartService(opts *StartServiceOptions) (*StartServiceRe
 	}
 
 	r := &StartServiceResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // StopServiceOptions start service options
@@ -130,13 +112,8 @@ func (s *DaemonService) StopService(opts *StopServiceOptions) (*StopServiceRespo
 	}
 
 	r := &StopServiceResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // IsRunningOptions is service running options
@@ -159,13 +136,8 @@ func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *
 	}
 
 	r := &IsRunningResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // RunningServicesResponse is service running response
@@ -182,13 +154,8 @@ func (s *DaemonService) RunningServices() (*RunningServicesResponse, *http.Respo
 	}
 
 	r := &RunningServicesResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // ExitResponse shows information about the services that were stopped
@@ -205,13 +172,8 @@ func (s *DaemonService) Exit() (*ExitResponse, *http.Response, error) {
 	}
 
 	r := &ExitResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DaemonDeleteAllKeysOpts options for delete all keys request
@@ -230,11 +192,6 @@ func (s *DaemonService) DeleteAllKeys(opts *DaemonDeleteAllKeysOpts) (*DaemonDel
 	}
 
 	r := &DaemonDeleteAllKeysResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }

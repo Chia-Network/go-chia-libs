@@ -20,7 +20,7 @@ func (s *WalletService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *WalletService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *WalletService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -31,13 +31,9 @@ func (s *WalletService) GetConnections(opts *GetConnectionsOptions) (*GetConnect
 		return nil, nil, err
 	}
 
-	c := &GetConnectionsResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	r := &GetConnectionsResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetNetworkInfo wallet rpc -> get_network_info
@@ -49,11 +45,7 @@ func (s *WalletService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 
 	r := &GetNetworkInfoResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetVersion returns the application version for the service
@@ -65,11 +57,7 @@ func (s *WalletService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetPublicKeysResponse response from get_public_keys
@@ -87,11 +75,7 @@ func (s *WalletService) GetPublicKeys() (*GetPublicKeysResponse, *http.Response,
 
 	r := &GetPublicKeysResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GenerateMnemonicResponse Random new 24 words response
@@ -109,11 +93,7 @@ func (s *WalletService) GenerateMnemonic() (*GenerateMnemonicResponse, *http.Res
 
 	r := &GenerateMnemonicResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // AddKeyOptions options for the add_key endpoint
@@ -137,11 +117,7 @@ func (s *WalletService) AddKey(options *AddKeyOptions) (*AddKeyResponse, *http.R
 
 	r := &AddKeyResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // DeleteAllKeysResponse Delete keys response
@@ -158,11 +134,7 @@ func (s *WalletService) DeleteAllKeys() (*DeleteAllKeysResponse, *http.Response,
 
 	r := &DeleteAllKeysResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetNextAddressOptions options for get_next_address endpoint
@@ -187,11 +159,7 @@ func (s *WalletService) GetNextAddress(options *GetNextAddressOptions) (*GetNext
 
 	r := &GetNextAddressResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletSyncStatusResponse Response for get_sync_status on wallet
@@ -211,11 +179,7 @@ func (s *WalletService) GetSyncStatus() (*GetWalletSyncStatusResponse, *http.Res
 
 	r := &GetWalletSyncStatusResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletHeightInfoResponse response for get_height_info on wallet
@@ -233,11 +197,7 @@ func (s *WalletService) GetHeightInfo() (*GetWalletHeightInfoResponse, *http.Res
 
 	r := &GetWalletHeightInfoResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletsOptions wallet rpc -> get_wallets
@@ -261,11 +221,7 @@ func (s *WalletService) GetWallets(opts *GetWalletsOptions) (*GetWalletsResponse
 
 	r := &GetWalletsResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletBalanceOptions request options for get_wallet_balance
@@ -288,11 +244,7 @@ func (s *WalletService) GetWalletBalance(opts *GetWalletBalanceOptions) (*GetWal
 
 	r := &GetWalletBalanceResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletTransactionCountOptions options for get transaction count
@@ -316,11 +268,7 @@ func (s *WalletService) GetTransactionCount(opts *GetWalletTransactionCountOptio
 
 	r := &GetWalletTransactionCountResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletTransactionsOptions options for get wallet transactions
@@ -347,11 +295,7 @@ func (s *WalletService) GetTransactions(opts *GetWalletTransactionsOptions) (*Ge
 
 	r := &GetWalletTransactionsResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetWalletTransactionOptions options for getting a single wallet transaction
@@ -376,11 +320,7 @@ func (s *WalletService) GetTransaction(opts *GetWalletTransactionOptions) (*GetW
 
 	r := &GetWalletTransactionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // SendTransactionOptions represents the options for send_transaction
@@ -409,11 +349,7 @@ func (s *WalletService) SendTransaction(opts *SendTransactionOptions) (*SendTran
 
 	r := &SendTransactionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // CatSpendOptions represents the options for cat_spend
@@ -440,11 +376,7 @@ func (s *WalletService) CatSpend(opts *CatSpendOptions) (*CatSpendResponse, *htt
 
 	r := &CatSpendResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // MintNFTOptions represents the options for nft_get_info
@@ -481,11 +413,7 @@ func (s *WalletService) MintNFT(opts *MintNFTOptions) (*MintNFTResponse, *http.R
 
 	r := &MintNFTResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetNFTsOptions represents the options for nft_get_nfts
@@ -511,11 +439,7 @@ func (s *WalletService) GetNFTs(opts *GetNFTsOptions) (*GetNFTsResponse, *http.R
 
 	r := &GetNFTsResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // TransferNFTOptions represents the options for nft_get_info
@@ -542,11 +466,7 @@ func (s *WalletService) TransferNFT(opts *TransferNFTOptions) (*TransferNFTRespo
 
 	r := &TransferNFTResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetNFTInfoOptions represents the options for nft_get_info
@@ -570,11 +490,7 @@ func (s *WalletService) GetNFTInfo(opts *GetNFTInfoOptions) (*GetNFTInfoResponse
 
 	r := &GetNFTInfoResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // NFTAddURIOptions represents the options for nft_add_uri
@@ -602,11 +518,7 @@ func (s *WalletService) NFTAddURI(opts *NFTAddURIOptions) (*NFTAddURIResponse, *
 
 	r := &NFTAddURIResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // NFTGetByDidOptions represents the options for nft_get_by_did
@@ -629,11 +541,7 @@ func (s *WalletService) NFTGetByDid(opts *NFTGetByDidOptions) (*NFTGetByDidRespo
 
 	r := &NFTGetByDidResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetSpendableCoinsOptions Options for get_spendable_coins
@@ -661,11 +569,7 @@ func (s *WalletService) GetSpendableCoins(opts *GetSpendableCoinsOptions) (*GetS
 
 	r := &GetSpendableCoinsResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // CreateSignedTransactionOptions Options for create_signed_transaction endpoint
@@ -696,11 +600,7 @@ func (s *WalletService) CreateSignedTransaction(opts *CreateSignedTransactionOpt
 
 	r := &CreateSignedTransactionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // SendTransactionMultiResponse Response from send_transaction_multi
@@ -720,9 +620,5 @@ func (s *WalletService) SendTransactionMulti(opts *CreateSignedTransactionOption
 
 	r := &SendTransactionMultiResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }

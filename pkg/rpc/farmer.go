@@ -21,7 +21,7 @@ func (s *FarmerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *FarmerService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *FarmerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -32,13 +32,9 @@ func (s *FarmerService) GetConnections(opts *GetConnectionsOptions) (*GetConnect
 		return nil, nil, err
 	}
 
-	c := &GetConnectionsResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	r := &GetConnectionsResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetNetworkInfo gets the network name and prefix from the farmer
@@ -51,11 +47,7 @@ func (s *FarmerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwork
 	r := &GetNetworkInfoResponse{}
 
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetVersion returns the application version for the service
@@ -67,11 +59,7 @@ func (s *FarmerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // FarmerGetHarvestersOptions optoins for get_harvesters endpoint. Currently, accepts no options
@@ -112,11 +100,7 @@ func (s *FarmerService) GetHarvesters(opts *FarmerGetHarvestersOptions) (*Farmer
 		return nil, nil, err
 	}
 
-	c := &FarmerGetHarvestersResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	r := &FarmerGetHarvestersResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }

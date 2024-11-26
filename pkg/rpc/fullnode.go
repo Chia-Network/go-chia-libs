@@ -20,7 +20,7 @@ func (s *FullNodeService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inte
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *FullNodeService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (s *FullNodeService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -42,13 +42,9 @@ func (s *FullNodeService) GetConnections(opts *GetConnectionsOptions) (*GetConne
 		return nil, nil, err
 	}
 
-	c := &GetConnectionsResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	r := &GetConnectionsResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetNetworkInfo gets the network name and prefix from the full node
@@ -59,13 +55,8 @@ func (s *FullNodeService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetwo
 	}
 
 	r := &GetNetworkInfoResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlockchainStateResponse is the blockchain state RPC response
@@ -83,11 +74,7 @@ func (s *FullNodeService) GetVersion(opts *GetVersionOptions) (*GetVersionRespon
 
 	r := &GetVersionResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlockchainState returns blockchain state
@@ -99,11 +86,7 @@ func (s *FullNodeService) GetBlockchainState() (*GetBlockchainStateResponse, *ht
 
 	r := &GetBlockchainStateResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlockOptions options for get_block rpc call
@@ -126,11 +109,7 @@ func (s *FullNodeService) GetBlock(opts *GetBlockOptions) (*GetBlockResponse, *h
 
 	r := &GetBlockResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlocksOptions options for get_blocks rpc call
@@ -158,11 +137,7 @@ func (s *FullNodeService) GetBlocks(opts *GetBlocksOptions) (*GetBlocksResponse,
 
 	r := &GetBlocksResponse{}
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlockCountMetricsResponse response for get_block_count_metrics rpc call
@@ -179,13 +154,8 @@ func (s *FullNodeService) GetBlockCountMetrics() (*GetBlockCountMetricsResponse,
 	}
 
 	r := &GetBlockCountMetricsResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetBlockByHeightOptions options for get_block_record_by_height and get_block rpc call
@@ -207,13 +177,9 @@ func (s *FullNodeService) GetBlockRecordByHeight(opts *GetBlockByHeightOptions) 
 		return nil, nil, err
 	}
 
-	record := &GetBlockRecordResponse{}
-	resp, err := s.Do(request, record)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return record, resp, nil
+	r := &GetBlockRecordResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetBlockByHeight helper function to get a full block by height, calls full_node->get_block_record_by_height RPC method then full_node->get_block RPC method
@@ -232,13 +198,9 @@ func (s *FullNodeService) GetBlockByHeight(opts *GetBlockByHeightOptions) (*GetB
 	}
 
 	// Get Full Block
-	block := &GetBlockResponse{}
-	resp, err = s.Do(request, block)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return block, resp, nil
+	r := &GetBlockResponse{}
+	resp, err = s.Do(request, r)
+	return r, resp, err
 }
 
 // GetAdditionsAndRemovalsOptions options for get_additions_and_removals
@@ -261,13 +223,8 @@ func (s *FullNodeService) GetAdditionsAndRemovals(opts *GetAdditionsAndRemovalsO
 	}
 
 	r := &GetAdditionsAndRemovalsResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetCoinRecordsByPuzzleHashOptions request options for /get_coin_records_by_puzzle_hash
@@ -292,13 +249,8 @@ func (s *FullNodeService) GetCoinRecordsByPuzzleHash(opts *GetCoinRecordsByPuzzl
 	}
 
 	r := &GetCoinRecordsByPuzzleHashResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetCoinRecordsByPuzzleHashesOptions request options for /get_coin_records_by_puzzle_hash
@@ -323,13 +275,8 @@ func (s *FullNodeService) GetCoinRecordsByPuzzleHashes(opts *GetCoinRecordsByPuz
 	}
 
 	r := &GetCoinRecordsByPuzzleHashesResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetCoinRecordByNameOptions request options for /get_coin_record_by_name
@@ -351,13 +298,8 @@ func (s *FullNodeService) GetCoinRecordByName(opts *GetCoinRecordByNameOptions) 
 	}
 
 	r := &GetCoinRecordByNameResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetCoinRecordsByHintOptions options for get_coin_records_by_hint
@@ -382,13 +324,8 @@ func (s *FullNodeService) GetCoinRecordsByHint(opts *GetCoinRecordsByHintOptions
 	}
 
 	r := &GetCoinRecordsByHintResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // FullNodePushTXOptions options for pushing tx to full node mempool
@@ -410,13 +347,8 @@ func (s *FullNodeService) PushTX(opts *FullNodePushTXOptions) (*FullNodePushTXRe
 	}
 
 	r := &FullNodePushTXResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetPuzzleAndSolution full_node-> get_puzzle_and_solution RPC method
@@ -426,13 +358,9 @@ func (s *FullNodeService) GetPuzzleAndSolution(opts *GetPuzzleAndSolutionOptions
 		return nil, nil, err
 	}
 
-	record := &GetPuzzleAndSolutionResponse{}
-	resp, err := s.Do(request, record)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return record, resp, nil
+	r := &GetPuzzleAndSolutionResponse{}
+	resp, err := s.Do(request, r)
+	return r, resp, err
 }
 
 // GetFeeEstimateOptions inputs to get a fee estimate
@@ -466,13 +394,8 @@ func (s *FullNodeService) GetFeeEstimate(opts *GetFeeEstimateOptions) (*GetFeeEs
 	}
 
 	r := &GetFeeEstimateResponse{}
-
 	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return r, resp, err
 }
 
 // GetPuzzleAndSolutionOptions options for get_puzzle_and_solution rpc call
