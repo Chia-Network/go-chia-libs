@@ -91,10 +91,13 @@ func (c *Client) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcint
 // Do is a helper that wraps the activeClient's Do method
 func (c *Client) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	resp, err := c.activeClient.Do(req, v)
+	if err != nil {
+		return resp, err
+	}
 	if !v.IsSuccessful() {
 		return resp, &rpcinterface.ChiaRPCError{Message: v.GetRPCError()}
 	}
-	return resp, err
+	return resp, nil
 }
 
 // Do Helper to create and send a new request for a given service and retain the proper types
