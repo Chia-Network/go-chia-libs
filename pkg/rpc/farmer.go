@@ -21,7 +21,7 @@ func (s *FarmerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *FarmerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *FarmerService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -89,7 +89,7 @@ type FarmerHarvester struct {
 
 // FarmerGetHarvestersResponse get_harvesters response format
 type FarmerGetHarvestersResponse struct {
-	Response
+	rpcinterface.Response
 	Harvesters []FarmerHarvester `json:"harvesters"`
 }
 

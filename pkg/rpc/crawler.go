@@ -20,7 +20,7 @@ func (s *CrawlerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inter
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *CrawlerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *CrawlerService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -50,7 +50,7 @@ func (s *CrawlerService) GetVersion(opts *GetVersionOptions) (*GetVersionRespons
 
 // GetPeerCountsResponse Response for get_get_peer_counts on crawler
 type GetPeerCountsResponse struct {
-	Response
+	rpcinterface.Response
 	PeerCounts mo.Option[types.CrawlerPeerCounts] `json:"peer_counts"`
 }
 
@@ -75,7 +75,7 @@ type GetIPsAfterTimestampOptions struct {
 
 // GetIPsAfterTimestampResponse Response for get_ips_after_timestamp
 type GetIPsAfterTimestampResponse struct {
-	Response
+	rpcinterface.Response
 	IPs   mo.Option[[]string] `json:"ips"`
 	Total mo.Option[int]      `json:"total"`
 }

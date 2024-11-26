@@ -18,7 +18,7 @@ func (s *DaemonService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *DaemonService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *DaemonService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -53,7 +53,7 @@ type GetKeysOptions struct {
 
 // GetKeysResponse response from get_keys RPC call
 type GetKeysResponse struct {
-	Response
+	rpcinterface.Response
 	Keys []types.KeyData `json:"keys"`
 }
 
@@ -77,7 +77,7 @@ type StartServiceOptions struct {
 
 // StartServiceResponse start service response
 type StartServiceResponse struct {
-	Response
+	rpcinterface.Response
 	Service ServiceFullName `json:"service"`
 }
 
@@ -100,7 +100,7 @@ type StopServiceOptions struct {
 
 // StopServiceResponse stop service response
 type StopServiceResponse struct {
-	Response
+	rpcinterface.Response
 	Service ServiceFullName `json:"service"`
 }
 
@@ -123,7 +123,7 @@ type IsRunningOptions struct {
 
 // IsRunningResponse is service running response
 type IsRunningResponse struct {
-	Response
+	rpcinterface.Response
 	ServiceName ServiceFullName `json:"service_name"`
 	IsRunning   bool            `json:"is_running"`
 }
@@ -142,7 +142,7 @@ func (s *DaemonService) IsRunning(opts *IsRunningOptions) (*IsRunningResponse, *
 
 // RunningServicesResponse is service running response
 type RunningServicesResponse struct {
-	Response
+	rpcinterface.Response
 	RunningServices []ServiceFullName `json:"running_services"`
 }
 
@@ -160,7 +160,7 @@ func (s *DaemonService) RunningServices() (*RunningServicesResponse, *http.Respo
 
 // ExitResponse shows information about the services that were stopped
 type ExitResponse struct {
-	Response
+	rpcinterface.Response
 	ServicesStopped []ServiceFullName `json:"services_stopped"`
 }
 
@@ -181,7 +181,7 @@ type DaemonDeleteAllKeysOpts struct{}
 
 // DaemonDeleteAllKeysResponse response when deleting all keys
 type DaemonDeleteAllKeysResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // DeleteAllKeys deletes all keys from the keychain

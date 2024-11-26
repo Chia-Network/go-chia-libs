@@ -1,14 +1,13 @@
-package rpc
+package rpcinterface
 
 import (
 	"github.com/samber/mo"
 )
 
-// iResponse is the interface that must be satisfied by return types so we can properly wrap RPC errors
-type iResponse interface {
-	isSuccessful() bool
-	hasError() bool
-	getError() string
+// IResponse is the interface that must be satisfied by return types so we can properly wrap RPC errors
+type IResponse interface {
+	IsSuccessful() bool
+	GetRPCError() string
 }
 
 // Response is the base response elements that may be in any response from an RPC server in Chia
@@ -18,17 +17,12 @@ type Response struct {
 }
 
 // IsSuccessful returns whether the RPC request has success: true
-func (r *Response) isSuccessful() bool {
+func (r *Response) IsSuccessful() bool {
 	return r.Success
 }
 
-// HasError returns whether there is an error in the response
-func (r *Response) hasError() bool {
-	return r.Error.IsPresent()
-}
-
-// GetError returns the error if present or an empty string
-func (r *Response) getError() string {
+// GetRPCError returns the error if present or an empty string
+func (r *Response) GetRPCError() string {
 	return r.Error.OrEmpty()
 }
 

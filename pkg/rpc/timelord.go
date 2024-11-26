@@ -17,7 +17,7 @@ func (s *TimelordService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt inte
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *TimelordService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *TimelordService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 

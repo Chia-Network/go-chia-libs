@@ -20,7 +20,7 @@ func (s *WalletService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *WalletService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *WalletService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -62,7 +62,7 @@ func (s *WalletService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse
 
 // GetPublicKeysResponse response from get_public_keys
 type GetPublicKeysResponse struct {
-	Response
+	rpcinterface.Response
 	PublicKeyFingerprints mo.Option[[]int] `json:"public_key_fingerprints"`
 }
 
@@ -80,7 +80,7 @@ func (s *WalletService) GetPublicKeys() (*GetPublicKeysResponse, *http.Response,
 
 // GenerateMnemonicResponse Random new 24 words response
 type GenerateMnemonicResponse struct {
-	Response
+	rpcinterface.Response
 	Mnemonic mo.Option[[]string] `json:"mnemonic"`
 }
 
@@ -103,7 +103,7 @@ type AddKeyOptions struct {
 
 // AddKeyResponse response from the add_key endpoint
 type AddKeyResponse struct {
-	Response
+	rpcinterface.Response
 	Word        mo.Option[string] `json:"word,omitempty"` // This is part of a unique error response
 	Fingerprint mo.Option[int]    `json:"fingerprint,omitempty"`
 }
@@ -122,7 +122,7 @@ func (s *WalletService) AddKey(options *AddKeyOptions) (*AddKeyResponse, *http.R
 
 // DeleteAllKeysResponse Delete keys response
 type DeleteAllKeysResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // DeleteAllKeys deletes all keys from the keychain
@@ -145,7 +145,7 @@ type GetNextAddressOptions struct {
 
 // GetNextAddressResponse response from get next address
 type GetNextAddressResponse struct {
-	Response
+	rpcinterface.Response
 	WalletID mo.Option[uint32] `json:"wallet_id"`
 	Address  mo.Option[string] `json:"address"`
 }
@@ -164,7 +164,7 @@ func (s *WalletService) GetNextAddress(options *GetNextAddressOptions) (*GetNext
 
 // GetWalletSyncStatusResponse Response for get_sync_status on wallet
 type GetWalletSyncStatusResponse struct {
-	Response
+	rpcinterface.Response
 	GenesisInitialized mo.Option[bool] `json:"genesis_initialized"`
 	Synced             mo.Option[bool] `json:"synced"`
 	Syncing            mo.Option[bool] `json:"syncing"`
@@ -184,7 +184,7 @@ func (s *WalletService) GetSyncStatus() (*GetWalletSyncStatusResponse, *http.Res
 
 // GetWalletHeightInfoResponse response for get_height_info on wallet
 type GetWalletHeightInfoResponse struct {
-	Response
+	rpcinterface.Response
 	Height mo.Option[uint32] `json:"height"`
 }
 
@@ -207,7 +207,7 @@ type GetWalletsOptions struct {
 
 // GetWalletsResponse wallet rpc -> get_wallets
 type GetWalletsResponse struct {
-	Response
+	rpcinterface.Response
 	Fingerprint mo.Option[int]                `json:"fingerprint"`
 	Wallets     mo.Option[[]types.WalletInfo] `json:"wallets"`
 }
@@ -231,7 +231,7 @@ type GetWalletBalanceOptions struct {
 
 // GetWalletBalanceResponse is the wallet balance RPC response
 type GetWalletBalanceResponse struct {
-	Response
+	rpcinterface.Response
 	Balance mo.Option[types.WalletBalance] `json:"wallet_balance"`
 }
 
@@ -254,7 +254,7 @@ type GetWalletTransactionCountOptions struct {
 
 // GetWalletTransactionCountResponse response for get_transaction_count
 type GetWalletTransactionCountResponse struct {
-	Response
+	rpcinterface.Response
 	WalletID mo.Option[uint32] `json:"wallet_id"`
 	Count    mo.Option[int]    `json:"count"`
 }
@@ -281,7 +281,7 @@ type GetWalletTransactionsOptions struct {
 
 // GetWalletTransactionsResponse response for get_wallet_transactions
 type GetWalletTransactionsResponse struct {
-	Response
+	rpcinterface.Response
 	WalletID     mo.Option[uint32]                    `json:"wallet_id"`
 	Transactions mo.Option[[]types.TransactionRecord] `json:"transactions"`
 }
@@ -306,7 +306,7 @@ type GetWalletTransactionOptions struct {
 
 // GetWalletTransactionResponse response for get_wallet_transactions
 type GetWalletTransactionResponse struct {
-	Response
+	rpcinterface.Response
 	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 	TransactionID mo.Option[string]                  `json:"transaction_id"`
 }
@@ -335,7 +335,7 @@ type SendTransactionOptions struct {
 
 // SendTransactionResponse represents the response from send_transaction
 type SendTransactionResponse struct {
-	Response
+	rpcinterface.Response
 	TransactionID mo.Option[string]                  `json:"transaction_id"`
 	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 }
@@ -362,7 +362,7 @@ type CatSpendOptions struct {
 
 // CatSpendResponse represents the response from cat_spend
 type CatSpendResponse struct {
-	Response
+	rpcinterface.Response
 	TransactionID mo.Option[string]                  `json:"transaction_id"`
 	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 }
@@ -399,7 +399,7 @@ type MintNFTOptions struct {
 
 // MintNFTResponse represents the response from nft_get_info
 type MintNFTResponse struct {
-	Response
+	rpcinterface.Response
 	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
 	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
@@ -425,7 +425,7 @@ type GetNFTsOptions struct {
 
 // GetNFTsResponse represents the response from nft_get_nfts
 type GetNFTsResponse struct {
-	Response
+	rpcinterface.Response
 	WalletID mo.Option[uint32]          `json:"wallet_id"`
 	NFTList  mo.Option[[]types.NFTInfo] `json:"nft_list"`
 }
@@ -452,7 +452,7 @@ type TransferNFTOptions struct {
 
 // TransferNFTResponse represents the response from nft_get_info
 type TransferNFTResponse struct {
-	Response
+	rpcinterface.Response
 	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
 	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
@@ -477,7 +477,7 @@ type GetNFTInfoOptions struct {
 
 // GetNFTInfoResponse represents the response from nft_get_info
 type GetNFTInfoResponse struct {
-	Response
+	rpcinterface.Response
 	NFTInfo mo.Option[types.NFTInfo] `json:"nft_info"`
 }
 
@@ -504,7 +504,7 @@ type NFTAddURIOptions struct {
 
 // NFTAddURIResponse represents the response from nft_add_uri
 type NFTAddURIResponse struct {
-	Response
+	rpcinterface.Response
 	SpendBundle mo.Option[types.SpendBundle] `json:"spend_bundle"`
 	WalletID    mo.Option[uint32]            `json:"wallet_id"`
 }
@@ -528,7 +528,7 @@ type NFTGetByDidOptions struct {
 
 // NFTGetByDidResponse represents the response from nft_get_by_did
 type NFTGetByDidResponse struct {
-	Response
+	rpcinterface.Response
 	WalletID mo.Option[uint32] `json:"wallet_id"`
 }
 
@@ -554,7 +554,7 @@ type GetSpendableCoinsOptions struct {
 
 // GetSpendableCoinsResponse response from get_spendable_coins
 type GetSpendableCoinsResponse struct {
-	Response
+	rpcinterface.Response
 	ConfirmedRecords     mo.Option[[]types.CoinRecord] `json:"confirmed_records"`
 	UnconfirmedRemovals  mo.Option[[]types.CoinRecord] `json:"unconfirmed_removals"`
 	UnconfirmedAdditions mo.Option[[]types.CoinRecord] `json:"unconfirmed_additions"`
@@ -586,7 +586,7 @@ type CreateSignedTransactionOptions struct {
 
 // CreateSignedTransactionResponse Response from create_signed_transaction
 type CreateSignedTransactionResponse struct {
-	Response
+	rpcinterface.Response
 	SignedTXs mo.Option[[]types.TransactionRecord] `json:"signed_txs"`
 	SignedTX  mo.Option[types.TransactionRecord]   `json:"signed_tx"`
 }
@@ -605,7 +605,7 @@ func (s *WalletService) CreateSignedTransaction(opts *CreateSignedTransactionOpt
 
 // SendTransactionMultiResponse Response from send_transaction_multi
 type SendTransactionMultiResponse struct {
-	Response
+	rpcinterface.Response
 	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
 	TransactionID mo.Option[string]                  `json:"transaction_id"`
 }

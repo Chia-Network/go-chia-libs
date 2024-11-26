@@ -18,7 +18,7 @@ func (s *DataLayerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt int
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *DataLayerService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *DataLayerService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -39,7 +39,7 @@ type DatalayerGetSubscriptionsOptions struct{}
 
 // DatalayerGetSubscriptionsResponse response for get_subscriptions
 type DatalayerGetSubscriptionsResponse struct {
-	Response
+	rpcinterface.Response
 	StoreIDs []string `json:"store_ids"`
 }
 
@@ -66,7 +66,7 @@ type DatalayerGetOwnedStoresOptions struct{}
 
 // DatalayerGetOwnedStoresResponse Response for get_owned_stores
 type DatalayerGetOwnedStoresResponse struct {
-	Response
+	rpcinterface.Response
 	StoreIDs []string `json:"store_ids"`
 }
 
@@ -89,7 +89,7 @@ type DatalayerGetMirrorsOptions struct {
 
 // DatalayerGetMirrorsResponse Response from the get_mirrors RPC
 type DatalayerGetMirrorsResponse struct {
-	Response
+	rpcinterface.Response
 	Mirrors []types.DatalayerMirror `json:"mirrors"`
 }
 
@@ -113,7 +113,7 @@ type DatalayerDeleteMirrorOptions struct {
 
 // DatalayerDeleteMirrorResponse response data for delete_mirror
 type DatalayerDeleteMirrorResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // DeleteMirror deletes a datalayer mirror
@@ -138,7 +138,7 @@ type DatalayerAddMirrorOptions struct {
 
 // DatalayerAddMirrorResponse response data for add_mirror
 type DatalayerAddMirrorResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // AddMirror deletes a datalayer mirror
@@ -161,7 +161,7 @@ type DatalayerSubscribeOptions struct {
 
 // DatalayerSubscribeResponse Response from subscribe. Always empty aside from standard fields
 type DatalayerSubscribeResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // Subscribe deletes a datalayer mirror
@@ -184,7 +184,7 @@ type DatalayerUnsubscribeOptions struct {
 
 // DatalayerUnsubscribeResponse response data for unsubscribe
 type DatalayerUnsubscribeResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // Unsubscribe deletes a datalayer mirror

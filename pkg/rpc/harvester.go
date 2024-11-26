@@ -20,7 +20,7 @@ func (s *HarvesterService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt int
 }
 
 // Do is just a shortcut to the client's Do method
-func (s *HarvesterService) Do(req *rpcinterface.Request, v iResponse) (*http.Response, error) {
+func (s *HarvesterService) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	return s.client.Do(req, v)
 }
 
@@ -62,7 +62,7 @@ func (s *HarvesterService) GetVersion(opts *GetVersionOptions) (*GetVersionRespo
 
 // HarvesterGetPlotsResponse get_plots response format
 type HarvesterGetPlotsResponse struct {
-	Response
+	rpcinterface.Response
 	Plots                 mo.Option[[]protocols.Plot] `json:"plots"`
 	FailedToOpenFilenames mo.Option[[]string]         `json:"failed_to_open_filenames"`
 	NotFoundFilenames     mo.Option[[]string]         `json:"not_found_filenames"`
