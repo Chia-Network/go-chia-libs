@@ -17,25 +17,14 @@ func (s *DataLayerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt int
 	return s.client.NewRequest(rpcinterface.ServiceDataLayer, rpcEndpoint, opt)
 }
 
-// Do is just a shortcut to the client's Do method
-func (s *DataLayerService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
-	return s.client.Do(req, v)
+// GetClient returns the active client for the service
+func (s *DataLayerService) GetClient() rpcinterface.Client {
+	return s.client
 }
 
 // GetVersion returns the application version for the service
 func (s *DataLayerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_version", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetVersionResponse{}
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "get_version", opts, &GetVersionResponse{})
 }
 
 // DatalayerGetSubscriptionsOptions options for get_subscriptions
@@ -43,7 +32,7 @@ type DatalayerGetSubscriptionsOptions struct{}
 
 // DatalayerGetSubscriptionsResponse response for get_subscriptions
 type DatalayerGetSubscriptionsResponse struct {
-	Response
+	rpcinterface.Response
 	StoreIDs []string `json:"store_ids"`
 }
 
@@ -55,19 +44,7 @@ func (s *DataLayerService) GetSubscriptions(opts *DatalayerGetSubscriptionsOptio
 
 // Subscriptions calls the subscriptions endpoint to list all subscriptions
 func (s *DataLayerService) Subscriptions(opts *DatalayerGetSubscriptionsOptions) (*DatalayerGetSubscriptionsResponse, *http.Response, error) {
-	request, err := s.NewRequest("subscriptions", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerGetSubscriptionsResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "subscriptions", opts, &DatalayerGetSubscriptionsResponse{})
 }
 
 // DatalayerGetOwnedStoresOptions Options for get_owned_stores
@@ -75,25 +52,13 @@ type DatalayerGetOwnedStoresOptions struct{}
 
 // DatalayerGetOwnedStoresResponse Response for get_owned_stores
 type DatalayerGetOwnedStoresResponse struct {
-	Response
+	rpcinterface.Response
 	StoreIDs []string `json:"store_ids"`
 }
 
 // GetOwnedStores RPC endpoint get_owned_stores
 func (s *DataLayerService) GetOwnedStores(opts *DatalayerGetOwnedStoresOptions) (*DatalayerGetOwnedStoresResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_owned_stores", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerGetOwnedStoresResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "get_owned_stores", opts, &DatalayerGetOwnedStoresResponse{})
 }
 
 // DatalayerGetMirrorsOptions Options for get_mirrors
@@ -103,25 +68,13 @@ type DatalayerGetMirrorsOptions struct {
 
 // DatalayerGetMirrorsResponse Response from the get_mirrors RPC
 type DatalayerGetMirrorsResponse struct {
-	Response
+	rpcinterface.Response
 	Mirrors []types.DatalayerMirror `json:"mirrors"`
 }
 
 // GetMirrors lists the mirrors for the given datalayer store
 func (s *DataLayerService) GetMirrors(opts *DatalayerGetMirrorsOptions) (*DatalayerGetMirrorsResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_mirrors", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerGetMirrorsResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "get_mirrors", opts, &DatalayerGetMirrorsResponse{})
 }
 
 // DatalayerDeleteMirrorOptions options for delete_mirror RPC call
@@ -132,24 +85,12 @@ type DatalayerDeleteMirrorOptions struct {
 
 // DatalayerDeleteMirrorResponse response data for delete_mirror
 type DatalayerDeleteMirrorResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // DeleteMirror deletes a datalayer mirror
 func (s *DataLayerService) DeleteMirror(opts *DatalayerDeleteMirrorOptions) (*DatalayerDeleteMirrorResponse, *http.Response, error) {
-	request, err := s.NewRequest("delete_mirror", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerDeleteMirrorResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "delete_mirror", opts, &DatalayerDeleteMirrorResponse{})
 }
 
 // DatalayerAddMirrorOptions options for delete_mirror RPC call
@@ -162,24 +103,12 @@ type DatalayerAddMirrorOptions struct {
 
 // DatalayerAddMirrorResponse response data for add_mirror
 type DatalayerAddMirrorResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // AddMirror deletes a datalayer mirror
 func (s *DataLayerService) AddMirror(opts *DatalayerAddMirrorOptions) (*DatalayerAddMirrorResponse, *http.Response, error) {
-	request, err := s.NewRequest("add_mirror", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerAddMirrorResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "add_mirror", opts, &DatalayerAddMirrorResponse{})
 }
 
 // DatalayerSubscribeOptions options for subscribe
@@ -190,24 +119,12 @@ type DatalayerSubscribeOptions struct {
 
 // DatalayerSubscribeResponse Response from subscribe. Always empty aside from standard fields
 type DatalayerSubscribeResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // Subscribe deletes a datalayer mirror
 func (s *DataLayerService) Subscribe(opts *DatalayerSubscribeOptions) (*DatalayerSubscribeResponse, *http.Response, error) {
-	request, err := s.NewRequest("subscribe", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerSubscribeResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "subscribe", opts, &DatalayerSubscribeResponse{})
 }
 
 // DatalayerUnsubscribeOptions options for unsubscribing to a datastore
@@ -218,22 +135,10 @@ type DatalayerUnsubscribeOptions struct {
 
 // DatalayerUnsubscribeResponse response data for unsubscribe
 type DatalayerUnsubscribeResponse struct {
-	Response
+	rpcinterface.Response
 }
 
 // Unsubscribe deletes a datalayer mirror
 func (s *DataLayerService) Unsubscribe(opts *DatalayerUnsubscribeOptions) (*DatalayerUnsubscribeResponse, *http.Response, error) {
-	request, err := s.NewRequest("unsubscribe", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &DatalayerUnsubscribeResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "unsubscribe", opts, &DatalayerUnsubscribeResponse{})
 }

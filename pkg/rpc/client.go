@@ -1,7 +1,9 @@
 package rpc
 
 import (
+	"log/slog"
 	"net/http"
+	"net/url"
 
 	"github.com/google/uuid"
 
@@ -87,8 +89,26 @@ func (c *Client) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rpcint
 }
 
 // Do is a helper that wraps the activeClient's Do method
-func (c *Client) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
-	return c.activeClient.Do(req, v)
+func (c *Client) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
+	resp, err := c.activeClient.Do(req, v)
+	if err != nil {
+		return resp, err
+	}
+	if !v.IsSuccessful() {
+		return resp, &rpcinterface.ChiaRPCError{Message: v.GetRPCError()}
+	}
+	return resp, nil
+}
+
+// Do Helper to create and send a new request for a given service and retain the proper types
+func Do[R rpcinterface.IResponse](service rpcinterface.Service, endpoint rpcinterface.Endpoint, opts any, v R) (R, *http.Response, error) {
+	req, err := service.NewRequest(endpoint, opts)
+	if err != nil {
+		return v, nil, err
+	}
+
+	resp, err := service.GetClient().Do(req, v)
+	return v, resp, err
 }
 
 // Close calls the close method on the active client
@@ -97,6 +117,16 @@ func (c *Client) Close() error {
 }
 
 // The following has a bunch of methods that are currently only used for the websocket implementation
+
+// SetBaseURL satisfies the Client interface
+func (c *Client) SetBaseURL(url *url.URL) error {
+	return c.activeClient.SetBaseURL(url)
+}
+
+// SetLogHandler satisfies the client interface
+func (c *Client) SetLogHandler(handler slog.Handler) {
+	c.activeClient.SetLogHandler(handler)
+}
 
 // SubscribeSelf subscribes to responses to requests from this service
 // This is currently only useful for websocket mode

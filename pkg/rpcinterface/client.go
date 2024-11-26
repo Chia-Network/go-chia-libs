@@ -12,7 +12,7 @@ import (
 // HTTP (standard RPC) and websockets are the two supported now
 type Client interface {
 	NewRequest(service ServiceType, rpcEndpoint Endpoint, opt interface{}) (*Request, error)
-	Do(req *Request, v interface{}) (*http.Response, error)
+	Do(req *Request, v IResponse) (*http.Response, error)
 	Close() error
 	SetBaseURL(url *url.URL) error
 

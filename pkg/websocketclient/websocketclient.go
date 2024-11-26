@@ -137,7 +137,7 @@ func (c *WebsocketClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoi
 // Do sends an RPC request via the websocket
 // *http.Response is always nil in this return in async mode
 // call SetSyncMode() to ensure the calls return the data in a synchronous fashion
-func (c *WebsocketClient) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (c *WebsocketClient) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	err := c.ensureConnection()
 	if err != nil {
 		return nil, fmt.Errorf("error ensuring connection: %w", err)

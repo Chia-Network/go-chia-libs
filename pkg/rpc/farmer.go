@@ -20,58 +20,24 @@ func (s *FarmerService) NewRequest(rpcEndpoint rpcinterface.Endpoint, opt interf
 	return s.client.NewRequest(rpcinterface.ServiceFarmer, rpcEndpoint, opt)
 }
 
-// Do is just a shortcut to the client's Do method
-func (s *FarmerService) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
-	return s.client.Do(req, v)
+// GetClient returns the active client for the service
+func (s *FarmerService) GetClient() rpcinterface.Client {
+	return s.client
 }
 
 // GetConnections returns connections
 func (s *FarmerService) GetConnections(opts *GetConnectionsOptions) (*GetConnectionsResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_connections", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	c := &GetConnectionsResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	return Do(s, "get_connections", opts, &GetConnectionsResponse{})
 }
 
 // GetNetworkInfo gets the network name and prefix from the farmer
 func (s *FarmerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_network_info", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetNetworkInfoResponse{}
-
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "get_network_info", opts, &GetNetworkInfoResponse{})
 }
 
 // GetVersion returns the application version for the service
 func (s *FarmerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_version", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	r := &GetVersionResponse{}
-	resp, err := s.Do(request, r)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return r, resp, nil
+	return Do(s, "get_version", opts, &GetVersionResponse{})
 }
 
 // FarmerGetHarvestersOptions optoins for get_harvesters endpoint. Currently, accepts no options
@@ -101,22 +67,11 @@ type FarmerHarvester struct {
 
 // FarmerGetHarvestersResponse get_harvesters response format
 type FarmerGetHarvestersResponse struct {
-	Response
+	rpcinterface.Response
 	Harvesters []FarmerHarvester `json:"harvesters"`
 }
 
 // GetHarvesters returns all harvester details for the farmer
 func (s *FarmerService) GetHarvesters(opts *FarmerGetHarvestersOptions) (*FarmerGetHarvestersResponse, *http.Response, error) {
-	request, err := s.NewRequest("get_harvesters", opts)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	c := &FarmerGetHarvestersResponse{}
-	resp, err := s.Do(request, c)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return c, resp, nil
+	return Do(s, "get_harvesters", opts, &FarmerGetHarvestersResponse{})
 }

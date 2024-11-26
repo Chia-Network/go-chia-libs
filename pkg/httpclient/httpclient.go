@@ -171,7 +171,7 @@ func (c *HTTPClient) NewRequest(service rpcinterface.ServiceType, rpcEndpoint rp
 }
 
 // Do sends an RPC request and returns the RPC response.
-func (c *HTTPClient) Do(req *rpcinterface.Request, v interface{}) (*http.Response, error) {
+func (c *HTTPClient) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.Response, error) {
 	client, err := c.httpClientForService(req.Service)
 	if err != nil {
 		return nil, err

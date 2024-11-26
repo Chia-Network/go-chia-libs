@@ -5,9 +5,11 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/chia-network/go-chia-libs/pkg/types"
 	"github.com/samber/mo"
 	"github.com/stretchr/testify/require"
+
+	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
 func TestGetNFTs(t *testing.T) {
@@ -24,7 +26,7 @@ func TestGetNFTs(t *testing.T) {
 	})
 
 	want := GetNFTsResponse{
-		Response: Response{
+		Response: rpcinterface.Response{
 			Success: true,
 		},
 		WalletID: mo.Some[uint32](4),
@@ -78,7 +80,7 @@ func TestNFTGetByDid(t *testing.T) {
 	})
 
 	want := NFTGetByDidResponse{
-		Response: Response{
+		Response: rpcinterface.Response{
 			Success: true,
 		},
 		WalletID: mo.Some[uint32](4),
