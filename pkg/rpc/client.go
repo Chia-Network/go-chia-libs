@@ -94,7 +94,9 @@ func (c *Client) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*http.
 	if err != nil {
 		return resp, err
 	}
-	if !v.IsSuccessful() {
+	// resp will be nil in async websocket requests
+	// Any time we have a nil response, it's not a case of the RPC returning success: false, it's just a default value
+	if resp != nil && !v.IsSuccessful() {
 		return resp, &rpcinterface.ChiaRPCError{Message: v.GetRPCError()}
 	}
 	return resp, nil
