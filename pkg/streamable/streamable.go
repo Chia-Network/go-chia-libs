@@ -348,9 +348,15 @@ func marshalField(finalBytes []byte, fieldType reflect.Type, fieldValue reflect.
 			return finalBytes, err
 		}
 	case reflect.Slice:
-		finalBytes, err = marshalSlice(finalBytes, fieldType, fieldValue)
-		if err != nil {
-			return finalBytes, err
+		// Slice/List is 4 byte prefix (number of items) and then serialization of each item
+		// Get 4 byte length prefix
+		numItems := uint32(fieldValue.Len())
+		finalBytes = append(finalBytes, util.Uint32ToBytes(numItems)...)
+		for j := 0; j < int(numItems); j++ {
+			finalBytes, err = marshalField(finalBytes, fieldType.Elem(), fieldValue.Index(j), structField)
+			if err != nil {
+				return finalBytes, err
+			}
 		}
 	case reflect.String:
 		// Strings get converted to []byte with a 4 byte size prefix
@@ -367,33 +373,6 @@ func marshalField(finalBytes []byte, fieldType reflect.Type, fieldValue reflect.
 		}
 	default:
 		return finalBytes, fmt.Errorf("unimplemented type %s", fieldValue.Kind())
-	}
-
-	return finalBytes, nil
-}
-
-func marshalSlice(finalBytes []byte, t reflect.Type, v reflect.Value) ([]byte, error) {
-	var err error
-
-	// Slice/List is 4 byte prefix (number of items) and then serialization of each item
-	// Get 4 byte length prefix
-	numItems := uint32(v.Len())
-	finalBytes = append(finalBytes, util.Uint32ToBytes(numItems)...)
-
-	sliceKind := t.Elem().Kind()
-	switch sliceKind {
-	case reflect.Uint8: // same as byte
-		// This is the easy case - already a slice of bytes
-		finalBytes = append(finalBytes, v.Bytes()...)
-	case reflect.Struct:
-		for j := 0; j < int(numItems); j++ {
-			currentStruct := v.Index(j)
-
-			finalBytes, err = marshalStruct(finalBytes, currentStruct.Type(), currentStruct)
-			if err != nil {
-				return finalBytes, err
-			}
-		}
 	}
 
 	return finalBytes, nil

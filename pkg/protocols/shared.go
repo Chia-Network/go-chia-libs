@@ -3,7 +3,7 @@ package protocols
 // ProtocolVersion Current supported Protocol Version
 // Not all of this is supported, but this was the current version at the time
 // This library was started
-const ProtocolVersion string = "0.0.33"
+const ProtocolVersion string = "0.0.36"
 
 // NodeType is the type of peer (farmer, full node, etc)
 // Source for node types is chia/server/outbound_messages.py

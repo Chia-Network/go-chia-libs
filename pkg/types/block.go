@@ -66,6 +66,19 @@ type FullBlock struct {
 	TransactionsGeneratorRefList []uint32                           `json:"transactions_generator_ref_list" streamable:""`
 }
 
+// RewardChainBlockUnfinished Reward Chain Block Unfinished
+// https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/reward_chain_block.rs#L12
+type RewardChainBlockUnfinished struct {
+	TotalIters                Uint128            `streamable:""`
+	SignagePointIndex         uint8              `streamable:""`
+	POSSSCCChallengeHash      Bytes32            `streamable:""`
+	ProofOfSpace              ProofOfSpace       `streamable:""`
+	ChallengeChainSPVDF       mo.Option[VDFInfo] `streamable:""`
+	ChallengeChainSPSignature G2Element          `streamable:""`
+	RewardChainSPVDF          mo.Option[VDFInfo] `streamable:""`
+	RewardChainSPSignature    G2Element          `streamable:""`
+}
+
 // RewardChainBlock Reward Chain Block
 // https://github.com/Chia-Network/chia_rs/blob/main/crates/chia-protocol/src/reward_chain_block.rs#L24
 type RewardChainBlock struct {
