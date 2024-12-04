@@ -6,11 +6,12 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"github.com/chia-network/go-chia-libs/pkg/types"
 	"net"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/chia-network/go-chia-libs/pkg/types"
 
 	"github.com/gorilla/websocket"
 
@@ -123,9 +124,6 @@ func (c *Connection) generateDialer() error {
 	return nil
 }
 
-var ErrTLSConWS = fmt.Errorf("could not get tls.Conn from websocket")
-var ErrMissCertChain = fmt.Errorf("no certificates in chain")
-
 // ensureConnection ensures there is an open websocket connection
 func (c *Connection) ensureConnection() error {
 	if c.conn == nil {
@@ -142,13 +140,13 @@ func (c *Connection) ensureConnection() error {
 
 		tlsConn, ok := c.conn.NetConn().(*tls.Conn)
 		if !ok {
-			return ErrTLSConWS
+			return fmt.Errorf("could not get tls.Conn from websocket")
 		}
 
 		// Access the connection state
 		state := tlsConn.ConnectionState()
 		if len(state.PeerCertificates) == 0 {
-			return ErrMissCertChain
+			return fmt.Errorf("no certificates in chain")
 		}
 
 		c.peerID = sha256.Sum256(state.PeerCertificates[0].Raw)
