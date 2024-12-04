@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/chia-network/go-chia-libs/pkg/types"
+
 	"github.com/gorilla/websocket"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
@@ -26,6 +28,7 @@ type Connection struct {
 	peerPort    uint16
 	peerKeyPair *tls.Certificate
 	peerDialer  *websocket.Dialer
+	peerID      types.Bytes32
 
 	handshakeTimeout time.Duration
 	conn             *websocket.Conn
@@ -134,6 +137,19 @@ func (c *Connection) ensureConnection() error {
 		if err != nil {
 			return err
 		}
+
+		tlsConn, ok := c.conn.NetConn().(*tls.Conn)
+		if !ok {
+			return fmt.Errorf("could not get tls.Conn from websocket")
+		}
+
+		// Access the connection state
+		state := tlsConn.ConnectionState()
+		if len(state.PeerCertificates) == 0 {
+			return fmt.Errorf("no certificates in chain")
+		}
+
+		c.peerID = sha256.Sum256(state.PeerCertificates[0].Raw)
 	}
 
 	return nil
@@ -151,27 +167,8 @@ func (c *Connection) Close() {
 }
 
 // PeerID returns the Peer ID for the remote peer
-func (c *Connection) PeerID() ([32]byte, error) {
-	nullBytes := [32]byte{}
-	err := c.ensureConnection()
-	if err != nil {
-		return nullBytes, err
-	}
-
-	netConn := c.conn.NetConn()
-	tlsConn, ok := netConn.(*tls.Conn)
-	if !ok {
-		return nullBytes, fmt.Errorf("could not get tls.Conn from websocket")
-	}
-
-	// Access the connection state
-	state := tlsConn.ConnectionState()
-	if len(state.PeerCertificates) == 0 {
-		return nullBytes, fmt.Errorf("no certificates in chain")
-	}
-
-	cert := state.PeerCertificates[0]
-	return sha256.Sum256(cert.Raw), nil
+func (c *Connection) PeerID() types.Bytes32 {
+	return c.peerID
 }
 
 // Handshake performs the RPC handshake. This should be called before any other method
