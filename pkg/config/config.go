@@ -127,7 +127,7 @@ type LoggingConfig struct {
 	LogBackcompat       bool       `yaml:"log_backcompat" json:"log_backcompat"`
 	LogFilename         string     `yaml:"log_filename" json:"log_filename"`
 	LogLevel            string     `yaml:"log_level" json:"log_level"`
-	LogMaxFilesRotation uint8      `yaml:"log_maxfilesrotation" json:"log_maxfilesrotation"`
+	LogMaxFilesRotation uint32     `yaml:"log_maxfilesrotation" json:"log_maxfilesrotation"`
 	LogMaxBytesRotation uint32     `yaml:"log_maxbytesrotation" json:"log_maxbytesrotation"`
 	LogUseGzip          bool       `yaml:"log_use_gzip" json:"log_use_gzip"`
 	LogSyslog           bool       `yaml:"log_syslog" json:"log_syslog"`
