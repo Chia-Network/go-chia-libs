@@ -167,8 +167,13 @@ func (c *Connection) Close() {
 }
 
 // PeerID returns the Peer ID for the remote peer
-func (c *Connection) PeerID() types.Bytes32 {
-	return c.peerID
+func (c *Connection) PeerID() (types.Bytes32, error) {
+	err := c.ensureConnection()
+	if err != nil {
+		return types.Bytes32{}, err
+	}
+
+	return c.peerID, nil
 }
 
 // Handshake performs the RPC handshake. This should be called before any other method
