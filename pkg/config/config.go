@@ -46,6 +46,7 @@ type ChiaConfig struct {
 	HardForkHeight  uint32 `yaml:"HARD_FORK_HEIGHT" json:"HARD_FORK_HEIGHT"`
 	SoftFork4Height uint32 `yaml:"SOFT_FORK4_HEIGHT" json:"SOFT_FORK4_HEIGHT"`
 	SoftFork5Height uint32 `yaml:"SOFT_FORK5_HEIGHT" json:"SOFT_FORK5_HEIGHT"`
+	SoftFork6Height uint32 `yaml:"SOFT_FORK6_HEIGHT" json:"SOFT_FORK6_HEIGHT"`
 }
 
 // PortConfig common port settings found in many sections of the config
@@ -109,6 +110,7 @@ type NetworkConstants struct {
 	HardForkHeight      *uint32 `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
 	SoftFork4Height     *uint32 `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
 	SoftFork5Height     *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
+	SoftFork6Height     *uint32 `yaml:"SOFT_FORK6_HEIGHT,omitempty" json:"SOFT_FORK6_HEIGHT,omitempty"`
 	PlotFilter128Height *uint32 `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
 	PlotFilter64Height  *uint32 `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
 	PlotFilter32Height  *uint32 `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
@@ -293,6 +295,7 @@ type FullNodeConfig struct {
 	BadPeakCacheSize                 uint16            `yaml:"bad_peak_cache_size" json:"bad_peak_cache_size"`
 	ReservedCores                    uint8             `yaml:"reserved_cores" json:"reserved_cores"`
 	SingleThreaded                   bool              `yaml:"single_threaded" json:"single_threaded"`
+	LogCoins                         bool              `yaml:"log_coins" json:"log_coins"`
 	PeerConnectInterval              uint8             `yaml:"peer_connect_interval" json:"peer_connect_interval"`
 	PeerConnectTimeout               uint8             `yaml:"peer_connect_timeout" json:"peer_connect_timeout"`
 	TargetPeerCount                  uint16            `yaml:"target_peer_count" json:"target_peer_count"`
@@ -310,6 +313,7 @@ type FullNodeConfig struct {
 	EnableProfiler                   bool              `yaml:"enable_profiler" json:"enable_profiler"`
 	ProfileBlockValidation           bool              `yaml:"profile_block_validation" json:"profile_block_validation"`
 	EnableMemoryProfiler             bool              `yaml:"enable_memory_profiler" json:"enable_memory_profiler"`
+	LogMempool                       bool              `yaml:"log_mempool" json:"log_mempool"`
 	LogSqliteCmds                    bool              `yaml:"log_sqlite_cmds" json:"log_sqlite_cmds"`
 	MaxSubscribeItems                uint32            `yaml:"max_subscribe_items" json:"max_subscribe_items"`
 	MaxSubscribeResponseItems        uint32            `yaml:"max_subscribe_response_items" json:"max_subscribe_response_items"`
