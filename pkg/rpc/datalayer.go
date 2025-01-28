@@ -22,6 +22,11 @@ func (s *DataLayerService) GetClient() rpcinterface.Client {
 	return s.client
 }
 
+// GetNetworkInfo gets the network name and prefix from the full node
+func (s *DataLayerService) GetNetworkInfo(opts *GetNetworkInfoOptions) (*GetNetworkInfoResponse, *http.Response, error) {
+	return Do(s, "get_network_info", opts, &GetNetworkInfoResponse{})
+}
+
 // GetVersion returns the application version for the service
 func (s *DataLayerService) GetVersion(opts *GetVersionOptions) (*GetVersionResponse, *http.Response, error) {
 	return Do(s, "get_version", opts, &GetVersionResponse{})
