@@ -161,6 +161,20 @@ func TestChiaConfig_SetFieldByPath_Lists_SingleItems(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "node-0-override-2.chia.net", defaultConfig.FullNode.FullNodePeers[0].Host)
 	assert.Equal(t, uint16(8444), defaultConfig.FullNode.FullNodePeers[0].Port)
+
+	defaultConfig, err = config.LoadDefaultConfig()
+	assert.NoError(t, err)
+	// Make assertions about the default state, to ensure the assumed initial values are correct
+	assert.Equal(t, []string{}, defaultConfig.Seeder.StaticPeers)
+	assert.Equal(t, []config.Peer{}, defaultConfig.FullNode.FullNodePeers)
+
+	err = defaultConfig.SetFieldByPath([]string{"full_node", "full_node_peers", "0"}, config.Peer{
+		Host: "node-0-override-frompeer.chia.net",
+		Port: 9999,
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, "node-0-override-frompeer.chia.net", defaultConfig.FullNode.FullNodePeers[0].Host)
+	assert.Equal(t, uint16(9999), defaultConfig.FullNode.FullNodePeers[0].Port)
 }
 
 func TestChiaConfig_FillValuesFromEnvironment(t *testing.T) {
