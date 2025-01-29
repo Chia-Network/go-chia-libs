@@ -11,6 +11,7 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"github.com/chia-network/go-chia-libs/pkg/types"
+	"github.com/chia-network/go-chia-libs/pkg/util"
 )
 
 // FillValuesFromEnvironment reads environment variables starting with `chia.` and edits the config based on the config path
@@ -177,62 +178,88 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 						fieldValue.SetMapIndex(mapKey, mapValue)
 						return nil
 					}
+				} else if fieldValue.Kind() == reflect.Slice && util.IsNumericInt(path[1]) {
+					sliceKey, err := strconv.Atoi(path[1])
+					if err != nil {
+						return fmt.Errorf("unable to parse slice index as int: %w", err)
+					}
+
+					if sliceKey >= fieldValue.Len() {
+						// Set a zero value and then call back to this function to go the other path
+						zeroSliceValue := reflect.Zero(fieldValue.Type().Elem())
+						fieldValue.Set(reflect.Append(fieldValue, zeroSliceValue))
+					}
+
+					sliceValue := fieldValue.Index(sliceKey)
+
+					if !sliceValue.IsValid() {
+						return fmt.Errorf("invalid slice value")
+					}
+					if len(path) < 3 {
+						// This is the case where we're setting the index directly to a single value (not a sub-value in a struct, etc)
+						return doValueSet(sliceValue, path[1:], value)
+					}
+					return setFieldByPath(sliceValue, path[2:], value)
 				} else {
 					return setFieldByPath(fieldValue, path[1:], value)
 				}
 			}
 
-			if !fieldValue.CanSet() {
-				return fmt.Errorf("cannot set field %s", path[0])
+			return doValueSet(fieldValue, path, value)
+		}
+	}
+
+	return nil
+}
+
+func doValueSet(fieldValue reflect.Value, path []string, value any) error {
+	if !fieldValue.CanSet() {
+		return fmt.Errorf("cannot set field %s", path[0])
+	}
+
+	// Special Cases
+	if fieldValue.Type() == reflect.TypeOf(types.Uint128{}) {
+		strValue, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("expected string for Uint128 field, got %T", value)
+		}
+		bigIntValue := new(big.Int)
+		_, ok = bigIntValue.SetString(strValue, 10)
+		if !ok {
+			return fmt.Errorf("invalid string for big.Int: %s", strValue)
+		}
+		fieldValue.Set(reflect.ValueOf(types.Uint128FromBig(bigIntValue)))
+		return nil
+	}
+
+	// Handle YAML (and therefore JSON) parsing for passing in entire structs/maps
+	// This is particularly useful if you want to pass in a whole blob of network constants at once
+	if fieldValue.Kind() == reflect.Struct || fieldValue.Kind() == reflect.Map || fieldValue.Kind() == reflect.Slice {
+		if strValue, ok := value.(string); ok {
+			yamlData := []byte(strValue)
+			if err := yaml.Unmarshal(yamlData, fieldValue.Addr().Interface()); err != nil {
+				return fmt.Errorf("failed to unmarshal yaml into field: %w", err)
 			}
-
-			// Special Cases
-			if fieldValue.Type() == reflect.TypeOf(types.Uint128{}) {
-				strValue, ok := value.(string)
-				if !ok {
-					return fmt.Errorf("expected string for Uint128 field, got %T", value)
-				}
-				bigIntValue := new(big.Int)
-				_, ok = bigIntValue.SetString(strValue, 10)
-				if !ok {
-					return fmt.Errorf("invalid string for big.Int: %s", strValue)
-				}
-				fieldValue.Set(reflect.ValueOf(types.Uint128FromBig(bigIntValue)))
-				return nil
-			}
-
-			// Handle YAML (and therefore JSON) parsing for passing in entire structs/maps
-			// This is particularly useful if you want to pass in a whole blob of network constants at once
-			if fieldValue.Kind() == reflect.Struct || fieldValue.Kind() == reflect.Map || fieldValue.Kind() == reflect.Slice {
-				if strValue, ok := value.(string); ok {
-					yamlData := []byte(strValue)
-					if err := yaml.Unmarshal(yamlData, fieldValue.Addr().Interface()); err != nil {
-						return fmt.Errorf("failed to unmarshal yaml into field: %w", err)
-					}
-					// If we successfully replaced by doing yaml parsing into the field, then we should not try anything else
-					return nil
-				}
-			}
-
-			val := reflect.ValueOf(value)
-
-			if fieldValue.Type() != val.Type() {
-				if val.Type().ConvertibleTo(fieldValue.Type()) {
-					val = val.Convert(fieldValue.Type())
-				} else {
-					convertedVal, err := convertValue(value, fieldValue.Type())
-					if err != nil {
-						return err
-					}
-					val = reflect.ValueOf(convertedVal)
-				}
-			}
-
-			fieldValue.Set(val)
-
+			// If we successfully replaced by doing yaml parsing into the field, then we should not try anything else
 			return nil
 		}
 	}
+
+	val := reflect.ValueOf(value)
+
+	if fieldValue.Type() != val.Type() {
+		if val.Type().ConvertibleTo(fieldValue.Type()) {
+			val = val.Convert(fieldValue.Type())
+		} else {
+			convertedVal, err := convertValue(value, fieldValue.Type())
+			if err != nil {
+				return err
+			}
+			val = reflect.ValueOf(convertedVal)
+		}
+	}
+
+	fieldValue.Set(val)
 
 	return nil
 }
