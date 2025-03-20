@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     container: golang:1
     steps:
+      - name: Add safe Git directory
+        uses: Chia-Network/actions/git-mark-workspace-safe@main
+
       - uses: actions/checkout@v4
 
       - name: Get latest chiavdf libs
