@@ -16,24 +16,86 @@ import (
 	"time"
 )
 
+type fieldHelpers struct {
+	setter      func(certs *ChiaCertificates, pair *CertificateKeyPair)
+	getter      func(certs *ChiaCertificates) *CertificateKeyPair
+	certKeyBase string
+}
+
 var (
-	privateNodeNames = []string{
-		"full_node",
-		"wallet",
-		"farmer",
-		"harvester",
-		"timelord",
-		"crawler",
-		"data_layer",
-		"daemon",
+	privateNodes = map[string]fieldHelpers{
+		"full_node": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFullNode = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFullNode },
+			certKeyBase: "private_full_node",
+		},
+		"wallet": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateWallet = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateWallet },
+			certKeyBase: "private_wallet",
+		},
+		"farmer": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFarmer = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFarmer },
+			certKeyBase: "private_farmer",
+		},
+		"harvester": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateHarvester = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateHarvester },
+			certKeyBase: "private_harvester",
+		},
+		"timelord": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateTimelord = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateTimelord },
+			certKeyBase: "private_timelord",
+		},
+		"crawler": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateCrawler = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateCrawler },
+			certKeyBase: "private_crawler",
+		},
+		"data_layer": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDatalayer = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDatalayer },
+			certKeyBase: "private_data_layer",
+		},
+		"daemon": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDaemon = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDaemon },
+			certKeyBase: "private_daemon",
+		},
 	}
-	publicNodeNames = []string{
-		"full_node",
-		"wallet",
-		"farmer",
-		"introducer",
-		"timelord",
-		"data_layer",
+	publicNodes = map[string]fieldHelpers{
+		"full_node": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFullNode = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFullNode },
+			certKeyBase: "public_full_node",
+		},
+		"wallet": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicWallet = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicWallet },
+			certKeyBase: "public_wallet",
+		},
+		"farmer": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFarmer = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFarmer },
+			certKeyBase: "public_farmer",
+		},
+		"introducer": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicIntroducer = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicIntroducer },
+			certKeyBase: "public_introducer",
+		},
+		"timelord": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicTimelord = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicTimelord },
+			certKeyBase: "public_timelord",
+		},
+		"data_layer": {
+			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicDatalayer = p },
+			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicDatalayer },
+			certKeyBase: "public_data_layer",
+		},
 	}
 
 	//go:embed chia_ca.crt
@@ -43,20 +105,149 @@ var (
 	chiaCAKeyBytes []byte
 )
 
-// GenerateAllCerts generates the full set of required certs for chia blockchain
+// ChiaCertificates contains the data for all Chia TLS certificate-key pairs
+type ChiaCertificates struct {
+	PrivateCA        *CertificateKeyPair
+	PrivateCrawler   *CertificateKeyPair
+	PrivateDaemon    *CertificateKeyPair
+	PrivateDatalayer *CertificateKeyPair
+	PublicDatalayer  *CertificateKeyPair
+	PrivateFarmer    *CertificateKeyPair
+	PublicFarmer     *CertificateKeyPair
+	PrivateFullNode  *CertificateKeyPair
+	PublicFullNode   *CertificateKeyPair
+	PrivateHarvester *CertificateKeyPair
+	PublicIntroducer *CertificateKeyPair
+	PrivateTimelord  *CertificateKeyPair
+	PublicTimelord   *CertificateKeyPair
+	PrivateWallet    *CertificateKeyPair
+	PublicWallet     *CertificateKeyPair
+}
+
+// CertificateKeyPair contains the data for a TLS certificate-key pair
+type CertificateKeyPair struct {
+	Certificate []byte
+	PrivateKey  *rsa.PrivateKey
+}
+
+// GenerateAllCerts  generates the full set of required certs for chia blockchain
 // If privateCACert and privateCAKey are both nil, a new private CA will be generated
-func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAKey *rsa.PrivateKey) error {
+func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.PrivateKey) (*ChiaCertificates, error) {
+	var chiaCerts *ChiaCertificates
+
+	if privateCACert == nil && privateCAKey == nil {
+		// If privateCACert and privateCAKey are both nil, we will generate a new one
+		var err error
+		var privateCACertDER []byte
+		privateCACertDER, privateCAKey, err = GenerateNewCA()
+		if err != nil {
+			return nil, fmt.Errorf("error creating private ca pair: %w", err)
+		}
+		privateCACertPEMBytes, privateCAKeyPEMBytes, err := EncodeCertAndKeyToPEM(privateCACertDER, privateCAKey)
+		if err != nil {
+			return nil, fmt.Errorf("error encoding private ca certificates: %w", err)
+		}
+		privateCACert, err = ParsePemCertificate(privateCACertPEMBytes)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing generated private_ca.crt: %w", err)
+		}
+		privateCAKeyPEM, err := ParsePemKey(privateCAKeyPEMBytes)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing generated private_ca.key: %w", err)
+		}
+		chiaCerts.PrivateCA = &CertificateKeyPair{
+			Certificate: privateCACertPEMBytes,
+			PrivateKey:  privateCAKeyPEM,
+		}
+	} else if privateCACert == nil || privateCAKey == nil {
+		// If only one of them is nil, we can't continue
+		return nil, errors.New("you must provide the CA cert and key if providing a CA, or set both to nil and a new CA will be generated")
+	} else {
+		// Must have non-nil values for both, so ensure the cert and key match
+		if !CertMatchesPrivateKey(privateCACert, privateCAKey) {
+			return nil, errors.New("provided private CA Cert and Key do not match")
+		}
+	}
+
+	// Parse public CA cert and key bytes
+	chiaCACert, err := ParsePemCertificate(chiaCACrtBytes)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing chia_ca.crt")
+	}
+	chiaCAKey, err := ParsePemKey(chiaCAKeyBytes)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing chia_ca.key")
+	}
+
+	// Create all Certificate-Key pairs from public CA
+	for node, nodeData := range publicNodes {
+		cert, key, err := GenerateCASignedCert(chiaCACert, chiaCAKey)
+		if err != nil {
+			return nil, fmt.Errorf("error generating public pair for %s: %w", node, err)
+		}
+		nodeData.setter(chiaCerts, &CertificateKeyPair{
+			Certificate: cert,
+			PrivateKey:  key,
+		})
+	}
+
+	// Create all Certificate-Key pairs from private CA
+	for node, nodeData := range privateNodes {
+		cert, key, err := GenerateCASignedCert(privateCACert, privateCAKey)
+		if err != nil {
+			return nil, fmt.Errorf("error generating private pair for %s: %w", node, err)
+		}
+		nodeData.setter(chiaCerts, &CertificateKeyPair{
+			Certificate: cert,
+			PrivateKey:  key,
+		})
+	}
+
+	return chiaCerts, nil
+}
+
+// GenerateAndWriteAllCerts generates the full set of required certs for chia blockchain and writes them to a given directory
+// If privateCACert and privateCAKey are both nil, a new private CA will be generated
+func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, privateCAKey *rsa.PrivateKey) error {
 	// First, ensure that all output directories exist
-	allNodes := append(privateNodeNames, publicNodeNames...)
-	for _, subdir := range append(allNodes, "ca") {
+	allNodes := make(map[string]bool)
+	for k := range privateNodes {
+		allNodes[k] = true
+	}
+	for k := range publicNodes {
+		allNodes[k] = true
+	}
+	allNodes["ca"] = true
+	for subdir := range allNodes {
 		err := os.MkdirAll(path.Join(outDir, subdir), 0700)
 		if err != nil {
 			return fmt.Errorf("error making output directory for certs: %w", err)
 		}
 	}
 
+	// Generate all the certificates
+	allCerts, err := GenerateAllCerts(privateCACert, privateCAKey)
+	if err != nil {
+		return fmt.Errorf("error generating certificates: %w", err)
+	}
+
+	// Copy the private CA cert/key
+	err = os.WriteFile(path.Join(outDir, "ca", "private_ca.crt"), allCerts.PrivateCA.Certificate, 0600)
+	if err != nil {
+		return fmt.Errorf("error copying private_ca.crt: %w", err)
+	}
+	keyBytes, err := x509.MarshalPKCS8PrivateKey(allCerts.PrivateCA.PrivateKey)
+	if err != nil {
+		return fmt.Errorf("error encoding private key to PKCS8: %w", err)
+	}
+	keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
+	err = os.WriteFile(path.Join(outDir, "ca", "private_ca.key"), keyPemBytes, 0600)
+	if err != nil {
+		return fmt.Errorf("error copying private_ca.key: %w", err)
+	}
+
 	// Next, copy the chia_ca cert/key
-	err := os.WriteFile(path.Join(outDir, "ca", "chia_ca.crt"), chiaCACrtBytes, 0600)
+	err = os.WriteFile(path.Join(outDir, "ca", "chia_ca.crt"), chiaCACrtBytes, 0600)
 	if err != nil {
 		return fmt.Errorf("error copying chia_ca.crt: %w", err)
 	}
@@ -65,60 +256,39 @@ func GenerateAllCerts(outDir string, privateCACert *x509.Certificate, privateCAK
 		return fmt.Errorf("error copying chia_ca.key: %w", err)
 	}
 
-	chiaCACert, err := ParsePemCertificate(chiaCACrtBytes)
-	if err != nil {
-		return fmt.Errorf("error parsing chia_ca.crt")
-	}
+	for node, nodeHelpers := range publicNodes {
+		crtKey := nodeHelpers.getter(allCerts)
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crtKey.Certificate, 0600)
+		if err != nil {
+			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
+		}
 
-	chiaCAKey, err := ParsePemKey(chiaCAKeyBytes)
-	if err != nil {
-		return fmt.Errorf("error parsing chia_ca.key")
-	}
-
-	if privateCACert == nil && privateCAKey == nil {
-		// If privateCACert and privateCAKey are both nil, we will generate a new one
-		var privateCACertDER []byte
-		privateCACertDER, privateCAKey, err = GenerateNewCA()
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(crtKey.PrivateKey)
 		if err != nil {
-			return fmt.Errorf("error creating private ca pair: %w", err)
+			return fmt.Errorf("error encoding private key to PKCS8: %w", err)
 		}
-		privateCACertBytes, _, err := WriteCertAndKey(privateCACertDER, privateCAKey, path.Join(outDir, "ca", "private_ca"))
+		keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), keyPemBytes, 0600)
 		if err != nil {
-			return fmt.Errorf("error writing private ca: %w", err)
-		}
-		privateCACert, err = ParsePemCertificate(privateCACertBytes)
-		if err != nil {
-			return fmt.Errorf("error parsing generated private_ca.crt: %w", err)
-		}
-	} else if privateCACert == nil || privateCAKey == nil {
-		// If only one of them is nil, we can't continue
-		return errors.New("you must provide the CA cert and key if providing a CA, or set both to nil and a new CA will be generated")
-	} else {
-		// Must have non-nil values for both, so ensure the cert and key match
-		if !CertMatchesPrivateKey(privateCACert, privateCAKey) {
-			return errors.New("provided private CA Cert and Key do not match")
+			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
 		}
 	}
 
-	for _, node := range publicNodeNames {
-		cert, key, err := GenerateCASignedCert(chiaCACert, chiaCAKey)
+	for node, nodeHelpers := range privateNodes {
+		crtKey := nodeHelpers.getter(allCerts)
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crtKey.Certificate, 0600)
 		if err != nil {
-			return fmt.Errorf("error generating public pair for %s: %w", node, err)
+			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
 		}
-		_, _, err = WriteCertAndKey(cert, key, path.Join(outDir, node, fmt.Sprintf("public_%s", node)))
-		if err != nil {
-			return fmt.Errorf("error writing public pair for %s: %w", node, err)
-		}
-	}
 
-	for _, node := range privateNodeNames {
-		cert, key, err := GenerateCASignedCert(privateCACert, privateCAKey)
+		keyBytes, err := x509.MarshalPKCS8PrivateKey(crtKey.PrivateKey)
 		if err != nil {
-			return fmt.Errorf("error generating private pair for %s: %w", node, err)
+			return fmt.Errorf("error encoding private key to PKCS8: %w", err)
 		}
-		_, _, err = WriteCertAndKey(cert, key, path.Join(outDir, node, fmt.Sprintf("private_%s", node)))
+		keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), keyPemBytes, 0600)
 		if err != nil {
-			return fmt.Errorf("error writing private pair for %s: %w", node, err)
+			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
 		}
 	}
 
