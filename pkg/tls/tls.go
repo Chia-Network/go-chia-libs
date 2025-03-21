@@ -17,83 +17,83 @@ import (
 )
 
 type fieldHelpers struct {
-	setter      func(certs *ChiaCertificates, pair *CertificateKeyPair)
-	getter      func(certs *ChiaCertificates) *CertificateKeyPair
+	assign      func(certs *ChiaCertificates, pair *CertificateKeyPair)
+	fetch       func(certs *ChiaCertificates) *CertificateKeyPair
 	certKeyBase string
 }
 
 var (
 	privateNodes = map[string]fieldHelpers{
 		"full_node": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFullNode = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFullNode },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFullNode = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFullNode },
 			certKeyBase: "private_full_node",
 		},
 		"wallet": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateWallet = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateWallet },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateWallet = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateWallet },
 			certKeyBase: "private_wallet",
 		},
 		"farmer": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFarmer = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFarmer },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateFarmer = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateFarmer },
 			certKeyBase: "private_farmer",
 		},
 		"harvester": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateHarvester = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateHarvester },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateHarvester = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateHarvester },
 			certKeyBase: "private_harvester",
 		},
 		"timelord": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateTimelord = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateTimelord },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateTimelord = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateTimelord },
 			certKeyBase: "private_timelord",
 		},
 		"crawler": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateCrawler = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateCrawler },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateCrawler = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateCrawler },
 			certKeyBase: "private_crawler",
 		},
 		"data_layer": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDatalayer = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDatalayer },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDatalayer = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDatalayer },
 			certKeyBase: "private_data_layer",
 		},
 		"daemon": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDaemon = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDaemon },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PrivateDaemon = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PrivateDaemon },
 			certKeyBase: "private_daemon",
 		},
 	}
 	publicNodes = map[string]fieldHelpers{
 		"full_node": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFullNode = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFullNode },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFullNode = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFullNode },
 			certKeyBase: "public_full_node",
 		},
 		"wallet": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicWallet = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicWallet },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicWallet = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicWallet },
 			certKeyBase: "public_wallet",
 		},
 		"farmer": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFarmer = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFarmer },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicFarmer = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicFarmer },
 			certKeyBase: "public_farmer",
 		},
 		"introducer": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicIntroducer = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicIntroducer },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicIntroducer = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicIntroducer },
 			certKeyBase: "public_introducer",
 		},
 		"timelord": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicTimelord = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicTimelord },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicTimelord = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicTimelord },
 			certKeyBase: "public_timelord",
 		},
 		"data_layer": {
-			setter:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicDatalayer = p },
-			getter:      func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicDatalayer },
+			assign:      func(c *ChiaCertificates, p *CertificateKeyPair) { c.PublicDatalayer = p },
+			fetch:       func(c *ChiaCertificates) *CertificateKeyPair { return c.PublicDatalayer },
 			certKeyBase: "public_data_layer",
 		},
 	}
@@ -185,7 +185,7 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 		if err != nil {
 			return nil, fmt.Errorf("error generating public pair for %s: %w", node, err)
 		}
-		nodeData.setter(chiaCerts, &CertificateKeyPair{
+		nodeData.assign(chiaCerts, &CertificateKeyPair{
 			Certificate: cert,
 			PrivateKey:  key,
 		})
@@ -197,7 +197,7 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 		if err != nil {
 			return nil, fmt.Errorf("error generating private pair for %s: %w", node, err)
 		}
-		nodeData.setter(chiaCerts, &CertificateKeyPair{
+		nodeData.assign(chiaCerts, &CertificateKeyPair{
 			Certificate: cert,
 			PrivateKey:  key,
 		})
@@ -257,7 +257,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 	}
 
 	for node, nodeHelpers := range publicNodes {
-		crtKey := nodeHelpers.getter(allCerts)
+		crtKey := nodeHelpers.fetch(allCerts)
 		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
 		if err != nil {
 			return fmt.Errorf("error encoding public pair for %s: %w", node, err)
@@ -275,7 +275,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 	}
 
 	for node, nodeHelpers := range privateNodes {
-		crtKey := nodeHelpers.getter(allCerts)
+		crtKey := nodeHelpers.fetch(allCerts)
 		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
 		if err != nil {
 			return fmt.Errorf("error encoding private pair for %s: %w", node, err)
