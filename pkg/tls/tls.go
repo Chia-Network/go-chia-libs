@@ -143,7 +143,7 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 		if err != nil {
 			return nil, fmt.Errorf("error creating private ca pair: %w", err)
 		}
-		privateCACertPEMBytes, privateCAKeyPEMBytes, err := EncodeCertAndKeyToPEM(privateCACertDER, privateCAKey)
+		privateCACertPEMBytes, _, err := EncodeCertAndKeyToPEM(privateCACertDER, privateCAKey)
 		if err != nil {
 			return nil, fmt.Errorf("error encoding private ca certificates: %w", err)
 		}
@@ -151,13 +151,9 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 		if err != nil {
 			return nil, fmt.Errorf("error parsing generated private_ca.crt: %w", err)
 		}
-		privateCAKeyPEM, err := ParsePemKey(privateCAKeyPEMBytes)
-		if err != nil {
-			return nil, fmt.Errorf("error parsing generated private_ca.key: %w", err)
-		}
 		chiaCerts.PrivateCA = &CertificateKeyPair{
 			Certificate: privateCACertDER,
-			PrivateKey:  privateCAKeyPEM,
+			PrivateKey:  privateCAKey,
 		}
 	} else if privateCACert == nil || privateCAKey == nil {
 		// If only one of them is nil, we can't continue
