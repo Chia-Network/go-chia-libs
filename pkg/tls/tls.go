@@ -163,6 +163,10 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 		if !CertMatchesPrivateKey(privateCACert, privateCAKey) {
 			return nil, errors.New("provided private CA Cert and Key do not match")
 		}
+		chiaCerts.PrivateCA = &CertificateKeyPair{
+			Certificate: privateCACert.Raw,
+			PrivateKey:  privateCAKey,
+		}
 	}
 
 	// Parse public CA cert and key bytes
