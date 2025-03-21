@@ -231,7 +231,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 		return fmt.Errorf("error generating certificates: %w", err)
 	}
 
-	// Copy the private CA cert/key
+	// Write the private CA cert/key
 	err = os.WriteFile(path.Join(outDir, "ca", "private_ca.crt"), allCerts.PrivateCA.Certificate, 0600)
 	if err != nil {
 		return fmt.Errorf("error copying private_ca.crt: %w", err)
@@ -246,7 +246,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 		return fmt.Errorf("error copying private_ca.key: %w", err)
 	}
 
-	// Next, copy the chia_ca cert/key
+	// Next, write the chia_ca cert/key
 	err = os.WriteFile(path.Join(outDir, "ca", "chia_ca.crt"), chiaCACrtBytes, 0600)
 	if err != nil {
 		return fmt.Errorf("error copying chia_ca.crt: %w", err)
@@ -260,7 +260,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 		crtKey := nodeHelpers.fetch(allCerts)
 		_, _, err = WriteCertAndKey(crtKey.Certificate, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
 		if err != nil {
-			return fmt.Errorf("error writing private pair for %s: %w", node, err)
+			return fmt.Errorf("error writing public pair for %s: %w", node, err)
 		}
 	}
 
