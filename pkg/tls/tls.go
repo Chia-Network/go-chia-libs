@@ -133,7 +133,7 @@ type CertificateKeyPair struct {
 // GenerateAllCerts  generates the full set of required certs for chia blockchain
 // If privateCACert and privateCAKey are both nil, a new private CA will be generated
 func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.PrivateKey) (*ChiaCertificates, error) {
-	var chiaCerts *ChiaCertificates
+	var chiaCerts = &ChiaCertificates{}
 
 	if privateCACert == nil && privateCAKey == nil {
 		// If privateCACert and privateCAKey are both nil, we will generate a new one
@@ -258,17 +258,17 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 
 	for node, nodeHelpers := range publicNodes {
 		crtKey := nodeHelpers.getter(allCerts)
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crtKey.Certificate, 0600)
+		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
+		if err != nil {
+			return fmt.Errorf("error encoding public pair for %s: %w", node, err)
+		}
+
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crt, 0600)
 		if err != nil {
 			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
 		}
 
-		keyBytes, err := x509.MarshalPKCS8PrivateKey(crtKey.PrivateKey)
-		if err != nil {
-			return fmt.Errorf("error encoding private key to PKCS8: %w", err)
-		}
-		keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), keyPemBytes, 0600)
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), key, 0600)
 		if err != nil {
 			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
 		}
@@ -276,17 +276,17 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 
 	for node, nodeHelpers := range privateNodes {
 		crtKey := nodeHelpers.getter(allCerts)
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crtKey.Certificate, 0600)
+		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
+		if err != nil {
+			return fmt.Errorf("error encoding private pair for %s: %w", node, err)
+		}
+
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crt, 0600)
 		if err != nil {
 			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
 		}
 
-		keyBytes, err := x509.MarshalPKCS8PrivateKey(crtKey.PrivateKey)
-		if err != nil {
-			return fmt.Errorf("error encoding private key to PKCS8: %w", err)
-		}
-		keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), keyPemBytes, 0600)
+		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), key, 0600)
 		if err != nil {
 			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
 		}
