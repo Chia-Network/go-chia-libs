@@ -99,7 +99,7 @@ func TestGenerateAllCerts_ProvidedCA(t *testing.T) {
 		t.Fatal("Private CA certificate and private key do not match")
 	}
 
-	// Loop through all public certificate-key pairs and verify that the pair is not nil, that the key matches the certificate, and that they were signed by the public CA
+	// Loop through all public certificate-key pairs and verify that the pair is not nil, that the key matches the certificate
 	for _, nodeHelpers := range publicNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
 
@@ -118,7 +118,7 @@ func TestGenerateAllCerts_ProvidedCA(t *testing.T) {
 		}
 	}
 
-	// Loop through all private certificate-key pairs and verify that the pair is not nil, that the key matches the certificate, and that they were signed by the private CA
+	// Loop through all private certificate-key pairs and verify that the pair is not nil, that the key matches the certificate
 	for _, nodeHelpers := range privateNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
 
@@ -153,7 +153,7 @@ func TestGenerateAllCerts_GeneratedCA(t *testing.T) {
 		t.Fatal("Private CA certificate and private key do not match")
 	}
 
-	// Loop through all public certificate-key pairs and verify that the pair is not nil, that the key matches the certificate, and that they were signed by the public CA
+	// Loop through all public certificate-key pairs and verify that the pair is not nil, that the key matches the certificate
 	for _, nodeHelpers := range publicNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
 
@@ -172,7 +172,7 @@ func TestGenerateAllCerts_GeneratedCA(t *testing.T) {
 		}
 	}
 
-	// Loop through all private certificate-key pairs and verify that the pair is not nil, that the key matches the certificate, and that they were signed by the private CA
+	// Loop through all private certificate-key pairs and verify that the pair is not nil, that the key matches the certificate
 	for _, nodeHelpers := range privateNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
 
