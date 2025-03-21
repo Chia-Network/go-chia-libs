@@ -156,7 +156,7 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 			return nil, fmt.Errorf("error parsing generated private_ca.key: %w", err)
 		}
 		chiaCerts.PrivateCA = &CertificateKeyPair{
-			Certificate: privateCACertPEMBytes,
+			Certificate: privateCACertDER,
 			PrivateKey:  privateCAKeyPEM,
 		}
 	} else if privateCACert == nil || privateCAKey == nil {
@@ -232,18 +232,9 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 	}
 
 	// Write the private CA cert/key
-	err = os.WriteFile(path.Join(outDir, "ca", "private_ca.crt"), allCerts.PrivateCA.Certificate, 0600)
+	_, _, err = WriteCertAndKey(allCerts.PrivateCA.Certificate, allCerts.PrivateCA.PrivateKey, path.Join(outDir, "ca", "private_ca"))
 	if err != nil {
-		return fmt.Errorf("error copying private_ca.crt: %w", err)
-	}
-	keyBytes, err := x509.MarshalPKCS8PrivateKey(allCerts.PrivateCA.PrivateKey)
-	if err != nil {
-		return fmt.Errorf("error encoding private key to PKCS8: %w", err)
-	}
-	keyPemBytes := pem.EncodeToMemory(&pem.Block{Type: "PRIVATE KEY", Bytes: keyBytes})
-	err = os.WriteFile(path.Join(outDir, "ca", "private_ca.key"), keyPemBytes, 0600)
-	if err != nil {
-		return fmt.Errorf("error copying private_ca.key: %w", err)
+		return fmt.Errorf("error writing private ca: %w", err)
 	}
 
 	// Next, write the chia_ca cert/key
