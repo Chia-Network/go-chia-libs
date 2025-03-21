@@ -124,10 +124,16 @@ type ChiaCertificates struct {
 	PublicWallet     *CertificateKeyPair
 }
 
-// CertificateKeyPair contains the data for a TLS certificate-key pair
+// CertificateKeyPair represents a TLS certificate and its corresponding private key used for secure communications.
+// This pair can be encoded to PEM with the EncodeCertAndKeyToPEM function.
 type CertificateKeyPair struct {
-	Certificate []byte
-	PrivateKey  *rsa.PrivateKey
+	// CertificateDER contains the X.509 certificate in ASN.1 DER binary format.
+	// This is the raw binary representation of the certificate, not PEM encoded.
+	CertificateDER []byte
+
+	// PrivateKey contains the RSA private key corresponding to the public key
+	// embedded in the certificate.
+	PrivateKey *rsa.PrivateKey
 }
 
 // GenerateAllCerts  generates the full set of required certs for chia blockchain
@@ -152,8 +158,8 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 			return nil, fmt.Errorf("error parsing generated private_ca.crt: %w", err)
 		}
 		chiaCerts.PrivateCA = &CertificateKeyPair{
-			Certificate: privateCACertDER,
-			PrivateKey:  privateCAKey,
+			CertificateDER: privateCACertDER,
+			PrivateKey:     privateCAKey,
 		}
 	} else if privateCACert == nil || privateCAKey == nil {
 		// If only one of them is nil, we can't continue
@@ -164,8 +170,8 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 			return nil, errors.New("provided private CA Cert and Key do not match")
 		}
 		chiaCerts.PrivateCA = &CertificateKeyPair{
-			Certificate: privateCACert.Raw,
-			PrivateKey:  privateCAKey,
+			CertificateDER: privateCACert.Raw,
+			PrivateKey:     privateCAKey,
 		}
 	}
 
@@ -186,8 +192,8 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 			return nil, fmt.Errorf("error generating public pair for %s: %w", node, err)
 		}
 		nodeData.assign(chiaCerts, &CertificateKeyPair{
-			Certificate: cert,
-			PrivateKey:  key,
+			CertificateDER: cert,
+			PrivateKey:     key,
 		})
 	}
 
@@ -198,8 +204,8 @@ func GenerateAllCerts(privateCACert *x509.Certificate, privateCAKey *rsa.Private
 			return nil, fmt.Errorf("error generating private pair for %s: %w", node, err)
 		}
 		nodeData.assign(chiaCerts, &CertificateKeyPair{
-			Certificate: cert,
-			PrivateKey:  key,
+			CertificateDER: cert,
+			PrivateKey:     key,
 		})
 	}
 
@@ -232,7 +238,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 	}
 
 	// Write the private CA cert/key
-	_, _, err = WriteCertAndKey(allCerts.PrivateCA.Certificate, allCerts.PrivateCA.PrivateKey, path.Join(outDir, "ca", "private_ca"))
+	_, _, err = WriteCertAndKey(allCerts.PrivateCA.CertificateDER, allCerts.PrivateCA.PrivateKey, path.Join(outDir, "ca", "private_ca"))
 	if err != nil {
 		return fmt.Errorf("error writing private ca: %w", err)
 	}
@@ -249,7 +255,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 
 	for node, nodeHelpers := range publicNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
-		_, _, err = WriteCertAndKey(crtKey.Certificate, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
+		_, _, err = WriteCertAndKey(crtKey.CertificateDER, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
 		if err != nil {
 			return fmt.Errorf("error writing public pair for %s: %w", node, err)
 		}
@@ -257,7 +263,7 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 
 	for node, nodeHelpers := range privateNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
-		_, _, err = WriteCertAndKey(crtKey.Certificate, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
+		_, _, err = WriteCertAndKey(crtKey.CertificateDER, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
 		if err != nil {
 			return fmt.Errorf("error writing private pair for %s: %w", node, err)
 		}
