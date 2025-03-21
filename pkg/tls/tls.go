@@ -258,37 +258,17 @@ func GenerateAndWriteAllCerts(outDir string, privateCACert *x509.Certificate, pr
 
 	for node, nodeHelpers := range publicNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
-		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
+		_, _, err = WriteCertAndKey(crtKey.Certificate, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
 		if err != nil {
-			return fmt.Errorf("error encoding public pair for %s: %w", node, err)
-		}
-
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crt, 0600)
-		if err != nil {
-			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
-		}
-
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), key, 0600)
-		if err != nil {
-			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
+			return fmt.Errorf("error writing private pair for %s: %w", node, err)
 		}
 	}
 
 	for node, nodeHelpers := range privateNodes {
 		crtKey := nodeHelpers.fetch(allCerts)
-		crt, key, err := EncodeCertAndKeyToPEM(crtKey.Certificate, crtKey.PrivateKey)
+		_, _, err = WriteCertAndKey(crtKey.Certificate, crtKey.PrivateKey, path.Join(outDir, node, nodeHelpers.certKeyBase))
 		if err != nil {
-			return fmt.Errorf("error encoding private pair for %s: %w", node, err)
-		}
-
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.crt", nodeHelpers.certKeyBase)), crt, 0600)
-		if err != nil {
-			return fmt.Errorf("error copying %s.crt: %w", nodeHelpers.certKeyBase, err)
-		}
-
-		err = os.WriteFile(path.Join(outDir, node, fmt.Sprintf("%s.key", nodeHelpers.certKeyBase)), key, 0600)
-		if err != nil {
-			return fmt.Errorf("error copying %s.key: %w", nodeHelpers.certKeyBase, err)
+			return fmt.Errorf("error writing private pair for %s: %w", node, err)
 		}
 	}
 
