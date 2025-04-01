@@ -261,7 +261,6 @@ type TimelordConfig struct {
 	Logging                    *LoggingConfig    `yaml:"logging" json:"logging"`
 	NetworkOverrides           *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
 	SelectedNetwork            *string           `yaml:"selected_network" json:"selected_network"`
-	FastAlgorithm              bool              `yaml:"fast_algorithm" json:"fast_algorithm"`
 	BlueboxMode                bool              `yaml:"bluebox_mode" json:"bluebox_mode"`
 	SlowBluebox                bool              `yaml:"slow_bluebox" json:"slow_bluebox"`
 	SlowBlueboxProcessCount    uint8             `yaml:"slow_bluebox_process_count" json:"slow_bluebox_process_count"`
@@ -353,6 +352,7 @@ type IntroducerConfig struct {
 	Logging             *LoggingConfig    `yaml:"logging" json:"logging"`
 	NetworkOverrides    *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
 	SelectedNetwork     *string           `yaml:"selected_network" json:"selected_network"`
+	DNSServers          []string          `yaml:"dns_servers" json:"dns_servers"`
 	SSL                 SSLConfig         `yaml:"ssl" json:"ssl"`
 }
 
