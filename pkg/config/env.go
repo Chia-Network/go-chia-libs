@@ -212,6 +212,95 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 	return nil
 }
 
+// GetFieldByPath iterates through each item in path to find the corresponding `yaml` tag in the struct
+// Once found, we move to the next item in path and look for that key within the first element
+// If any element is not found, an error will be returned
+func (c *ChiaConfig) GetFieldByPath(path []string) (any, error) {
+	v := reflect.ValueOf(c).Elem()
+	return getFieldByPath(v, path)
+}
+
+func getFieldByPath(v reflect.Value, path []string) (any, error) {
+	if len(path) == 0 {
+		return nil, fmt.Errorf("invalid path")
+	}
+
+	// Handle pointers
+	if v.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return nil, fmt.Errorf("nil pointer encountered")
+		}
+		v = v.Elem()
+	}
+
+	// Ensure we're working with a struct
+	if v.Kind() != reflect.Struct {
+		return nil, fmt.Errorf("expected struct but got %s", v.Kind())
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Type().Field(i)
+		yamlTagRaw := field.Tag.Get("yaml")
+		yamlTag := strings.Split(yamlTagRaw, ",")[0]
+
+		if yamlTagRaw == ",inline" && field.Anonymous {
+			// Dive into the embedded struct
+			return getFieldByPath(v.Field(i), path)
+		} else if yamlTag == path[0] {
+			fieldValue := v.Field(i)
+
+			if fieldValue.Kind() == reflect.Ptr {
+				if fieldValue.IsNil() {
+					return nil, fmt.Errorf("nil pointer in path at %s", path[0])
+				}
+				fieldValue = fieldValue.Elem()
+			}
+
+			if len(path) == 1 {
+				return fieldValue.Interface(), nil
+			}
+
+			switch fieldValue.Kind() {
+			case reflect.Struct:
+				return getFieldByPath(fieldValue, path[1:])
+			case reflect.Map:
+				mapKey := reflect.ValueOf(path[1])
+				if !mapKey.Type().ConvertibleTo(fieldValue.Type().Key()) {
+					return nil, fmt.Errorf("invalid map key type %s", mapKey.Type())
+				}
+				mapValue := fieldValue.MapIndex(mapKey)
+				if !mapValue.IsValid() {
+					return nil, fmt.Errorf("map key %v not found", mapKey)
+				}
+				if len(path) == 2 {
+					return mapValue.Interface(), nil
+				}
+				return getFieldByPath(mapValue, path[2:])
+			case reflect.Slice:
+				if !util.IsNumericInt(path[1]) {
+					return nil, fmt.Errorf("expected numeric index for slice")
+				}
+				sliceIndex, err := strconv.Atoi(path[1])
+				if err != nil {
+					return nil, fmt.Errorf("unable to parse slice index: %w", err)
+				}
+				if sliceIndex >= fieldValue.Len() {
+					return nil, fmt.Errorf("index %d out of range for slice of length %d", sliceIndex, fieldValue.Len())
+				}
+				sliceElem := fieldValue.Index(sliceIndex)
+				if len(path) == 2 {
+					return sliceElem.Interface(), nil
+				}
+				return getFieldByPath(sliceElem, path[2:])
+			default:
+				return nil, fmt.Errorf("unexpected kind %s at path %s", fieldValue.Kind(), path[0])
+			}
+		}
+	}
+
+	return nil, fmt.Errorf("field %s not found", path[0])
+}
+
 func doValueSet(fieldValue reflect.Value, path []string, value any) error {
 	if !fieldValue.CanSet() {
 		return fmt.Errorf("cannot set field %s", path[0])
