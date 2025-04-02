@@ -10,6 +10,36 @@ import (
 	"github.com/chia-network/go-chia-libs/pkg/config"
 )
 
+func TestPreserveUnknownFields(t *testing.T) {
+	badConfig := []byte(`min_mainnet_k_size: 32
+ping_interval: 120
+self_hostname: localhost
+prefer_ipv6: false
+rpc_timeout: 300
+daemon_port: 55400
+daemon_max_message_size: 50000000
+daemon_heartbeat: 300
+daemon_allow_tls_1_2: false
+inbound_rate_limit_percent: 100
+outbound_rate_limit_percent: 30
+random_field_that_doesnt_exist: value
+another_random_numeric: 123
+full_node:
+  original_block_creation: false
+  another_random_full_node: saved"
+`)
+
+	cfg, err := config.LoadFromBytes(badConfig, "/test/path")
+	assert.NoError(t, err)
+	cfgBytes, err := cfg.SaveBytes()
+	assert.NoError(t, err)
+	assert.Contains(t, string(cfgBytes), "random_field_that_doesnt_exist: value")
+	assert.Contains(t, string(cfgBytes), "another_random_numeric: 123")
+	assert.Contains(t, string(cfgBytes), "  original_block_creation: false")
+	assert.Contains(t, string(cfgBytes), "  another_random_full_node: saved")
+	t.Log(string(cfgBytes))
+}
+
 func TestDealWithAnchors(t *testing.T) {
 	cfg, err := config.LoadDefaultConfig()
 	assert.NoError(t, err)
