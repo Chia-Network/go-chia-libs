@@ -125,7 +125,6 @@ type NetworkConstants struct {
 
 // NetworkConfig specific network configuration settings
 type NetworkConfig struct {
-	UnknownFields       map[string]any `yaml:",inline" json:",inline"`
 	AddressPrefix       string         `yaml:"address_prefix" json:"address_prefix"`
 	DefaultFullNodePort uint16         `yaml:"default_full_node_port,omitempty" json:"default_full_node_port,omitempty"`
 }
