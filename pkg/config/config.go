@@ -84,6 +84,7 @@ type Peer struct {
 // NetworkOverrides is all network settings
 type NetworkOverrides struct {
 	yamlAnchor    *yaml.Node                  `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
+	UnknownFields map[string]any              `yaml:",inline" json:",inline"`
 	Constants     map[string]NetworkConstants `yaml:"constants" json:"constants"`
 	Config        map[string]NetworkConfig    `yaml:"config" json:"config"`
 }
@@ -100,6 +101,7 @@ func (nc *NetworkOverrides) SetAnchorNode(node *yaml.Node) {
 
 // NetworkConstants the constants for each network
 type NetworkConstants struct {
+	UnknownFields                  map[string]any `yaml:",inline" json:",inline"`
 	AggSigMeAdditionalData         string         `yaml:"AGG_SIG_ME_ADDITIONAL_DATA,omitempty" json:"AGG_SIG_ME_ADDITIONAL_DATA,omitempty"`
 	DifficultyConstantFactor       types.Uint128  `yaml:"DIFFICULTY_CONSTANT_FACTOR,omitempty" json:"DIFFICULTY_CONSTANT_FACTOR,omitempty"`
 	DifficultyStarting             uint64         `yaml:"DIFFICULTY_STARTING,omitempty" json:"DIFFICULTY_STARTING,omitempty"`
