@@ -271,3 +271,32 @@ func TestChiaConfig_ParsePathsFromStrings(t *testing.T) {
 	assert.Contains(t, result, "full_node__database_path")
 	assert.Equal(t, []string{"full_node", "database_path"}, result["full_node__database_path"])
 }
+
+func TestChiaConfig_GetFieldByPath(t *testing.T) {
+	defaultConfig, err := config.LoadDefaultConfig()
+	assert.NoError(t, err)
+	// Make assertions about the default state, to ensure the assumed initial values are correct
+	assert.Equal(t, uint16(8444), defaultConfig.FullNode.Port)
+	assert.Equal(t, uint16(8555), defaultConfig.FullNode.RPCPort)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
+	assert.Equal(t, defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor, types.Uint128{})
+	assert.Equal(t, *defaultConfig.SelectedNetwork, "mainnet")
+	assert.Equal(t, defaultConfig.Logging.LogLevel, "WARNING")
+
+	val, err := defaultConfig.GetFieldByPath([]string{"full_node", "port"})
+	assert.NoError(t, err)
+	assert.Equal(t, uint16(8444), val)
+
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "rpc_port"})
+	assert.NoError(t, err)
+	assert.Equal(t, uint16(8555), val)
+
+	val, err = defaultConfig.GetFieldByPath([]string{"network_overrides", "constants", "mainnet", "DIFFICULTY_CONSTANT_FACTOR"})
+	assert.NoError(t, err)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
+	assert.Equal(t, types.Uint128{}, val)
+
+	val, err = defaultConfig.GetFieldByPath([]string{"selected_network"})
+	assert.NoError(t, err)
+	assert.Equal(t, "mainnet", val)
+}
