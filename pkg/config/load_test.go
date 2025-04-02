@@ -26,6 +26,7 @@ random_field_that_doesnt_exist: value
 another_random_numeric: 123
 full_node:
   original_block_creation: false
+  another_random_full_node: saved"
 `)
 
 	cfg, err := config.LoadFromBytes(badConfig, "/test/path")
@@ -35,6 +36,7 @@ full_node:
 	assert.Contains(t, string(cfgBytes), "random_field_that_doesnt_exist: value")
 	assert.Contains(t, string(cfgBytes), "another_random_numeric: 123")
 	assert.Contains(t, string(cfgBytes), "  original_block_creation: false")
+	assert.Contains(t, string(cfgBytes), "  another_random_full_node: saved")
 	t.Log(string(cfgBytes))
 }
 
