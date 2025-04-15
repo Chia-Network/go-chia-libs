@@ -92,6 +92,22 @@ func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["yamlnet"])
 	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["yamlnet"].DifficultyConstantFactor)
 	assert.Equal(t, "9eb3cec765fb3b3508f82e090374d5913d24806e739da31bcc4ab1767d9f1ca9", defaultConfig.NetworkOverrides.Constants["yamlnet"].GenesisChallenge)
+
+	err = defaultConfig.SetFieldByPath([]string{"network_overrides", "constants", "pathnet"}, `{"DIFFICULTY_CONSTANT_FACTOR":44445555,"GENESIS_CHALLENGE":e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806}`)
+	assert.NoError(t, err)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["pathnet"])
+	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["pathnet"].DifficultyConstantFactor)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	// Ensure this applied to the other areas of config as well
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Seeder.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Harvester.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Pool.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Farmer.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Timelord.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.FullNode.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.UI.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Introducer.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
+	assert.Equal(t, "e739da31bcc4ab1767d9f1ca99eb3cec765fb3b3508f82e090374d5913d24806", defaultConfig.Wallet.NetworkOverrides.Constants["pathnet"].GenesisChallenge)
 }
 
 // TestChiaConfig_SetFieldByPath_FullObjects Tests that we can pass in and correctly parse a whole section of config

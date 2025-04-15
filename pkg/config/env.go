@@ -164,20 +164,28 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 						return fmt.Errorf("invalid map key type %s", mapKey.Type())
 					}
 					mapValue := fieldValue.MapIndex(mapKey)
-					if mapValue.IsValid() {
-						if !mapValue.CanSet() {
-							// Create a new writable map and copy over the existing data
-							newMapValue := reflect.New(fieldValue.Type().Elem()).Elem()
-							newMapValue.Set(mapValue)
-							mapValue = newMapValue
-						}
-						err := setFieldByPath(mapValue, path[2:], value)
+					if !mapValue.IsValid() {
+						// Create a new value for the map key
+						newMapValue := reflect.New(fieldValue.Type().Elem()).Elem()
+						err := doValueSet(newMapValue, path[1:], value)
 						if err != nil {
 							return err
 						}
-						fieldValue.SetMapIndex(mapKey, mapValue)
+						fieldValue.SetMapIndex(mapKey, newMapValue)
 						return nil
 					}
+					if !mapValue.CanSet() {
+						// Create a new writable map and copy over the existing data
+						newMapValue := reflect.New(fieldValue.Type().Elem()).Elem()
+						newMapValue.Set(mapValue)
+						mapValue = newMapValue
+					}
+					err := setFieldByPath(mapValue, path[2:], value)
+					if err != nil {
+						return err
+					}
+					fieldValue.SetMapIndex(mapKey, mapValue)
+					return nil
 				} else if fieldValue.Kind() == reflect.Slice && util.IsNumericInt(path[1]) {
 					sliceKey, err := strconv.Atoi(path[1])
 					if err != nil {
