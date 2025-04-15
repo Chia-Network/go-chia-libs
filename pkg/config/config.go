@@ -125,8 +125,8 @@ type NetworkConstants struct {
 
 // NetworkConfig specific network configuration settings
 type NetworkConfig struct {
-	AddressPrefix       string         `yaml:"address_prefix" json:"address_prefix"`
-	DefaultFullNodePort uint16         `yaml:"default_full_node_port,omitempty" json:"default_full_node_port,omitempty"`
+	AddressPrefix       string `yaml:"address_prefix" json:"address_prefix"`
+	DefaultFullNodePort uint16 `yaml:"default_full_node_port,omitempty" json:"default_full_node_port,omitempty"`
 }
 
 // LoggingConfig configuration settings for the logger
