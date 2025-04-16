@@ -52,21 +52,21 @@ type ChiaConfig struct {
 
 // PortConfig common port settings found in many sections of the config
 type PortConfig struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Port          uint16         `yaml:"port,omitempty" json:"port,omitempty"`
 	RPCPort       uint16         `yaml:"rpc_port,omitempty" json:"rpc_port,omitempty"`
 }
 
 // CAConfig config keys for CA
 type CAConfig struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Crt           string         `yaml:"crt" json:"crt"`
 	Key           string         `yaml:"key" json:"key"`
 }
 
 // SSLConfig common ssl settings found in many sections of the config
 type SSLConfig struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	PrivateCRT    string         `yaml:"private_crt,omitempty" json:"private_crt,omitempty"`
 	PrivateKey    string         `yaml:"private_key,omitempty" json:"private_key,omitempty"`
 	PublicCRT     string         `yaml:"public_crt,omitempty" json:"public_crt,omitempty"`
@@ -75,7 +75,7 @@ type SSLConfig struct {
 
 // Peer is a host/port for a peer
 type Peer struct {
-	UnknownFields         map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields         map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Host                  string         `yaml:"host" json:"host"`
 	Port                  uint16         `yaml:"port" json:"port"`
 	EnablePrivateNetworks bool           `yaml:"enable_private_networks,omitempty" json:"enable_private_networks,omitempty"`
@@ -84,7 +84,7 @@ type Peer struct {
 // NetworkOverrides is all network settings
 type NetworkOverrides struct {
 	yamlAnchor    *yaml.Node                  `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
-	UnknownFields map[string]any              `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any              `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Constants     map[string]NetworkConstants `yaml:"constants" json:"constants"`
 	Config        map[string]NetworkConfig    `yaml:"config" json:"config"`
 }
@@ -101,7 +101,7 @@ func (nc *NetworkOverrides) SetAnchorNode(node *yaml.Node) {
 
 // NetworkConstants the constants for each network
 type NetworkConstants struct {
-	UnknownFields                  map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields                  map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	AggSigMeAdditionalData         string         `yaml:"AGG_SIG_ME_ADDITIONAL_DATA,omitempty" json:"AGG_SIG_ME_ADDITIONAL_DATA,omitempty"`
 	DifficultyConstantFactor       types.Uint128  `yaml:"DIFFICULTY_CONSTANT_FACTOR,omitempty" json:"DIFFICULTY_CONSTANT_FACTOR,omitempty"`
 	DifficultyStarting             uint64         `yaml:"DIFFICULTY_STARTING,omitempty" json:"DIFFICULTY_STARTING,omitempty"`
@@ -132,7 +132,7 @@ type NetworkConfig struct {
 // LoggingConfig configuration settings for the logger
 type LoggingConfig struct {
 	yamlAnchor          *yaml.Node     `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
-	UnknownFields       map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields       map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	LogStdout           bool           `yaml:"log_stdout" json:"log_stdout"`
 	LogBackcompat       bool           `yaml:"log_backcompat" json:"log_backcompat"`
 	LogFilename         string         `yaml:"log_filename" json:"log_filename"`
@@ -157,7 +157,7 @@ func (lc *LoggingConfig) SetAnchorNode(node *yaml.Node) {
 
 // SeederConfig seeder configuration section
 type SeederConfig struct {
-	UnknownFields       map[string]any    `yaml:",inline" json:",inline"`
+	UnknownFields       map[string]any    `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Port                uint16            `yaml:"port" json:"port"`
 	OtherPeersPort      uint16            `yaml:"other_peers_port" json:"other_peers_port"`
 	DNSPort             uint16            `yaml:"dns_port" json:"dns_port"`
@@ -179,7 +179,7 @@ type SeederConfig struct {
 
 // SeederSOA dns SOA for seeder
 type SeederSOA struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Rname         string         `yaml:"rname" json:"rname"`
 	SerialNumber  uint32         `yaml:"serial_number" json:"serial_number"`
 	Refresh       uint32         `yaml:"refresh" json:"refresh"`
@@ -190,7 +190,7 @@ type SeederSOA struct {
 
 // CrawlerConfig is the subsection of the seeder config specific to the crawler
 type CrawlerConfig struct {
-	UnknownFields  map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields  map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	StartRPCServer bool           `yaml:"start_rpc_server" json:"start_rpc_server"`
 	PortConfig     `yaml:",inline" json:",inline"`
 	PrunePeerDays  uint32    `yaml:"prune_peer_days" json:"prune_peer_days"`
@@ -199,7 +199,7 @@ type CrawlerConfig struct {
 
 // HarvesterConfig harvester configuration section
 type HarvesterConfig struct {
-	UnknownFields              map[string]any        `yaml:",inline" json:",inline"`
+	UnknownFields              map[string]any        `yaml:",inline,omitempty" json:",inline,omitempty"`
 	FarmerPeers                []Peer                `yaml:"farmer_peers" json:"farmer_peers"`
 	StartRPCServer             bool                  `yaml:"start_rpc_server" json:"start_rpc_server"`
 	NumThreads                 uint8                 `yaml:"num_threads" json:"num_threads"`
@@ -227,7 +227,7 @@ type HarvesterConfig struct {
 
 // PlotsRefreshParameter refresh params for harvester
 type PlotsRefreshParameter struct {
-	UnknownFields          map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields          map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	IntervalSeconds        uint16         `yaml:"interval_seconds" json:"interval_seconds"`
 	RetryInvalidSeconds    uint16         `yaml:"retry_invalid_seconds" json:"retry_invalid_seconds"`
 	BatchSize              uint16         `yaml:"batch_size" json:"batch_size"`
@@ -236,7 +236,7 @@ type PlotsRefreshParameter struct {
 
 // PoolConfig configures pool settings
 type PoolConfig struct {
-	UnknownFields    map[string]any    `yaml:",inline" json:",inline"`
+	UnknownFields    map[string]any    `yaml:",inline,omitempty" json:",inline,omitempty"`
 	XCHTargetAddress string            `yaml:"xch_target_address,omitempty" json:"xch_target_address,omitempty"`
 	Logging          *LoggingConfig    `yaml:"logging" json:"logging"`
 	NetworkOverrides *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
@@ -245,7 +245,7 @@ type PoolConfig struct {
 
 // FarmerConfig farmer configuration section
 type FarmerConfig struct {
-	UnknownFields      map[string]any    `yaml:",inline" json:",inline"`
+	UnknownFields      map[string]any    `yaml:",inline,omitempty" json:",inline,omitempty"`
 	FullNodePeers      []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
 	PoolPublicKeys     types.WonkySet    `yaml:"pool_public_keys" json:"pool_public_keys"`
 	XCHTargetAddress   string            `yaml:"xch_target_address,omitempty" json:"xch_target_address,omitempty"`
@@ -261,7 +261,7 @@ type FarmerConfig struct {
 
 // TimelordLauncherConfig settings for vdf_client launcher
 type TimelordLauncherConfig struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Host          string         `yaml:"host" json:"host"`
 	Port          uint16         `yaml:"port" json:"port"`
 	ProcessCount  uint8          `yaml:"process_count" json:"process_count"`
@@ -270,7 +270,7 @@ type TimelordLauncherConfig struct {
 
 // TimelordConfig timelord configuration section
 type TimelordConfig struct {
-	UnknownFields              map[string]any    `yaml:",inline" json:",inline"`
+	UnknownFields              map[string]any    `yaml:",inline,omitempty" json:",inline,omitempty"`
 	VDFClients                 VDFClients        `yaml:"vdf_clients" json:"vdf_clients"`
 	FullNodePeers              []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
 	MaxConnectionTime          uint16            `yaml:"max_connection_time" json:"max_connection_time"`
@@ -289,14 +289,14 @@ type TimelordConfig struct {
 
 // VDFClients is a list of allowlisted IPs for vdf_client
 type VDFClients struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	IP            []string       `yaml:"ip" json:"ip"`
 	IPSEstimate   []uint32       `yaml:"ips_estimate" json:"ips_estimate"`
 }
 
 // FullNodeConfig full node configuration section
 type FullNodeConfig struct {
-	UnknownFields                    map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields                    map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	PortConfig                       `yaml:",inline" json:",inline"`
 	FullNodePeers                    []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
 	DBSync                           string            `yaml:"db_sync" json:"db_sync"`
@@ -352,7 +352,7 @@ type FullNodeConfig struct {
 
 // UIConfig settings for the UI
 type UIConfig struct {
-	UnknownFields    map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields    map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	PortConfig       `yaml:",inline" json:",inline"`
 	SSHFilename      string            `yaml:"ssh_filename" json:"ssh_filename"`
 	Logging          *LoggingConfig    `yaml:"logging" json:"logging"`
@@ -365,7 +365,7 @@ type UIConfig struct {
 
 // IntroducerConfig settings for introducers
 type IntroducerConfig struct {
-	UnknownFields       map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields       map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Host                string         `yaml:"host" json:"host"`
 	PortConfig          `yaml:",inline" json:",inline"`
 	MaxPeersToSend      uint16            `yaml:"max_peers_to_send" json:"max_peers_to_send"`
@@ -379,7 +379,7 @@ type IntroducerConfig struct {
 
 // WalletConfig wallet configuration section
 type WalletConfig struct {
-	UnknownFields                  map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields                  map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	PortConfig                     `yaml:",inline" json:",inline"`
 	StartRPCServer                 *bool             `yaml:"start_rpc_server" json:"start_rpc_server"`
 	EnableProfiler                 bool              `yaml:"enable_profiler" json:"enable_profiler"`
@@ -431,7 +431,7 @@ type WalletConfig struct {
 
 // AutoClaim settings for auto claim in wallet
 type AutoClaim struct {
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Enabled       bool           `yaml:"enabled" json:"enabled"`
 	TxFee         uint64         `yaml:"tx_fee" json:"tx_fee"`
 	MinAmount     uint64         `yaml:"min_amount" json:"min_amount"`
@@ -440,7 +440,7 @@ type AutoClaim struct {
 
 // DataLayerConfig datalayer configuration section
 type DataLayerConfig struct {
-	UnknownFields               map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields               map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	WalletPeer                  Peer           `yaml:"wallet_peer" json:"wallet_peer"`
 	DatabasePath                string         `yaml:"database_path" json:"database_path"`
 	ServerFilesLocation         string         `yaml:"server_files_location" json:"server_files_location"`
@@ -466,12 +466,12 @@ type DataLayerConfig struct {
 // DataLayerPlugins Settings for data layer plugins
 type DataLayerPlugins struct {
 	// @TODO
-	UnknownFields map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 }
 
 // SimulatorConfig settings for simulator
 type SimulatorConfig struct {
-	UnknownFields  map[string]any `yaml:",inline" json:",inline"`
+	UnknownFields  map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	AutoFarm       bool           `yaml:"auto_farm" json:"auto_farm"`
 	KeyFingerprint int            `yaml:"key_fingerprint" json:"key_fingerprint"`
 	FarmingAddress string         `yaml:"farming_address" json:"farming_address"`
