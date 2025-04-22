@@ -36,6 +36,20 @@ func anchorHelper(in Anchorable, tag string) (*yaml.Node, error) {
 	node := &yaml.Node{
 		Kind:   yaml.MappingNode,
 		Anchor: tag,
+		Tag:    "!!map",
+	}
+
+	// Create a wrapper node that will contain both the anchor and the content
+	wrapper := &yaml.Node{
+		Kind: yaml.MappingNode,
+		Content: []*yaml.Node{
+			{
+				Kind:  yaml.ScalarNode,
+				Value: tag,
+				Tag:   "!!str",
+			},
+			node,
+		},
 	}
 
 	// Encode the struct to the node
@@ -46,5 +60,5 @@ func anchorHelper(in Anchorable, tag string) (*yaml.Node, error) {
 	// Store the node as the anchor for future iterations
 	in.SetAnchorNode(node)
 
-	return node, nil
+	return wrapper, nil
 }
