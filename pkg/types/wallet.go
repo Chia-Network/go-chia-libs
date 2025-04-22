@@ -64,10 +64,10 @@ type WalletBalance struct {
 	ConfirmedWalletBalance   Uint128    `json:"confirmed_wallet_balance"`
 	UnconfirmedWalletBalance Uint128    `json:"unconfirmed_wallet_balance"`
 	SpendableBalance         Uint128    `json:"spendable_balance"`
-	PendingChange            int64      `json:"pending_change"`
+	PendingChange            uint64     `json:"pending_change"`
 	MaxSendAmount            Uint128    `json:"max_send_amount"`
-	UnspentCoinCount         int64      `json:"unspent_coin_count"`
-	PendingCoinRemovalCount  int64      `json:"pending_coin_removal_count"`
+	UnspentCoinCount         uint32     `json:"unspent_coin_count"`
+	PendingCoinRemovalCount  uint32     `json:"pending_coin_removal_count"`
 	WalletType               WalletType `json:"wallet_type"`
 	AssetID                  string     `json:"asset_id"`
 }
