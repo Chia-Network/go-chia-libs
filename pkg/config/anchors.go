@@ -32,23 +32,19 @@ func anchorHelper(in Anchorable, tag string) (*yaml.Node, error) {
 		return node, nil
 	}
 
-	// Get the underlying value of 'in' for marshalling or else we end up recursively in this function
-	value := reflect.ValueOf(in)
-	if value.Kind() == reflect.Ptr {
-		// Dereference if it's a pointer
-		value = value.Elem()
+	// Create a new node for this instance
+	node := &yaml.Node{
+		Kind:   yaml.MappingNode,
+		Anchor: tag,
 	}
 
-	// Marshal the struct to a yaml.Node
-	var node yaml.Node
-	if err := node.Encode(value.Interface()); err != nil {
+	// Encode the struct to the node
+	if err := node.Encode(reflect.ValueOf(in).Elem().Interface()); err != nil {
 		return nil, err
 	}
-	node.Anchor = tag
 
 	// Store the node as the anchor for future iterations
-	in.SetAnchorNode(&node)
+	in.SetAnchorNode(node)
 
-	// Return the node to be marshalled
-	return &node, nil
+	return node, nil
 }
