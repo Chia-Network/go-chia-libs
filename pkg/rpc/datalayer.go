@@ -156,7 +156,10 @@ type DatalayerGetKeysValuesOptions struct {
 // DatalayerGetKeysValuesResponse response from get_keys_values
 type DatalayerGetKeysValuesResponse struct {
 	rpcinterface.Response
-	KeysValues map[string]string `json:"keys_values"`
+	KeysValues []struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	} `json:"keys_values"`
 }
 
 // GetKeysValues retrieves all keys and values for a given datalayer store
