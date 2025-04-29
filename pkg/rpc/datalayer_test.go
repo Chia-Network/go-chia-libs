@@ -3,6 +3,7 @@ package rpc
 import (
 	"fmt"
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
+	"github.com/chia-network/go-chia-libs/pkg/types"
 	"github.com/samber/mo"
 	"github.com/stretchr/testify/require"
 	"net/http"
@@ -26,12 +27,7 @@ func TestGetKeysValues(t *testing.T) {
 		Response: rpcinterface.Response{
 			Success: true,
 		},
-		KeysValues: []struct {
-			Atom  mo.Option[string] `json:"atom"`
-			Hash  string            `json:"hash"`
-			Key   string            `json:"key"`
-			Value string            `json:"value"`
-		}{
+		KeysValues: []types.DatalayerKeyValue{
 			{
 				Atom:  mo.None[string](),
 				Hash:  "0xc543f6377e3600563f3aa9f7a9e6ccba8379172352e277cdc175f6ab3017a567",

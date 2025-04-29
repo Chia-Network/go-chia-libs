@@ -13,3 +13,11 @@ type DatalayerMirror struct {
 	Ours              bool              `json:"ours"`
 	ConfirmedAtHeight mo.Option[uint32] `json:"confirmed_at_height"`
 }
+
+// DatalayerKeyValues a key and value from a store ID
+type DatalayerKeyValue struct {
+	Atom  mo.Option[string] `json:"atom"`
+	Hash  string            `json:"hash"`
+	Key   string            `json:"key"`
+	Value string            `json:"value"`
+}
