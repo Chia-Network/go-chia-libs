@@ -153,12 +153,13 @@ type DatalayerGetKeysValuesOptions struct {
 	ID string `json:"id"` // Hex String
 }
 
-// DatalayerGetKeysValuesResponse response from get_keys_values
 type DatalayerGetKeysValuesResponse struct {
 	rpcinterface.Response
 	KeysValues []struct {
-		Key   string `json:"key"`
-		Value string `json:"value"`
+		Atom  interface{} `json:"atom"`
+		Hash  string      `json:"hash"`
+		Key   string      `json:"key"`
+		Value string      `json:"value"`
 	} `json:"keys_values"`
 }
 
