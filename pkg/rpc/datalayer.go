@@ -154,7 +154,6 @@ type DatalayerGetKeysValuesOptions struct {
 }
 
 // DatalayerGetKeysValuesResponse represents the response from the get_keys_values RPC endpoint
-// It contains a list of key-value pairs with their associated metadata
 type DatalayerGetKeysValuesResponse struct {
 	rpcinterface.Response
 	KeysValues []struct {
