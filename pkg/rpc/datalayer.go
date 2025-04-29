@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"github.com/samber/mo"
 	"net/http"
 
 	"github.com/chia-network/go-chia-libs/pkg/rpcinterface"
@@ -157,10 +158,10 @@ type DatalayerGetKeysValuesOptions struct {
 type DatalayerGetKeysValuesResponse struct {
 	rpcinterface.Response
 	KeysValues []struct {
-		Atom  interface{} `json:"atom"`
-		Hash  string      `json:"hash"`
-		Key   string      `json:"key"`
-		Value string      `json:"value"`
+		Atom  mo.Option[string] `json:"atom"`
+		Hash  string            `json:"hash"`
+		Key   string            `json:"key"`
+		Value string            `json:"value"`
 	} `json:"keys_values"`
 }
 
