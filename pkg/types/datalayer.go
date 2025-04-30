@@ -17,7 +17,7 @@ type DatalayerMirror struct {
 // DatalayerKeyValue a key and value from a store ID
 type DatalayerKeyValue struct {
 	Atom  mo.Option[string] `json:"atom"`
-	Hash  string            `json:"hash"`
-	Key   string            `json:"key"`
-	Value string            `json:"value"`
+	Hash  Bytes32           `json:"hash"`
+	Key   Bytes             `json:"key"`
+	Value Bytes             `json:"value"`
 }
