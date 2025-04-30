@@ -147,3 +147,19 @@ type DatalayerUnsubscribeResponse struct {
 func (s *DataLayerService) Unsubscribe(opts *DatalayerUnsubscribeOptions) (*DatalayerUnsubscribeResponse, *http.Response, error) {
 	return Do(s, "unsubscribe", opts, &DatalayerUnsubscribeResponse{})
 }
+
+// DatalayerGetKeysValuesOptions options for get_keys_values
+type DatalayerGetKeysValuesOptions struct {
+	ID string `json:"id"` // Hex String
+}
+
+// DatalayerGetKeysValuesResponse represents the response from the get_keys_values RPC endpoint
+type DatalayerGetKeysValuesResponse struct {
+	rpcinterface.Response
+	KeysValues []types.DatalayerKeyValue `json:"keys_values"`
+}
+
+// GetKeysValues retrieves all keys and values for a given datalayer store
+func (s *DataLayerService) GetKeysValues(opts *DatalayerGetKeysValuesOptions) (*DatalayerGetKeysValuesResponse, *http.Response, error) {
+	return Do(s, "get_keys_values", opts, &DatalayerGetKeysValuesResponse{})
+}

@@ -150,3 +150,4 @@ test/
 /*.key
 /test-cert-gen
 /pkg/config/config.yml
+chiavdfc/
