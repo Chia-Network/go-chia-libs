@@ -440,3 +440,41 @@ type SendTransactionMultiResponse struct {
 func (s *WalletService) SendTransactionMulti(opts *CreateSignedTransactionOptions) (*SendTransactionMultiResponse, *http.Response, error) {
 	return Do(s, "send_transaction_multi", opts, &SendTransactionMultiResponse{})
 }
+
+// GetCoinRecordsOptions options for get_coin_records endpoint
+type GetCoinRecordsOptions struct {
+	WalletID uint32 `json:"wallet_id"`
+}
+
+// GetCoinRecordsResponse response from get_coin_records
+type GetCoinRecordsResponse struct {
+	rpcinterface.Response
+	CoinRecords mo.Option[[]types.CoinRecord] `json:"coin_records"`
+}
+
+// GetCoinRecords returns coin records for the specified wallet
+func (s *WalletService) GetCoinRecords(opts *GetCoinRecordsOptions) (*GetCoinRecordsResponse, *http.Response, error) {
+	return Do(s, "get_coin_records", opts, &GetCoinRecordsResponse{})
+}
+
+// SplitCoinsOptions options for split_coins endpoint
+type SplitCoinsOptions struct {
+	WalletID      uint32 `json:"wallet_id"`
+	TargetCoinID  string `json:"target_coin_id"`
+	AmountPerCoin uint64 `json:"amount_per_coin"`
+	NumberOfCoins uint32 `json:"number_of_coins"`
+	Fee           uint64 `json:"fee"`
+	Push          bool   `json:"push"`
+}
+
+// SplitCoinsResponse response from split_coins
+type SplitCoinsResponse struct {
+	rpcinterface.Response
+	TransactionID mo.Option[string]                  `json:"transaction_id"`
+	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
+}
+
+// SplitCoins splits a coin into multiple smaller coins
+func (s *WalletService) SplitCoins(opts *SplitCoinsOptions) (*SplitCoinsResponse, *http.Response, error) {
+	return Do(s, "split_coins", opts, &SplitCoinsResponse{})
+}
