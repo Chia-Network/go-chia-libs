@@ -470,8 +470,7 @@ type SplitCoinsOptions struct {
 // SplitCoinsResponse response from split_coins
 type SplitCoinsResponse struct {
 	rpcinterface.Response
-	TransactionID mo.Option[string]                  `json:"transaction_id"`
-	Transaction   mo.Option[types.TransactionRecord] `json:"transaction"`
+	Transactions mo.Option[[]types.TransactionRecord] `json:"transactions"`
 }
 
 // SplitCoins splits a coin into multiple smaller coins
