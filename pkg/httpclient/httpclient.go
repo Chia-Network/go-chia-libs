@@ -182,11 +182,21 @@ func (c *HTTPClient) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*h
 		return nil, err
 	}
 
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	err = resp.Body.Close()
+	if err != nil {
+		return resp, err
+	}
+	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
 	if v != nil {
 		if w, ok := v.(io.Writer); ok {
-			_, err = io.Copy(w, resp.Body)
+			_, err = io.Copy(w, bytes.NewReader(bodyBytes))
 		} else {
-			err = json.NewDecoder(resp.Body).Decode(v)
+			err = json.Unmarshal(bodyBytes, v)
 		}
 	}
 
