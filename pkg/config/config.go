@@ -111,6 +111,8 @@ type NetworkConstants struct {
 	GenesisPreFarmFarmerPuzzleHash string         `yaml:"GENESIS_PRE_FARM_FARMER_PUZZLE_HASH" json:"GENESIS_PRE_FARM_FARMER_PUZZLE_HASH"`
 	MempoolBlockBuffer             uint8          `yaml:"MEMPOOL_BLOCK_BUFFER,omitempty" json:"MEMPOOL_BLOCK_BUFFER,omitempty"`
 	MinPlotSize                    uint8          `yaml:"MIN_PLOT_SIZE,omitempty" json:"MIN_PLOT_SIZE,omitempty"`
+	MinPlotSizeV1                  uint8          `yaml:"MIN_PLOT_SIZE_V1,omitempty" json:"MIN_PLOT_SIZE_V1,omitempty"`
+	MinPlotSizeV2                  uint8          `yaml:"MIN_PLOT_SIZE_V2,omitempty" json:"MIN_PLOT_SIZE_V2,omitempty"`
 	NetworkType                    uint8          `yaml:"NETWORK_TYPE,omitempty" json:"NETWORK_TYPE,omitempty"`
 	SubSlotItersStarting           uint64         `yaml:"SUB_SLOT_ITERS_STARTING,omitempty" json:"SUB_SLOT_ITERS_STARTING,omitempty"`
 	// All pointers that that 0 is an allowed value when marshaling with omitempty, but they will still be omitted from configs that dont have them defined
@@ -300,6 +302,8 @@ type FullNodeConfig struct {
 	PortConfig                       `yaml:",inline" json:",inline"`
 	FullNodePeers                    []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
 	DBSync                           string            `yaml:"db_sync" json:"db_sync"`
+	BlockCreation                    int64             `yaml:"block_creation,omitempty" json:"block_creation,omitempty"`
+	BlockCreationTimeout             float64           `yaml:"block_creation_timeout,omitempty" json:"block_creation_timeout,omitempty"`
 	DBReaders                        uint8             `yaml:"db_readers" json:"db_readers"`
 	DatabasePath                     string            `yaml:"database_path" json:"database_path"`
 	PeerDBPath                       string            `yaml:"peer_db_path" json:"peer_db_path"`
