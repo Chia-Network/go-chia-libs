@@ -387,6 +387,30 @@ func convertValue(value interface{}, targetType reflect.Type) (interface{}, erro
 			return nil, err
 		}
 		return v, nil
+	case reflect.Int8:
+		v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 8)
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
+	case reflect.Int16:
+		v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 16)
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
+	case reflect.Int32:
+		v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 32)
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
+	case reflect.Int64:
+		v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		return v, nil
 	case reflect.Bool:
 		v, err := strconv.ParseBool(fmt.Sprintf("%v", value))
 		if err != nil {
