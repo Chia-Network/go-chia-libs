@@ -155,6 +155,10 @@ func setFieldByPath(v reflect.Value, path []string, value any) error {
 			// Otherwise, we can recursively call setFieldByPath again, with the remaining elements of path
 			fieldValue := v.Field(i)
 			if fieldValue.Kind() == reflect.Ptr {
+				if fieldValue.IsNil() {
+					// Initialize the pointer with a zero value of the underlying type
+					fieldValue.Set(reflect.New(fieldValue.Type().Elem()))
+				}
 				fieldValue = fieldValue.Elem()
 			}
 			if len(path) > 1 {
