@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
+	"github.com/chia-network/go-chia-libs/pkg/ptr"
 	"github.com/chia-network/go-chia-libs/pkg/types"
 )
 
@@ -33,6 +34,11 @@ func TestChiaConfig_SetFieldByPath(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, types.Uint128From64(44445555), defaultConfig.NetworkOverrides.Constants["mainnet"].DifficultyConstantFactor)
+
+	err = defaultConfig.SetFieldByPath([]string{"network_overrides", "constants", "mainnet", "HARD_FORK_HEIGHT"}, "44556677")
+	assert.NoError(t, err)
+	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
+	assert.Equal(t, ptr.Uint32Ptr(44556677), defaultConfig.NetworkOverrides.Constants["mainnet"].HardForkHeight)
 
 	err = defaultConfig.SetFieldByPath([]string{"selected_network"}, "unittestnet")
 	assert.NoError(t, err)
