@@ -33,7 +33,7 @@ jobs:
           commit-message: "Add updated initial config from chia-blockchain"
           delete-branch: true
           reviewers: "cmmarslender"
-          assignees: "cmmarslender"
+          assignees: "cmmarslender,Starttoaster"
           title: "Initial Config Update"
           body: "Add updated initial config from chia-blockchain\n\nThis PR likely needs to be accompanied by manual config type updates"
           token: "${{ secrets.GITHUB_TOKEN }}"
