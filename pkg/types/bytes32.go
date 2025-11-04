@@ -38,6 +38,11 @@ func (b Bytes32) MarshalJSON() ([]byte, error) {
 	return final, nil
 }
 
+// MarshalYAML marshals the bytes32 to the appropriate format
+func (b Bytes32) MarshalYAML() (interface{}, error) {
+	return b.String(), nil
+}
+
 // UnmarshalJSON unmarshals hex into []byte
 func (b *Bytes32) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
@@ -58,6 +63,21 @@ func (b *Bytes32) UnmarshalJSON(data []byte) error {
 	}
 	*b = b32
 	return err
+}
+
+// UnmarshalYAML parses bytes32 from hex string with optional leading 0x
+func (b *Bytes32) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var s string
+	err := unmarshal(&s)
+	if err != nil {
+		return err
+	}
+	b32, err := Bytes32FromHexString(s)
+	if err != nil {
+		return err
+	}
+	*b = b32
+	return nil
 }
 
 // Bytes32ToBytes returns []byte from [32]byte
