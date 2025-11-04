@@ -243,6 +243,17 @@ type PoolConfig struct {
 	Logging          *LoggingConfig    `yaml:"logging" json:"logging"`
 	NetworkOverrides *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
 	SelectedNetwork  *string           `yaml:"selected_network" json:"selected_network"`
+	PoolList         []PoolListItem    `yaml:"pool_list,omitempty" json:"pool_list,omitempty"`
+}
+
+// PoolListItem is a single item in a pool list
+type PoolListItem struct {
+	LauncherID            types.Bytes32   `yaml:"launcher_id" json:"launcher_id"`
+	OwnerPublicKey        types.G1Element `yaml:"owner_public_key" json:"owner_public_key"`
+	P2SingletonPuzzleHash types.Bytes32   `yaml:"p2_singleton_puzzle_hash" json:"p2_singleton_puzzle_hash"`
+	PayoutInstructions    types.Bytes32   `yaml:"payout_instructions" json:"payout_instructions"`
+	PoolURL               string          `yaml:"pool_url" json:"pool_url"`
+	TargetPuzzleHash      types.Bytes32   `yaml:"target_puzzle_hash" json:"target_puzzle_hash"`
 }
 
 // FarmerConfig farmer configuration section

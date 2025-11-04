@@ -1,10 +1,14 @@
 package config_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"gopkg.in/yaml.v3"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
 	"github.com/chia-network/go-chia-libs/pkg/ptr"
@@ -321,4 +325,92 @@ func TestChiaConfig_GetFieldByPath(t *testing.T) {
 	val, err = defaultConfig.GetFieldByPath([]string{"selected_network"})
 	assert.NoError(t, err)
 	assert.Equal(t, "mainnet", val)
+}
+
+func TestChiaConfig_TestPoolList(t *testing.T) {
+	t.Run("Test setting index within full pool_list", func(t *testing.T) {
+		defaultConfig, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		require.Nil(t, defaultConfig.Pool.PoolList)
+		err = defaultConfig.SetFieldByPath([]string{"pool", "pool_list", "0"}, `{"launcher_id":"0x1111111111111111111111111111111111111111111111111111111111111111","owner_public_key":"0x222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222","p2_singleton_puzzle_hash":"0x3333333333333333333333333333333333333333333333333333333333333333","payout_instructions":"4444444444444444444444444444444444444444444444444444444444444444","pool_url":"https://examplepool.com","target_puzzle_hash":"0x5555555555555555555555555555555555555555555555555555555555555555"}`)
+		assert.NoError(t, err)
+		assert.NotNil(t, defaultConfig.Pool.PoolList)
+		var b32_1 types.Bytes32
+		var b48_2 types.G1Element
+		var b32_3 types.Bytes32
+		var b32_4 types.Bytes32
+		var b32_5 types.Bytes32
+		copy(b32_1[:], bytes.Repeat([]byte{0x11}, 32))
+		copy(b48_2[:], bytes.Repeat([]byte{0x22}, 48))
+		copy(b32_3[:], bytes.Repeat([]byte{0x33}, 32))
+		copy(b32_4[:], bytes.Repeat([]byte{0x44}, 32))
+		copy(b32_5[:], bytes.Repeat([]byte{0x55}, 32))
+		assert.Equal(t, b32_1, defaultConfig.Pool.PoolList[0].LauncherID)
+		assert.Equal(t, b48_2, defaultConfig.Pool.PoolList[0].OwnerPublicKey)
+		assert.Equal(t, b32_3, defaultConfig.Pool.PoolList[0].P2SingletonPuzzleHash)
+		assert.Equal(t, b32_4, defaultConfig.Pool.PoolList[0].PayoutInstructions)
+		assert.Equal(t, "https://examplepool.com", defaultConfig.Pool.PoolList[0].PoolURL)
+		assert.Equal(t, b32_5, defaultConfig.Pool.PoolList[0].TargetPuzzleHash)
+	})
+
+	t.Run("Test setting full pool_list", func(t *testing.T) {
+		defaultConfig, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		require.Nil(t, defaultConfig.Pool.PoolList)
+		err = defaultConfig.SetFieldByPath([]string{"pool", "pool_list"}, `[{"launcher_id":"0x1111111111111111111111111111111111111111111111111111111111111111","owner_public_key":"0x222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222","p2_singleton_puzzle_hash":"0x3333333333333333333333333333333333333333333333333333333333333333","payout_instructions":"4444444444444444444444444444444444444444444444444444444444444444","pool_url":"https://examplepool.com","target_puzzle_hash":"0x5555555555555555555555555555555555555555555555555555555555555555"}]`)
+		assert.NoError(t, err)
+		assert.NotNil(t, defaultConfig.Pool.PoolList)
+		var b32_1 types.Bytes32
+		var b48_2 types.G1Element
+		var b32_3 types.Bytes32
+		var b32_4 types.Bytes32
+		var b32_5 types.Bytes32
+		copy(b32_1[:], bytes.Repeat([]byte{0x11}, 32))
+		copy(b48_2[:], bytes.Repeat([]byte{0x22}, 48))
+		copy(b32_3[:], bytes.Repeat([]byte{0x33}, 32))
+		copy(b32_4[:], bytes.Repeat([]byte{0x44}, 32))
+		copy(b32_5[:], bytes.Repeat([]byte{0x55}, 32))
+		assert.Equal(t, b32_1, defaultConfig.Pool.PoolList[0].LauncherID)
+		assert.Equal(t, b48_2, defaultConfig.Pool.PoolList[0].OwnerPublicKey)
+		assert.Equal(t, b32_3, defaultConfig.Pool.PoolList[0].P2SingletonPuzzleHash)
+		assert.Equal(t, b32_4, defaultConfig.Pool.PoolList[0].PayoutInstructions)
+		assert.Equal(t, "https://examplepool.com", defaultConfig.Pool.PoolList[0].PoolURL)
+		assert.Equal(t, b32_5, defaultConfig.Pool.PoolList[0].TargetPuzzleHash)
+	})
+
+	t.Run("Test Marshal Pool List to JSON", func(t *testing.T) {
+		defaultConfig, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		require.Nil(t, defaultConfig.Pool.PoolList)
+		jsonStr := `[{"launcher_id":"0x1111111111111111111111111111111111111111111111111111111111111111","owner_public_key":"0x222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222","p2_singleton_puzzle_hash":"0x3333333333333333333333333333333333333333333333333333333333333333","payout_instructions":"0x4444444444444444444444444444444444444444444444444444444444444444","pool_url":"https://examplepool.com","target_puzzle_hash":"0x5555555555555555555555555555555555555555555555555555555555555555"}]`
+		err = defaultConfig.SetFieldByPath([]string{"pool", "pool_list"}, jsonStr)
+		assert.NoError(t, err)
+		assert.NotNil(t, defaultConfig.Pool.PoolList)
+
+		marshalled, err := json.Marshal(defaultConfig.Pool.PoolList)
+		assert.NoError(t, err)
+		assert.Equal(t, jsonStr, string(marshalled))
+	})
+
+	t.Run("Test Marshal Pool List to Yaml", func(t *testing.T) {
+		defaultConfig, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		require.Nil(t, defaultConfig.Pool.PoolList)
+		jsonStr := `[{"launcher_id":"0x1111111111111111111111111111111111111111111111111111111111111111","owner_public_key":"0x222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222","p2_singleton_puzzle_hash":"3333333333333333333333333333333333333333333333333333333333333333","payout_instructions":"0x4444444444444444444444444444444444444444444444444444444444444444","pool_url":"https://examplepool.com","target_puzzle_hash":"0x5555555555555555555555555555555555555555555555555555555555555555"}]`
+		err = defaultConfig.SetFieldByPath([]string{"pool", "pool_list"}, jsonStr)
+		assert.NoError(t, err)
+		assert.NotNil(t, defaultConfig.Pool.PoolList)
+
+		expected := `- launcher_id: 0x1111111111111111111111111111111111111111111111111111111111111111
+  owner_public_key: 0x222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+  p2_singleton_puzzle_hash: 0x3333333333333333333333333333333333333333333333333333333333333333
+  payout_instructions: 0x4444444444444444444444444444444444444444444444444444444444444444
+  pool_url: https://examplepool.com
+  target_puzzle_hash: 0x5555555555555555555555555555555555555555555555555555555555555555
+`
+
+		marshalled, err := yaml.Marshal(defaultConfig.Pool.PoolList)
+		assert.NoError(t, err)
+		assert.Equal(t, expected, string(marshalled))
+	})
 }
