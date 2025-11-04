@@ -16,8 +16,8 @@ func (g G1Element) MarshalJSON() ([]byte, error) {
 }
 
 // MarshalYAML marshals the bytes32 to the appropriate format
-func (b G1Element) MarshalYAML() (interface{}, error) {
-	b48, err := BytesToBytes48(b[:])
+func (g G1Element) MarshalYAML() (interface{}, error) {
+	b48, err := BytesToBytes48(g[:])
 	if err != nil {
 		return nil, err
 	}
@@ -37,6 +37,7 @@ func (g *G1Element) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalYAML custom unmarshaller for G1element that can deal with the 0x prefixes and hex
 func (g *G1Element) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var s string
 	err := unmarshal(&s)
