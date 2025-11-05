@@ -251,7 +251,7 @@ type PoolListItem struct {
 	LauncherID            types.Bytes32   `yaml:"launcher_id" json:"launcher_id"`
 	OwnerPublicKey        types.G1Element `yaml:"owner_public_key" json:"owner_public_key"`
 	P2SingletonPuzzleHash types.Bytes32   `yaml:"p2_singleton_puzzle_hash" json:"p2_singleton_puzzle_hash"`
-	PayoutInstructions    types.Bytes32   `yaml:"payout_instructions" json:"payout_instructions"`
+	PayoutInstructions    string          `yaml:"payout_instructions" json:"payout_instructions"`
 	PoolURL               string          `yaml:"pool_url" json:"pool_url"`
 	TargetPuzzleHash      types.Bytes32   `yaml:"target_puzzle_hash" json:"target_puzzle_hash"`
 }
