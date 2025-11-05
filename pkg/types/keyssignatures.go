@@ -2,6 +2,8 @@ package types
 
 import (
 	"encoding/json"
+
+	"gopkg.in/yaml.v3"
 )
 
 // PublicKeyMPL is a public key
@@ -21,7 +23,13 @@ func (g G1Element) MarshalYAML() (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return b48.String(), nil
+	// Force quotes around this value; otherwise YAML interprets the 0x prefix as a hexadecimal integer.
+	return &yaml.Node{
+		Kind:  yaml.ScalarNode,
+		Tag:   "!!str", // force as string
+		Value: b48.String(),
+		Style: yaml.SingleQuotedStyle,
+	}, nil
 }
 
 // UnmarshalJSON custom hex unmarshaller
