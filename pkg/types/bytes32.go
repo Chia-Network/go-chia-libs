@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Bytes32 Helper type with custom json handling for [32]byte
@@ -40,7 +42,13 @@ func (b Bytes32) MarshalJSON() ([]byte, error) {
 
 // MarshalYAML marshals the bytes32 to the appropriate format
 func (b Bytes32) MarshalYAML() (interface{}, error) {
-	return b.String(), nil
+	// Force quotes around this value; otherwise YAML interprets the 0x prefix as a hexadecimal integer.
+	return &yaml.Node{
+		Kind:  yaml.ScalarNode,
+		Tag:   "!!str", // force as string
+		Value: b.String(),
+		Style: yaml.SingleQuotedStyle,
+	}, nil
 }
 
 // UnmarshalJSON unmarshals hex into []byte

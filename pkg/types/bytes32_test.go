@@ -75,7 +75,7 @@ func TestMarshalBytes32(t *testing.T) {
 		b32 := types.Bytes32{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31}
 		marshalled, err := yaml.Marshal(b32)
 		assert.NoError(t, err)
-		assert.Equal(t, `0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f`, strings.TrimSpace(string(marshalled)))
+		assert.Equal(t, `'0x000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f'`, strings.TrimSpace(string(marshalled)))
 
 		type testStruct struct {
 			Data *types.Bytes32 `json:"data"`
@@ -90,7 +90,7 @@ func TestMarshalBytes32(t *testing.T) {
 			Data types.Bytes32 `json:"data"`
 		}
 		toMarshal2 := &testStruct2{Data: types.Bytes32{}}
-		expected2 := `data: "0x0000000000000000000000000000000000000000000000000000000000000000"`
+		expected2 := `data: '0x0000000000000000000000000000000000000000000000000000000000000000'`
 		actual2, err := yaml.Marshal(toMarshal2)
 		assert.NoError(t, err)
 		assert.Equal(t, expected2, strings.TrimSpace(string(actual2)))
