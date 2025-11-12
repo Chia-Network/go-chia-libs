@@ -272,8 +272,10 @@ func (c *ChiaConfig) dealWithAnchors() {
 
 func (c *ChiaConfig) fillMissingDefaults() {
 	if c.Solver == nil {
-		defaultConfig, _ := LoadDefaultConfig()
-		c.Solver = defaultConfig.Solver
+		defaultConfig, err := LoadDefaultConfig()
+		if err == nil {
+			c.Solver = defaultConfig.Solver
+		}
 	}
 
 	if len(c.Farmer.SolverPeers) == 0 {
