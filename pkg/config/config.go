@@ -41,6 +41,7 @@ type ChiaConfig struct {
 	UI                       UIConfig               `yaml:"ui" json:"ui"`
 	Introducer               IntroducerConfig       `yaml:"introducer" json:"introducer"`
 	Wallet                   WalletConfig           `yaml:"wallet" json:"wallet"`
+	Solver                   *SolverConfig          `yaml:"solver" json:"solver"`
 	DataLayer                DataLayerConfig        `yaml:"data_layer" json:"data_layer"`
 	Simulator                SimulatorConfig        `yaml:"simulator" json:"simulator"`
 	// Simulator Fork Settings
@@ -260,6 +261,7 @@ type PoolListItem struct {
 type FarmerConfig struct {
 	UnknownFields      map[string]any    `yaml:",inline,omitempty" json:",inline,omitempty"`
 	FullNodePeers      []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
+	SolverPeers        []Peer            `yaml:"solver_peers" json:"solver_peers"`
 	PoolPublicKeys     types.WonkySet    `yaml:"pool_public_keys" json:"pool_public_keys"`
 	XCHTargetAddress   string            `yaml:"xch_target_address,omitempty" json:"xch_target_address,omitempty"`
 	StartRPCServer     bool              `yaml:"start_rpc_server" json:"start_rpc_server"`
@@ -444,6 +446,21 @@ type WalletConfig struct {
 	TrustedCIDRs []string `yaml:"trusted_cidrs,omitempty" json:"trusted_cidrs,omitempty"`
 }
 
+// SolverConfig solver configuration section
+type SolverConfig struct {
+	UnknownFields    map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
+	PortConfig       `yaml:",inline" json:",inline"`
+	EnableUPNP       bool              `yaml:"enable_upnp" json:"enable_upnp"`
+	StartRPCServer   bool              `yaml:"start_rpc_server" json:"start_rpc_server"`
+	TrustedPeers     map[string]string `yaml:"trusted_peers" json:"trusted_peers"`
+	TrustedPeersOnly bool              `yaml:"trusted_peers_only" json:"trusted_peers_only"`
+	Logging          *LoggingConfig    `yaml:"logging" json:"logging"`
+	NetworkOverrides *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
+	SelectedNetwork  *string           `yaml:"selected_network" json:"selected_network"`
+	NumThreads       uint8             `yaml:"num_threads" json:"num_threads"`
+	SSL              SSLConfig         `yaml:"ssl" json:"ssl"`
+}
+
 // AutoClaim settings for auto claim in wallet
 type AutoClaim struct {
 	UnknownFields map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
@@ -458,6 +475,8 @@ type DataLayerConfig struct {
 	UnknownFields               map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	WalletPeer                  Peer           `yaml:"wallet_peer" json:"wallet_peer"`
 	DatabasePath                string         `yaml:"database_path" json:"database_path"`
+	MerkleBlobsPath             string         `yaml:"merkle_blobs_path" json:"merkle_blobs_path"`
+	KeyValueBlobsPath           string         `yaml:"key_value_blobs_path" json:"key_value_blobs_path"`
 	ServerFilesLocation         string         `yaml:"server_files_location" json:"server_files_location"`
 	ClientTimeout               uint16         `yaml:"client_timeout" json:"client_timeout"`
 	ConnectTimeout              uint16         `yaml:"connect_timeout" json:"connect_timeout"`
@@ -476,6 +495,7 @@ type DataLayerConfig struct {
 	Plugins                     DataLayerPlugins `yaml:"plugins" json:"plugins"`
 	MaximumFullFileCount        uint16           `yaml:"maximum_full_file_count" json:"maximum_full_file_count"`
 	GroupFilesByStore           bool             `yaml:"group_files_by_store" json:"group_files_by_store"` // False is default, so non-ptr is fine here
+	MerkleBlobsCacheSize        int              `yaml:"merkle_blobs_cache_size" json:"merkle_blobs_cache_size"`
 }
 
 // DataLayerPlugins Settings for data layer plugins
