@@ -70,6 +70,7 @@ func LoadFromBytes(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	config.ChiaRoot = rootPath
 	config.fillDatabasePath()
 	config.dealWithAnchors()
+	config.fillMissingDefaults()
 
 	return config, nil
 }
@@ -252,4 +253,19 @@ func (c *ChiaConfig) dealWithAnchors() {
 	c.Introducer.Logging = c.Logging
 	c.Wallet.Logging = c.Logging
 	c.DataLayer.Logging = c.Logging
+}
+
+func (c *ChiaConfig) fillMissingDefaults() {
+	if len(c.Farmer.SolverPeers) == 0 {
+		c.Farmer.SolverPeers = []Peer{{Host: "localhost", Port: 8666}}
+	}
+	if c.DataLayer.MerkleBlobsPath == "" {
+		c.DataLayer.MerkleBlobsPath = "data_layer/db/merkle_blobs_CHALLENGE"
+	}
+	if c.DataLayer.KeyValueBlobsPath == "" {
+		c.DataLayer.KeyValueBlobsPath = "data_layer/db/key_value_blobs_CHALLENGE"
+	}
+	if c.DataLayer.MerkleBlobsCacheSize == 0 {
+		c.DataLayer.MerkleBlobsCacheSize = 1
+	}
 }
