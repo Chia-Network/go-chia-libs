@@ -41,6 +41,7 @@ type ChiaConfig struct {
 	UI                       UIConfig               `yaml:"ui" json:"ui"`
 	Introducer               IntroducerConfig       `yaml:"introducer" json:"introducer"`
 	Wallet                   WalletConfig           `yaml:"wallet" json:"wallet"`
+	Solver                   *SolverConfig          `yaml:"solver" json:"solver"`
 	DataLayer                DataLayerConfig        `yaml:"data_layer" json:"data_layer"`
 	Simulator                SimulatorConfig        `yaml:"simulator" json:"simulator"`
 	// Simulator Fork Settings
@@ -443,6 +444,21 @@ type WalletConfig struct {
 	// trusted_cidrs allows marking certain nodes as "trusted" in the full node and wallet
 	// Not in the initial config anywhere, since it's a more advanced option
 	TrustedCIDRs []string `yaml:"trusted_cidrs,omitempty" json:"trusted_cidrs,omitempty"`
+}
+
+// SolverConfig solver configuration section
+type SolverConfig struct {
+	UnknownFields    map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
+	PortConfig       `yaml:",inline" json:",inline"`
+	EnableUPNP       bool              `yaml:"enable_upnp" json:"enable_upnp"`
+	StartRPCServer   bool              `yaml:"start_rpc_server" json:"start_rpc_server"`
+	TrustedPeers     map[string]string `yaml:"trusted_peers" json:"trusted_peers"`
+	TrustedPeersOnly bool              `yaml:"trusted_peers_only" json:"trusted_peers_only"`
+	Logging          *LoggingConfig    `yaml:"logging" json:"logging"`
+	NetworkOverrides *NetworkOverrides `yaml:"network_overrides" json:"network_overrides"`
+	SelectedNetwork  *string           `yaml:"selected_network" json:"selected_network"`
+	NumThreads       uint8             `yaml:"num_threads" json:"num_threads"`
+	SSL              SSLConfig         `yaml:"ssl" json:"ssl"`
 }
 
 // AutoClaim settings for auto claim in wallet

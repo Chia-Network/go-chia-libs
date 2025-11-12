@@ -68,9 +68,9 @@ func LoadFromBytes(configBytes []byte, rootPath string) (*ChiaConfig, error) {
 	}
 
 	config.ChiaRoot = rootPath
+	config.fillMissingDefaults()
 	config.fillDatabasePath()
 	config.dealWithAnchors()
-	config.fillMissingDefaults()
 
 	return config, nil
 }
@@ -146,12 +146,18 @@ func (c *ChiaConfig) GetFullPath(filename string) string {
 func (c *ChiaConfig) fillDatabasePath() {
 	if c.FullNode.SelectedNetwork != nil {
 		c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, "CHALLENGE", *c.FullNode.SelectedNetwork, 1)
+		c.DataLayer.DatabasePath = strings.Replace(c.DataLayer.DatabasePath, "CHALLENGE", *c.FullNode.SelectedNetwork, 1)
+		c.DataLayer.MerkleBlobsPath = strings.Replace(c.DataLayer.MerkleBlobsPath, "CHALLENGE", *c.FullNode.SelectedNetwork, 1)
+		c.DataLayer.KeyValueBlobsPath = strings.Replace(c.DataLayer.KeyValueBlobsPath, "CHALLENGE", *c.FullNode.SelectedNetwork, 1)
 	}
 }
 
 func (c *ChiaConfig) unfillDatabasePath() {
 	if c.FullNode.SelectedNetwork != nil {
 		c.FullNode.DatabasePath = strings.Replace(c.FullNode.DatabasePath, *c.FullNode.SelectedNetwork, "CHALLENGE", 1)
+		c.DataLayer.DatabasePath = strings.Replace(c.DataLayer.DatabasePath, *c.FullNode.SelectedNetwork, "CHALLENGE", 1)
+		c.DataLayer.MerkleBlobsPath = strings.Replace(c.DataLayer.MerkleBlobsPath, *c.FullNode.SelectedNetwork, "CHALLENGE", 1)
+		c.DataLayer.KeyValueBlobsPath = strings.Replace(c.DataLayer.KeyValueBlobsPath, *c.FullNode.SelectedNetwork, "CHALLENGE", 1)
 	}
 }
 
@@ -223,6 +229,9 @@ func (c *ChiaConfig) dealWithAnchors() {
 	c.UI.NetworkOverrides = c.NetworkOverrides
 	c.Introducer.NetworkOverrides = c.NetworkOverrides
 	c.Wallet.NetworkOverrides = c.NetworkOverrides
+	if c.Solver != nil {
+		c.Solver.NetworkOverrides = c.NetworkOverrides
+	}
 
 	if c.SelectedNetwork == nil {
 		mainnet := "mainnet"
@@ -238,6 +247,9 @@ func (c *ChiaConfig) dealWithAnchors() {
 	c.Introducer.SelectedNetwork = c.SelectedNetwork
 	c.Wallet.SelectedNetwork = c.SelectedNetwork
 	c.DataLayer.SelectedNetwork = c.SelectedNetwork
+	if c.Solver != nil {
+		c.Solver.SelectedNetwork = c.SelectedNetwork
+	}
 
 	if c.Logging == nil {
 		c.Logging = &LoggingConfig{}
@@ -253,9 +265,17 @@ func (c *ChiaConfig) dealWithAnchors() {
 	c.Introducer.Logging = c.Logging
 	c.Wallet.Logging = c.Logging
 	c.DataLayer.Logging = c.Logging
+	if c.Solver != nil {
+		c.Solver.Logging = c.Logging
+	}
 }
 
 func (c *ChiaConfig) fillMissingDefaults() {
+	if c.Solver == nil {
+		defaultConfig, _ := LoadDefaultConfig()
+		c.Solver = defaultConfig.Solver
+	}
+
 	if len(c.Farmer.SolverPeers) == 0 {
 		c.Farmer.SolverPeers = []Peer{{Host: "localhost", Port: 8666}}
 	}
