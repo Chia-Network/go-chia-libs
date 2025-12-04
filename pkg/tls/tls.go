@@ -315,20 +315,35 @@ func ParsePemCertificate(certPem []byte) (*x509.Certificate, error) {
 func ParsePemKey(keyPem []byte) (*rsa.PrivateKey, error) {
 	// Load CA private key
 	caKeyBlock, rest := pem.Decode(keyPem)
-	if caKeyBlock == nil || caKeyBlock.Type != "PRIVATE KEY" {
+	if caKeyBlock == nil {
+		return nil, fmt.Errorf("got nil when decoding CA private key PEM")
+	}
+	if caKeyBlock.Type != "PRIVATE KEY" && caKeyBlock.Type != "RSA PRIVATE KEY" {
 		return nil, fmt.Errorf("failed to decode CA private key PEM")
 	}
 	if len(rest) != 0 {
 		return nil, fmt.Errorf("key file had extra data at the end")
 	}
-	parsedKey, err := x509.ParsePKCS8PrivateKey(caKeyBlock.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse CA private key: %v", err)
-	}
-
-	caKey, ok := parsedKey.(*rsa.PrivateKey)
-	if !ok {
-		return nil, fmt.Errorf("unexpected key type: %T", parsedKey)
+	var caKey *rsa.PrivateKey
+	var ok bool
+	var err error
+	switch caKeyBlock.Type {
+	case "RSA PRIVATE KEY":
+		caKey, err = x509.ParsePKCS1PrivateKey(caKeyBlock.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse CA private key: %v", err)
+		}
+		break
+	case "PRIVATE KEY":
+		parsedKey, err := x509.ParsePKCS8PrivateKey(caKeyBlock.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse CA private key: %v", err)
+		}
+		caKey, ok = parsedKey.(*rsa.PrivateKey)
+		if !ok {
+			return nil, fmt.Errorf("unexpected key type: %T", parsedKey)
+		}
+		break
 	}
 
 	return caKey, nil
