@@ -333,7 +333,6 @@ func ParsePemKey(keyPem []byte) (*rsa.PrivateKey, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse CA private key: %v", err)
 		}
-		break
 	case "PRIVATE KEY":
 		parsedKey, err := x509.ParsePKCS8PrivateKey(caKeyBlock.Bytes)
 		if err != nil {
@@ -343,7 +342,6 @@ func ParsePemKey(keyPem []byte) (*rsa.PrivateKey, error) {
 		if !ok {
 			return nil, fmt.Errorf("unexpected key type: %T", parsedKey)
 		}
-		break
 	}
 
 	return caKey, nil
