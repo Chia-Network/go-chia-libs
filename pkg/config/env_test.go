@@ -83,6 +83,21 @@ func TestChiaConfig_SetIndependentLogging(t *testing.T) {
 	assert.NotEqual(t, defaultConfig.Logging.LogLevel, defaultConfig.FullNode.Logging.LogLevel)
 }
 
+func TestChiaConfig_FillValuesFromEnvironment_IndependentLogging(t *testing.T) {
+	defaultConfig, err := config.LoadDefaultConfig()
+	require.NoError(t, err)
+
+	// Baseline: shared logging references
+	assert.Equal(t, defaultConfig.Logging, defaultConfig.FullNode.Logging)
+
+	t.Setenv("CHIA_CONFIG_INDEPENDENT_LOGGING", "true")
+	err = defaultConfig.FillValuesFromEnvironment()
+	require.NoError(t, err)
+
+	// After env var is set: logging references should be split
+	assert.NotEqual(t, defaultConfig.Logging, defaultConfig.FullNode.Logging)
+}
+
 // TestChiaConfig_SetFieldByPath_FullObjects Tests that we can pass in and correctly parse a whole section of config
 // as json or yaml and that it gets set properly
 func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
