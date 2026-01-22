@@ -22,6 +22,16 @@ import (
 //
 // chia.network_overrides.constants.mainnet='{"GENESIS_CHALLENGE":"abc123","GENESIS_PRE_FARM_POOL_PUZZLE_HASH":"xyz789"}'
 func (c *ChiaConfig) FillValuesFromEnvironment() error {
+	if independentLogging, ok := os.LookupEnv("CHIA_CONFIG_INDEPENDENT_LOGGING"); ok {
+		enabled, err := strconv.ParseBool(independentLogging)
+		if err != nil {
+			return fmt.Errorf("invalid CHIA_CONFIG_INDEPENDENT_LOGGING value %q: %w", independentLogging, err)
+		}
+		if enabled {
+			c.SetIndependentLogging()
+		}
+	}
+
 	valuesToUpdate := getAllChiaVars()
 	for _, pAndV := range valuesToUpdate {
 		err := c.SetFieldByPath(pAndV.Path, pAndV.Value)

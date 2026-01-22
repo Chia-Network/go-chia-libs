@@ -270,6 +270,54 @@ func (c *ChiaConfig) dealWithAnchors() {
 	}
 }
 
+// SetIndependentLogging splits shared logging references into independent copies.
+// After calling this method, all LoggingConfig instances will be independent
+// and will not use YAML anchors when marshaled.
+func (c *ChiaConfig) SetIndependentLogging() {
+	if c.Logging == nil {
+		return
+	}
+
+	c.Logging.SetNoAnchor(true)
+	// Create independent copies for all components
+	if c.Seeder.Logging == c.Logging {
+		c.Seeder.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Harvester.Logging == c.Logging {
+		c.Harvester.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Pool.Logging == c.Logging {
+		c.Pool.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Farmer.Logging == c.Logging {
+		c.Farmer.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.TimelordLauncher.Logging == c.Logging {
+		c.TimelordLauncher.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Timelord.Logging == c.Logging {
+		c.Timelord.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.FullNode.Logging == c.Logging {
+		c.FullNode.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.UI.Logging == c.Logging {
+		c.UI.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Introducer.Logging == c.Logging {
+		c.Introducer.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Wallet.Logging == c.Logging {
+		c.Wallet.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.DataLayer.Logging == c.Logging {
+		c.DataLayer.Logging = c.Logging.CopyWithoutAnchor()
+	}
+	if c.Solver != nil && c.Solver.Logging == c.Logging {
+		c.Solver.Logging = c.Logging.CopyWithoutAnchor()
+	}
+}
+
 func (c *ChiaConfig) fillMissingDefaults() {
 	if c.Solver == nil {
 		defaultConfig, err := LoadDefaultConfig()
