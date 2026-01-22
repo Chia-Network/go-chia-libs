@@ -64,6 +64,25 @@ func TestChiaConfig_SetFieldByPath(t *testing.T) {
 	assert.Equal(t, defaultConfig.Logging.LogLevel, "INFO")
 }
 
+// TestChiaConfig_SetIndependentLogging verifies that shared logging references
+// are split only when independent logging is enabled.
+func TestChiaConfig_SetIndependentLogging(t *testing.T) {
+	defaultConfig, err := config.LoadDefaultConfig()
+	require.NoError(t, err)
+
+	// Baseline: shared logging references
+	assert.Equal(t, defaultConfig.Logging, defaultConfig.FullNode.Logging)
+
+	defaultConfig.SetIndependentLogging()
+
+	// After independent logging: references should be split
+	assert.NotEqual(t, defaultConfig.Logging, defaultConfig.FullNode.Logging)
+
+	// Changing a child instance should not affect the top-level
+	defaultConfig.FullNode.Logging.LogLevel = "DEBUG"
+	assert.NotEqual(t, defaultConfig.Logging.LogLevel, defaultConfig.FullNode.Logging.LogLevel)
+}
+
 // TestChiaConfig_SetFieldByPath_FullObjects Tests that we can pass in and correctly parse a whole section of config
 // as json or yaml and that it gets set properly
 func TestChiaConfig_SetFieldByPath_FullObjects(t *testing.T) {
