@@ -20,9 +20,28 @@ func (lc *LoggingConfig) MarshalYAML() (interface{}, error) {
 type Anchorable interface {
 	AnchorNode() *yaml.Node
 	SetAnchorNode(*yaml.Node)
+	NoAnchor() bool
 }
 
 func anchorHelper(in Anchorable, tag string) (*yaml.Node, error) {
+	// If this instance should not use anchors, create a deep copy instead
+	if in.NoAnchor() {
+		// Get the underlying value of 'in' for marshalling
+		value := reflect.ValueOf(in)
+		if value.Kind() == reflect.Ptr {
+			// Dereference if it's a pointer
+			value = value.Elem()
+		}
+
+		// Marshal the struct to a yaml.Node without an anchor
+		var node yaml.Node
+		if err := node.Encode(value.Interface()); err != nil {
+			return nil, err
+		}
+		// Don't set an anchor, and don't store it for future use
+		return &node, nil
+	}
+
 	if in.AnchorNode() != nil {
 		node := &yaml.Node{
 			Kind:  yaml.AliasNode,

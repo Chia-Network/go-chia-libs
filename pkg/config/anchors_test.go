@@ -79,3 +79,73 @@ network_overrides2: *network_overrides
 	assert.NoError(t, err)
 	assert.Equal(t, expected, string(out))
 }
+
+// TestLoggingConfigNoAnchor verifies that logging can be serialized without anchors when SetNoAnchor is used
+func TestLoggingConfigNoAnchor(t *testing.T) {
+	type testStruct struct {
+		LoggingConfig1 *config.LoggingConfig `yaml:"logging1"`
+		LoggingConfig2 *config.LoggingConfig `yaml:"logging2"`
+	}
+	loggingCfg := config.LoggingConfig{
+		LogLevel: "INFO",
+	}
+	loggingCfg2 := loggingCfg.CopyWithoutAnchor()
+	loggingCfg2.LogLevel = "DEBUG" // Modify the copy independently
+
+	testInstance := &testStruct{
+		LoggingConfig1: &loggingCfg,
+		LoggingConfig2: loggingCfg2,
+	}
+
+	out, err := yaml.Marshal(testInstance)
+	assert.NoError(t, err)
+
+	// Verify that logging1 has an anchor
+	assert.Contains(t, string(out), "logging1: &logging")
+	// Verify that logging2 does NOT use an anchor (should be a full definition, not *logging)
+	assert.Contains(t, string(out), "logging2:")
+	assert.NotContains(t, string(out), "logging2: *logging")
+	// Verify that logging2 has the modified value
+	assert.Contains(t, string(out), "log_level: DEBUG")
+}
+
+// TestNetworkOverridesNoAnchor verifies that network_overrides can be serialized without anchors when SetNoAnchor is used
+func TestNetworkOverridesNoAnchor(t *testing.T) {
+	type testStruct struct {
+		Network1 *config.NetworkOverrides `yaml:"network_overrides1"`
+		Network2 *config.NetworkOverrides `yaml:"network_overrides2"`
+	}
+	no := config.NetworkOverrides{
+		Constants: map[string]config.NetworkConstants{
+			"mainnet": {},
+		},
+		Config: map[string]config.NetworkConfig{
+			"mainnet": {
+				AddressPrefix:       "xch",
+				DefaultFullNodePort: 8444,
+			},
+		},
+	}
+	no2 := no.CopyWithoutAnchor()
+	// Modify the copy independently
+	no2.Config["mainnet"] = config.NetworkConfig{
+		AddressPrefix:       "txch",
+		DefaultFullNodePort: 8445,
+	}
+
+	testInstance := &testStruct{
+		Network1: &no,
+		Network2: no2,
+	}
+
+	out, err := yaml.Marshal(testInstance)
+	assert.NoError(t, err)
+
+	// Verify that network_overrides1 has an anchor
+	assert.Contains(t, string(out), "network_overrides1: &network_overrides")
+	// Verify that network_overrides2 does NOT use an anchor (should be a full definition, not *network_overrides)
+	assert.Contains(t, string(out), "network_overrides2:")
+	assert.NotContains(t, string(out), "network_overrides2: *network_overrides")
+	// Verify that network_overrides2 has the modified value
+	assert.Contains(t, string(out), "address_prefix: txch")
+}

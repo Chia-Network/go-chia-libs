@@ -85,6 +85,7 @@ type Peer struct {
 // NetworkOverrides is all network settings
 type NetworkOverrides struct {
 	yamlAnchor    *yaml.Node                  `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
+	noAnchor      bool                        `yaml:"-" json:"-"` // If true, this instance will not use anchors
 	UnknownFields map[string]any              `yaml:",inline,omitempty" json:",inline,omitempty"`
 	Constants     map[string]NetworkConstants `yaml:"constants" json:"constants"`
 	Config        map[string]NetworkConfig    `yaml:"config" json:"config"`
@@ -98,6 +99,50 @@ func (nc *NetworkOverrides) AnchorNode() *yaml.Node {
 // SetAnchorNode sets the yaml.Node reference when marshaling
 func (nc *NetworkOverrides) SetAnchorNode(node *yaml.Node) {
 	nc.yamlAnchor = node
+}
+
+// NoAnchor returns whether this instance should not use anchors
+func (nc *NetworkOverrides) NoAnchor() bool {
+	return nc.noAnchor
+}
+
+// SetNoAnchor sets whether this instance should use anchors
+func (nc *NetworkOverrides) SetNoAnchor(noAnchor bool) {
+	nc.noAnchor = noAnchor
+}
+
+// CopyWithoutAnchor creates a deep copy of this NetworkOverrides instance with the no-anchor flag set.
+// This allows the copy to diverge from the anchor while maintaining the same initial values.
+func (nc *NetworkOverrides) CopyWithoutAnchor() *NetworkOverrides {
+	copy := &NetworkOverrides{
+		noAnchor:      true,
+		UnknownFields: make(map[string]any),
+		Constants:     make(map[string]NetworkConstants),
+		Config:        make(map[string]NetworkConfig),
+	}
+
+	// Copy UnknownFields
+	if nc.UnknownFields != nil {
+		for k, v := range nc.UnknownFields {
+			copy.UnknownFields[k] = v
+		}
+	}
+
+	// Deep copy Constants
+	if nc.Constants != nil {
+		for k, v := range nc.Constants {
+			copy.Constants[k] = v
+		}
+	}
+
+	// Deep copy Config
+	if nc.Config != nil {
+		for k, v := range nc.Config {
+			copy.Config[k] = v
+		}
+	}
+
+	return copy
 }
 
 // NetworkConstants the constants for each network
@@ -135,6 +180,7 @@ type NetworkConfig struct {
 // LoggingConfig configuration settings for the logger
 type LoggingConfig struct {
 	yamlAnchor          *yaml.Node     `yaml:"-" json:"-"` // Helps with serializing the anchors to yaml
+	noAnchor            bool           `yaml:"-" json:"-"` // If true, this instance will not use anchors
 	UnknownFields       map[string]any `yaml:",inline,omitempty" json:",inline,omitempty"`
 	LogStdout           bool           `yaml:"log_stdout" json:"log_stdout"`
 	LogBackcompat       bool           `yaml:"log_backcompat" json:"log_backcompat"`
@@ -156,6 +202,44 @@ func (lc *LoggingConfig) AnchorNode() *yaml.Node {
 // SetAnchorNode sets the yaml.Node reference when marshaling
 func (lc *LoggingConfig) SetAnchorNode(node *yaml.Node) {
 	lc.yamlAnchor = node
+}
+
+// NoAnchor returns whether this instance should not use anchors
+func (lc *LoggingConfig) NoAnchor() bool {
+	return lc.noAnchor
+}
+
+// SetNoAnchor sets whether this instance should use anchors
+func (lc *LoggingConfig) SetNoAnchor(noAnchor bool) {
+	lc.noAnchor = noAnchor
+}
+
+// CopyWithoutAnchor creates a deep copy of this LoggingConfig instance with the no-anchor flag set.
+// This allows the copy to diverge from the anchor while maintaining the same initial values.
+func (lc *LoggingConfig) CopyWithoutAnchor() *LoggingConfig {
+	copy := &LoggingConfig{
+		noAnchor:            true,
+		UnknownFields:       make(map[string]any),
+		LogStdout:           lc.LogStdout,
+		LogBackcompat:       lc.LogBackcompat,
+		LogFilename:         lc.LogFilename,
+		LogLevel:            lc.LogLevel,
+		LogMaxFilesRotation: lc.LogMaxFilesRotation,
+		LogMaxBytesRotation: lc.LogMaxBytesRotation,
+		LogUseGzip:          lc.LogUseGzip,
+		LogSyslog:           lc.LogSyslog,
+		LogSyslogHost:       lc.LogSyslogHost,
+		LogSyslogPort:       lc.LogSyslogPort,
+	}
+
+	// Copy UnknownFields
+	if lc.UnknownFields != nil {
+		for k, v := range lc.UnknownFields {
+			copy.UnknownFields[k] = v
+		}
+	}
+
+	return copy
 }
 
 // SeederConfig seeder configuration section
