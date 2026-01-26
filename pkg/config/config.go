@@ -21,8 +21,8 @@ type ChiaConfig struct {
 	DaemonMaxMessageSize     uint32                 `yaml:"daemon_max_message_size" json:"daemon_max_message_size"`
 	DaemonHeartbeat          uint16                 `yaml:"daemon_heartbeat" json:"daemon_heartbeat"`
 	DaemonAllowTLS12         bool                   `yaml:"daemon_allow_tls_1_2" json:"daemon_allow_tls_1_2"`
-	InboundRateLimitPercent  uint8                  `yaml:"inbound_rate_limit_percent" json:"inbound_rate_limit_percent"`
-	OutboundRateLimitPercent uint8                  `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
+	InboundRateLimitPercent  uint16                 `yaml:"inbound_rate_limit_percent" json:"inbound_rate_limit_percent"`
+	OutboundRateLimitPercent uint16                 `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
 	NetworkOverrides         *NetworkOverrides      `yaml:"network_overrides" json:"network_overrides"`
 	SelectedNetwork          *string                `yaml:"selected_network" json:"selected_network"`
 	AlertsURL                string                 `yaml:"ALERTS_URL,omitempty" json:"ALERTS_URL,omitempty"`
@@ -510,8 +510,8 @@ type WalletConfig struct {
 	SSL                            SSLConfig         `yaml:"ssl" json:"ssl"`
 	TrustedPeers                   map[string]string `yaml:"trusted_peers" json:"trusted_peers"`
 	ShortSyncBlocksBehindThreshold uint16            `yaml:"short_sync_blocks_behind_threshold" json:"short_sync_blocks_behind_threshold"`
-	InboundRateLimitPercent        uint8             `yaml:"inbound_rate_limit_percent" json:"inbound_rate_limit_percent"`
-	OutboundRateLimitPercent       uint8             `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
+	InboundRateLimitPercent        uint16            `yaml:"inbound_rate_limit_percent" json:"inbound_rate_limit_percent"`
+	OutboundRateLimitPercent       uint16            `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
 	WeightProofTimeout             uint16            `yaml:"weight_proof_timeout" json:"weight_proof_timeout"`
 	AutomaticallyAddUnknownCats    bool              `yaml:"automatically_add_unknown_cats" json:"automatically_add_unknown_cats"`
 	DIDAutoAddLimit                *int              `yaml:"did_auto_add_limit,omitempty" json:"did_auto_add_limit,omitempty"`
