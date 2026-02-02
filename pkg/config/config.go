@@ -158,17 +158,28 @@ type NetworkConstants struct {
 	MempoolBlockBuffer             uint8          `yaml:"MEMPOOL_BLOCK_BUFFER,omitempty" json:"MEMPOOL_BLOCK_BUFFER,omitempty"`
 	MinPlotSize                    uint8          `yaml:"MIN_PLOT_SIZE,omitempty" json:"MIN_PLOT_SIZE,omitempty"`
 	MinPlotSizeV1                  uint8          `yaml:"MIN_PLOT_SIZE_V1,omitempty" json:"MIN_PLOT_SIZE_V1,omitempty"`
-	MinPlotSizeV2                  uint8          `yaml:"MIN_PLOT_SIZE_V2,omitempty" json:"MIN_PLOT_SIZE_V2,omitempty"`
+	PlotSizeV2                     uint8          `yaml:"PLOT_SIZE_V2,omitempty" json:"PLOT_SIZE_V2,omitempty"`
 	NetworkType                    uint8          `yaml:"NETWORK_TYPE,omitempty" json:"NETWORK_TYPE,omitempty"`
 	SubSlotItersStarting           uint64         `yaml:"SUB_SLOT_ITERS_STARTING,omitempty" json:"SUB_SLOT_ITERS_STARTING,omitempty"`
 	// All pointers that that 0 is an allowed value when marshaling with omitempty, but they will still be omitted from configs that dont have them defined
-	HardForkHeight      *uint32 `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
-	SoftFork4Height     *uint32 `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
-	SoftFork5Height     *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
-	SoftFork6Height     *uint32 `yaml:"SOFT_FORK6_HEIGHT,omitempty" json:"SOFT_FORK6_HEIGHT,omitempty"`
-	PlotFilter128Height *uint32 `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
-	PlotFilter64Height  *uint32 `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
-	PlotFilter32Height  *uint32 `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
+	NumberZeroBitsPlotFilterV1         *uint8  `yaml:"NUMBER_ZERO_BITS_PLOT_FILTER_V1,omitempty" json:"NUMBER_ZERO_BITS_PLOT_FILTER_V1,omitempty"`
+	NumberZeroBitsPlotFilterV2         *uint8  `yaml:"NUMBER_ZERO_BITS_PLOT_FILTER_V2,omitempty" json:"NUMBER_ZERO_BITS_PLOT_FILTER_V2,omitempty"`
+	HardForkHeight                     *uint32 `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
+	Hard2ForkHeight                    *uint32 `yaml:"HARD_FORK2_HEIGHT,omitempty" json:"HARD_FORK2_HEIGHT,omitempty"`
+	SoftFork4Height                    *uint32 `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
+	SoftFork5Height                    *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
+	SoftFork6Height                    *uint32 `yaml:"SOFT_FORK6_HEIGHT,omitempty" json:"SOFT_FORK6_HEIGHT,omitempty"`
+	SoftFork8Height                    *uint32 `yaml:"SOFT_FORK8_HEIGHT,omitempty" json:"SOFT_FORK8_HEIGHT,omitempty"`
+	PlotFilter128Height                *uint32 `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
+	PlotFilter64Height                 *uint32 `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
+	PlotFilter32Height                 *uint32 `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
+	PlotV1PhaseOutEpochBits            *uint8  `yaml:"PLOT_V1_PHASE_OUT_EPOCH_BITS,omitempty" json:"PLOT_V1_PHASE_OUT_EPOCH_BITS,omitempty"`
+	MinPlotStrength                    *uint8  `yaml:"MIN_PLOT_STRENGTH,omitempty" json:"MIN_PLOT_STRENGTH,omitempty"`
+	MaxPlotStrength                    *uint8  `yaml:"MAX_PLOT_STRENGTH,omitempty" json:"MAX_PLOT_STRENGTH,omitempty"`
+	QualityProofScanFilter             *uint8  `yaml:"QUALITY_PROOF_SCAN_FILTER,omitempty" json:"QUALITY_PROOF_SCAN_FILTER,omitempty"`
+	PlotFilterV2FirstAdjustmentHeight  *uint32 `yaml:"PLOT_FILTER_V2_FIRST_ADJUSTMENT_HEIGHT,omitempty" json:"PLOT_FILTER_V2_FIRST_ADJUSTMENT_HEIGHT,omitempty"`
+	PlotFilterV2SecondAdjustmentHeight *uint32 `yaml:"PLOT_FILTER_V2_SECOND_ADJUSTMENT_HEIGHT,omitempty" json:"PLOT_FILTER_V2_SECOND_ADJUSTMENT_HEIGHT,omitempty"`
+	PlotFilterV2ThirdAdjustmentHeight  *uint32 `yaml:"PLOT_FILTER_V2_THIRD_ADJUSTMENT_HEIGHT,omitempty" json:"PLOT_FILTER_V2_THIRD_ADJUSTMENT_HEIGHT,omitempty"`
 }
 
 // NetworkConfig specific network configuration settings
