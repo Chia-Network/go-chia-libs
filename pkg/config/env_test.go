@@ -356,6 +356,12 @@ func TestChiaConfig_GetFieldByPath(t *testing.T) {
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, types.Uint128{}, val)
 
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "full_node_peers"})
+	require.NoError(t, err)
+	peers, ok := val.([]config.Peer)
+	require.True(t, ok, "expected []config.Peer, got %T", val)
+	assert.Equal(t, []config.Peer{}, peers)
+
 	val, err = defaultConfig.GetFieldByPath([]string{"selected_network"})
 	assert.NoError(t, err)
 	assert.Equal(t, "mainnet", val)
