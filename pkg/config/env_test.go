@@ -351,10 +351,31 @@ func TestChiaConfig_GetFieldByPath(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, uint16(8555), val)
 
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "db_readers"})
+	assert.NoError(t, err)
+	assert.Equal(t, uint8(4), val)
+
 	val, err = defaultConfig.GetFieldByPath([]string{"network_overrides", "constants", "mainnet", "DIFFICULTY_CONSTANT_FACTOR"})
 	assert.NoError(t, err)
 	assert.NotNil(t, defaultConfig.NetworkOverrides.Constants["mainnet"])
 	assert.Equal(t, types.Uint128{}, val)
+
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "full_node_peers"})
+	require.NoError(t, err)
+	peers, ok := val.([]config.Peer)
+	require.True(t, ok, "expected []config.Peer, got %T", val)
+	assert.Equal(t, []config.Peer{}, peers)
+
+	defaultConfig.FullNode.FullNodePeers = []config.Peer{{Host: "peer-0.example.com", Port: 8444}}
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "full_node_peers", "0"})
+	require.NoError(t, err)
+	peer, ok := val.(config.Peer)
+	require.True(t, ok, "expected config.Peer, got %T", val)
+	assert.Equal(t, config.Peer{Host: "peer-0.example.com", Port: 8444}, peer)
+
+	val, err = defaultConfig.GetFieldByPath([]string{"full_node", "full_node_peers", "0", "host"})
+	require.NoError(t, err)
+	assert.Equal(t, "peer-0.example.com", val)
 
 	val, err = defaultConfig.GetFieldByPath([]string{"selected_network"})
 	assert.NoError(t, err)

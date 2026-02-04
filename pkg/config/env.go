@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"math/big"
 	"os"
@@ -242,6 +243,14 @@ func (c *ChiaConfig) GetFieldByPath(path []string) (any, error) {
 	return getFieldByPath(v, path)
 }
 
+type fieldNotFoundError struct {
+	field string
+}
+
+func (e fieldNotFoundError) Error() string {
+	return fmt.Sprintf("field %s not found", e.field)
+}
+
 func getFieldByPath(v reflect.Value, path []string) (any, error) {
 	if len(path) == 0 {
 		return nil, fmt.Errorf("invalid path")
@@ -266,8 +275,16 @@ func getFieldByPath(v reflect.Value, path []string) (any, error) {
 		yamlTag := strings.Split(yamlTagRaw, ",")[0]
 
 		if yamlTagRaw == ",inline" && field.Anonymous {
-			// Dive into the embedded struct
-			return getFieldByPath(v.Field(i), path)
+			// Dive into embedded structs, but only return if it resolves the path.
+			value, err := getFieldByPath(v.Field(i), path)
+			if err == nil {
+				return value, nil
+			}
+			var notFound fieldNotFoundError
+			if errors.As(err, &notFound) {
+				continue
+			}
+			return nil, err
 		} else if yamlTag == path[0] {
 			fieldValue := v.Field(i)
 
@@ -320,7 +337,7 @@ func getFieldByPath(v reflect.Value, path []string) (any, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("field %s not found", path[0])
+	return nil, fieldNotFoundError{field: path[0]}
 }
 
 func doValueSet(fieldValue reflect.Value, path []string, value any) error {
