@@ -61,7 +61,7 @@ func TestNetworkConstantsOptionalPointersIncludedWhenSet(t *testing.T) {
 		NumberZeroBitsPlotFilterV1:         uint8Zero(),
 		NumberZeroBitsPlotFilterV2:         uint8Zero(),
 		HardForkHeight:                     uint32Zero(),
-		Hard2ForkHeight:                    uint32Zero(),
+		HardFork2Height:                    uint32Zero(),
 		SoftFork4Height:                    uint32Zero(),
 		SoftFork5Height:                    uint32Zero(),
 		SoftFork6Height:                    uint32Zero(),
