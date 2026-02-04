@@ -165,7 +165,7 @@ type NetworkConstants struct {
 	NumberZeroBitsPlotFilterV1         *uint8  `yaml:"NUMBER_ZERO_BITS_PLOT_FILTER_V1,omitempty" json:"NUMBER_ZERO_BITS_PLOT_FILTER_V1,omitempty"`
 	NumberZeroBitsPlotFilterV2         *uint8  `yaml:"NUMBER_ZERO_BITS_PLOT_FILTER_V2,omitempty" json:"NUMBER_ZERO_BITS_PLOT_FILTER_V2,omitempty"`
 	HardForkHeight                     *uint32 `yaml:"HARD_FORK_HEIGHT,omitempty" json:"HARD_FORK_HEIGHT,omitempty"`
-	Hard2ForkHeight                    *uint32 `yaml:"HARD_FORK2_HEIGHT,omitempty" json:"HARD_FORK2_HEIGHT,omitempty"`
+	HardFork2Height                    *uint32 `yaml:"HARD_FORK2_HEIGHT,omitempty" json:"HARD_FORK2_HEIGHT,omitempty"`
 	SoftFork4Height                    *uint32 `yaml:"SOFT_FORK4_HEIGHT,omitempty" json:"SOFT_FORK4_HEIGHT,omitempty"`
 	SoftFork5Height                    *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
 	SoftFork6Height                    *uint32 `yaml:"SOFT_FORK6_HEIGHT,omitempty" json:"SOFT_FORK6_HEIGHT,omitempty"`
