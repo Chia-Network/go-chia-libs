@@ -410,7 +410,7 @@ type FullNodeConfig struct {
 	PortConfig                       `yaml:",inline" json:",inline"`
 	FullNodePeers                    []Peer            `yaml:"full_node_peers" json:"full_node_peers"`
 	DBSync                           string            `yaml:"db_sync" json:"db_sync"`
-	BlockCreation                    int64             `yaml:"block_creation,omitempty" json:"block_creation,omitempty"`
+	BlockCreation                    *int64            `yaml:"block_creation,omitempty" json:"block_creation,omitempty"`
 	BlockCreationTimeout             float64           `yaml:"block_creation_timeout,omitempty" json:"block_creation_timeout,omitempty"`
 	DBReaders                        uint8             `yaml:"db_readers" json:"db_readers"`
 	DatabasePath                     string            `yaml:"database_path" json:"database_path"`
