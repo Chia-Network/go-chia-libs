@@ -4,10 +4,58 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
 	"github.com/chia-network/go-chia-libs/pkg/config"
+	"github.com/chia-network/go-chia-libs/pkg/ptr"
 )
+
+func TestBlockCreationPointer(t *testing.T) {
+	t.Run("default config has nil BlockCreation", func(t *testing.T) {
+		cfg, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		assert.Nil(t, cfg.FullNode.BlockCreation)
+	})
+
+	t.Run("marshal omits nil, includes zero and non-zero", func(t *testing.T) {
+		fn := config.FullNodeConfig{}
+
+		out, err := yaml.Marshal(fn)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "block_creation")
+
+		fn.BlockCreation = ptr.Pointer(int64(0))
+		out, err = yaml.Marshal(fn)
+		require.NoError(t, err)
+		assert.Contains(t, string(out), "block_creation: 0")
+
+		fn.BlockCreation = ptr.Pointer(int64(1))
+		out, err = yaml.Marshal(fn)
+		require.NoError(t, err)
+		assert.Contains(t, string(out), "block_creation: 1")
+	})
+
+	t.Run("unmarshal absent yields nil", func(t *testing.T) {
+		var fn config.FullNodeConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`db_sync: auto`), &fn))
+		assert.Nil(t, fn.BlockCreation)
+	})
+
+	t.Run("unmarshal zero yields non-nil pointer to zero", func(t *testing.T) {
+		var fn config.FullNodeConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`block_creation: 0`), &fn))
+		require.NotNil(t, fn.BlockCreation)
+		assert.Equal(t, int64(0), *fn.BlockCreation)
+	})
+
+	t.Run("unmarshal one yields non-nil pointer to one", func(t *testing.T) {
+		var fn config.FullNodeConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`block_creation: 1`), &fn))
+		require.NotNil(t, fn.BlockCreation)
+		assert.Equal(t, int64(1), *fn.BlockCreation)
+	})
+}
 
 func TestNetworkConstantsOptionalPointersOmitted(t *testing.T) {
 	nc := config.NetworkConstants{
