@@ -170,6 +170,7 @@ type NetworkConstants struct {
 	SoftFork5Height                    *uint32 `yaml:"SOFT_FORK5_HEIGHT,omitempty" json:"SOFT_FORK5_HEIGHT,omitempty"`
 	SoftFork6Height                    *uint32 `yaml:"SOFT_FORK6_HEIGHT,omitempty" json:"SOFT_FORK6_HEIGHT,omitempty"`
 	SoftFork8Height                    *uint32 `yaml:"SOFT_FORK8_HEIGHT,omitempty" json:"SOFT_FORK8_HEIGHT,omitempty"`
+	SoftFork9Height                    *uint32 `yaml:"SOFT_FORK9_HEIGHT,omitempty" json:"SOFT_FORK9_HEIGHT,omitempty"`
 	PlotFilter128Height                *uint32 `yaml:"PLOT_FILTER_128_HEIGHT,omitempty" json:"PLOT_FILTER_128_HEIGHT,omitempty"`
 	PlotFilter64Height                 *uint32 `yaml:"PLOT_FILTER_64_HEIGHT,omitempty" json:"PLOT_FILTER_64_HEIGHT,omitempty"`
 	PlotFilter32Height                 *uint32 `yaml:"PLOT_FILTER_32_HEIGHT,omitempty" json:"PLOT_FILTER_32_HEIGHT,omitempty"`
