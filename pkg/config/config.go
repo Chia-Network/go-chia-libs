@@ -585,6 +585,7 @@ type DataLayerConfig struct {
 	RPCServerMaxRequestBodySize uint32         `yaml:"rpc_server_max_request_body_size" json:"rpc_server_max_request_body_size"`
 	LogSqliteCmds               bool           `yaml:"log_sqlite_cmds" json:"log_sqlite_cmds"`
 	EnableBatchAutoinsert       bool           `yaml:"enable_batch_autoinsert" json:"enable_batch_autoinsert"`
+	MaxDeltaFileSize            *uint32        `yaml:"max_delta_file_size,omitempty" json:"max_delta_file_size,omitempty"`
 	Logging                     *LoggingConfig `yaml:"logging" json:"logging"`
 	PortConfig                  `yaml:",inline" json:",inline"`
 	SSL                         SSLConfig        `yaml:"ssl" json:"ssl"`
