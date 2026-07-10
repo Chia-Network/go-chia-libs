@@ -35,7 +35,7 @@ func TestRateLimitsOptional(t *testing.T) {
 		assert.Contains(t, string(out), "rate_limits: 3")
 	})
 
-	t.Run("unmarshal absent yields zero and is omitted on remashal", func(t *testing.T) {
+	t.Run("unmarshal absent yields zero and is omitted on remarshal", func(t *testing.T) {
 		cfg, err := config.LoadFromBytes([]byte(`inbound_rate_limit_percent: 100
 outbound_rate_limit_percent: 30
 `), "/test/path")
