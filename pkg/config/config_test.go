@@ -80,7 +80,7 @@ func TestNFTAutoAddLimitPointer(t *testing.T) {
 		assert.Contains(t, string(out), "nft_auto_add_limit: 100")
 	})
 
-	t.Run("unmarshal absent yields nil and is omitted on remashal", func(t *testing.T) {
+	t.Run("unmarshal absent yields nil and is omitted on remarshal", func(t *testing.T) {
 		var wallet config.WalletConfig
 		require.NoError(t, yaml.Unmarshal([]byte(`db_sync: auto`), &wallet))
 		assert.Nil(t, wallet.NFTAutoAddLimit)
