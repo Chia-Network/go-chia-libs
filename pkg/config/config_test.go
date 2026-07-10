@@ -47,7 +47,7 @@ outbound_rate_limit_percent: 30
 		assert.NotContains(t, string(out), "rate_limits")
 	})
 
-	t.Run("unmarshal present retains value on remashal", func(t *testing.T) {
+	t.Run("unmarshal present retains value on remarshal", func(t *testing.T) {
 		cfg, err := config.LoadFromBytes([]byte(`inbound_rate_limit_percent: 100
 outbound_rate_limit_percent: 30
 rate_limits: 3
