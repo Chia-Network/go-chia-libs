@@ -23,6 +23,7 @@ type ChiaConfig struct {
 	DaemonAllowTLS12         bool                   `yaml:"daemon_allow_tls_1_2" json:"daemon_allow_tls_1_2"`
 	InboundRateLimitPercent  uint16                 `yaml:"inbound_rate_limit_percent" json:"inbound_rate_limit_percent"`
 	OutboundRateLimitPercent uint16                 `yaml:"outbound_rate_limit_percent" json:"outbound_rate_limit_percent"`
+	RateLimits               uint8                  `yaml:"rate_limits,omitempty" json:"rate_limits,omitempty"`
 	NetworkOverrides         *NetworkOverrides      `yaml:"network_overrides" json:"network_overrides"`
 	SelectedNetwork          *string                `yaml:"selected_network" json:"selected_network"`
 	AlertsURL                string                 `yaml:"ALERTS_URL,omitempty" json:"ALERTS_URL,omitempty"`
@@ -527,6 +528,7 @@ type WalletConfig struct {
 	WeightProofTimeout             uint16            `yaml:"weight_proof_timeout" json:"weight_proof_timeout"`
 	AutomaticallyAddUnknownCats    bool              `yaml:"automatically_add_unknown_cats" json:"automatically_add_unknown_cats"`
 	DIDAutoAddLimit                *int              `yaml:"did_auto_add_limit,omitempty" json:"did_auto_add_limit,omitempty"`
+	NFTAutoAddLimit                *int              `yaml:"nft_auto_add_limit,omitempty" json:"nft_auto_add_limit,omitempty"`
 	TxResendTimeoutSecs            uint16            `yaml:"tx_resend_timeout_secs" json:"tx_resend_timeout_secs"`
 	ResetSyncForFingerprint        *int              `yaml:"reset_sync_for_fingerprint" json:"reset_sync_for_fingerprint"`
 	SpamFilterAfterNTxs            uint16            `yaml:"spam_filter_after_n_txs" json:"spam_filter_after_n_txs"`
