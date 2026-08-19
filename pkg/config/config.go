@@ -542,6 +542,8 @@ type WalletConfig struct {
 	// trusted_cidrs allows marking certain nodes as "trusted" in the full node and wallet
 	// Not in the initial config anywhere, since it's a more advanced option
 	TrustedCIDRs []string `yaml:"trusted_cidrs,omitempty" json:"trusted_cidrs,omitempty"`
+	// exempt_peer_networks is supported by the wallet but omitted from the initial config
+	ExemptPeerNetworks []string `yaml:"exempt_peer_networks,omitempty" json:"exempt_peer_networks,omitempty"`
 }
 
 // SolverConfig solver configuration section

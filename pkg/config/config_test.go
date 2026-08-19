@@ -61,6 +61,73 @@ rate_limits: 3
 	})
 }
 
+func TestWalletExemptPeerNetworksOptional(t *testing.T) {
+	t.Run("default config omits wallet exempt_peer_networks", func(t *testing.T) {
+		cfg, err := config.LoadDefaultConfig()
+		require.NoError(t, err)
+		assert.Empty(t, cfg.Wallet.ExemptPeerNetworks)
+
+		out, err := yaml.Marshal(cfg.Wallet)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "exempt_peer_networks")
+	})
+
+	t.Run("marshal omits empty, includes when set", func(t *testing.T) {
+		wallet := config.WalletConfig{}
+
+		out, err := yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "exempt_peer_networks")
+
+		wallet.ExemptPeerNetworks = []string{}
+		out, err = yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "exempt_peer_networks")
+
+		wallet.ExemptPeerNetworks = []string{"192.168.1.0/24", "fe80::/10"}
+		out, err = yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.Contains(t, string(out), "exempt_peer_networks:")
+		assert.Contains(t, string(out), "192.168.1.0/24")
+		assert.Contains(t, string(out), "fe80::/10")
+	})
+
+	t.Run("unmarshal absent yields empty and is omitted on remarshal", func(t *testing.T) {
+		var wallet config.WalletConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`db_sync: auto`), &wallet))
+		assert.Empty(t, wallet.ExemptPeerNetworks)
+
+		out, err := yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "exempt_peer_networks")
+	})
+
+	t.Run("unmarshal empty list is omitted on remarshal", func(t *testing.T) {
+		var wallet config.WalletConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`exempt_peer_networks: []`), &wallet))
+		assert.Empty(t, wallet.ExemptPeerNetworks)
+
+		out, err := yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.NotContains(t, string(out), "exempt_peer_networks")
+	})
+
+	t.Run("unmarshal present retains value on remarshal", func(t *testing.T) {
+		var wallet config.WalletConfig
+		require.NoError(t, yaml.Unmarshal([]byte(`exempt_peer_networks:
+  - 192.168.1.0/24
+  - fe80::/10
+`), &wallet))
+		assert.Equal(t, []string{"192.168.1.0/24", "fe80::/10"}, wallet.ExemptPeerNetworks)
+
+		out, err := yaml.Marshal(wallet)
+		require.NoError(t, err)
+		assert.Contains(t, string(out), "exempt_peer_networks:")
+		assert.Contains(t, string(out), "192.168.1.0/24")
+		assert.Contains(t, string(out), "fe80::/10")
+	})
+}
+
 func TestNFTAutoAddLimitPointer(t *testing.T) {
 	t.Run("marshal omits nil, includes zero and non-zero", func(t *testing.T) {
 		wallet := config.WalletConfig{}
