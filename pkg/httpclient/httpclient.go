@@ -196,11 +196,29 @@ func (c *HTTPClient) Do(req *rpcinterface.Request, v rpcinterface.IResponse) (*h
 		if w, ok := v.(io.Writer); ok {
 			_, err = io.Copy(w, bytes.NewReader(bodyBytes))
 		} else {
-			err = json.Unmarshal(bodyBytes, v)
+			err = safeUnmarshal(bodyBytes, v)
 		}
 	}
 
 	return resp, err
+}
+
+// safeUnmarshal wraps json.Unmarshal and converts any panic into an error.
+// encoding/json's internal skip() function panics on truncated input when the
+// target type implements json.Unmarshaler (e.g. mo.Option[[]T]). A normal
+// decode of a non-Unmarshaler type would return an error instead.
+func safeUnmarshal(data []byte, v any) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			if e, ok := r.(error); ok {
+				err = fmt.Errorf("json.Unmarshal panicked (possibly truncated input): %w", e)
+			} else {
+				err = fmt.Errorf("json.Unmarshal panicked (possibly truncated input): %v", r)
+			}
+		}
+	}()
+
+	return json.Unmarshal(data, v)
 }
 
 // Close closes the connection. Not applicable for the HTTPClient, so just returns no error
