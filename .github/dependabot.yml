@@ -16,7 +16,7 @@ updates:
       - dependencies
       - go
       - "Changed"
-    reviewers: ["emlowe", "cameroncooper"]
+    reviewers: ["cmmarslender", "Starttoaster"]
     groups:
       global:
         patterns:
@@ -35,7 +35,7 @@ updates:
       - dependencies
       - python
       - "Changed"
-    reviewers: ["emlowe", "cameroncooper"]
+    reviewers: ["emlowe"]
 
   - package-ecosystem: "github-actions"
     directories: ["/", ".github/actions/*"]
@@ -50,7 +50,7 @@ updates:
       - dependencies
       - github_actions
       - "Changed"
-    reviewers: ["emlowe", "cameroncooper"]
+    reviewers: ["cmmarslender", "Starttoaster", "pmaslana"]
 
   - package-ecosystem: "npm"
     directory: /
@@ -65,7 +65,7 @@ updates:
       - dependencies
       - javascript
       - "Changed"
-    reviewers: ["emlowe", "cameroncooper"]
+    reviewers: ["cmmarslender", "ChiaMineJP"]
 
   - package-ecosystem: cargo
     directory: /
