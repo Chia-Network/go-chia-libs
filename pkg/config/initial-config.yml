@@ -99,6 +99,7 @@ logging: &logging
   log_syslog: False # If True, outputs to SysLog host and port specified
   log_syslog_host: "localhost" # Send logging messages to a remote or local Unix syslog
   log_syslog_port: 514 # UDP port of the remote or local Unix syslog
+  log_systemd: False # If True, outputs to systemd-journal
 
 seeder:
   # The fake full node used for crawling will run on this port.
@@ -605,6 +606,11 @@ wallet:
   # This cap bounds the number of DID-scoped NFT wallets to prevent an inbound
   # NFT spammer from forcing unbounded wallet creation.
   nft_auto_add_limit: 100
+
+  # Maximum number of CoinState items accepted in a single CoinStateUpdate from a
+  # full node peer. Oversized updates are rejected and the peer is banned.
+  # Defaults to the same scale as full_node.max_subscribe_response_items.
+  max_coin_state_update_items: 100000
 
   # Interval to resend unconfirmed transactions, even if previously accepted into Mempool
   tx_resend_timeout_secs: 1800
