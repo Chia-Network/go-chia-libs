@@ -32,6 +32,7 @@ func TestLoggingConfigAnchors(t *testing.T) {
     log_syslog: false
     log_syslog_host: ""
     log_syslog_port: 0
+    log_systemd: false
 logging2: *logging
 `
 

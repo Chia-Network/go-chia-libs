@@ -211,6 +211,7 @@ type LoggingConfig struct {
 	LogSyslog           bool           `yaml:"log_syslog" json:"log_syslog"`
 	LogSyslogHost       string         `yaml:"log_syslog_host" json:"log_syslog_host"`
 	LogSyslogPort       uint16         `yaml:"log_syslog_port" json:"log_syslog_port"`
+	LogSystemd          bool           `yaml:"log_systemd" json:"log_systemd"`
 }
 
 // AnchorNode returns the node to be used in yaml anchors
@@ -249,6 +250,7 @@ func (lc *LoggingConfig) CopyWithoutAnchor() *LoggingConfig {
 		LogSyslog:           lc.LogSyslog,
 		LogSyslogHost:       lc.LogSyslogHost,
 		LogSyslogPort:       lc.LogSyslogPort,
+		LogSystemd:          lc.LogSystemd,
 	}
 
 	// Copy UnknownFields
@@ -535,6 +537,7 @@ type WalletConfig struct {
 	AutomaticallyAddUnknownCats    bool              `yaml:"automatically_add_unknown_cats" json:"automatically_add_unknown_cats"`
 	DIDAutoAddLimit                *int              `yaml:"did_auto_add_limit,omitempty" json:"did_auto_add_limit,omitempty"`
 	NFTAutoAddLimit                *int              `yaml:"nft_auto_add_limit,omitempty" json:"nft_auto_add_limit,omitempty"`
+	MaxCoinStateUpdateItems        *uint32           `yaml:"max_coin_state_update_items,omitempty" json:"max_coin_state_update_items,omitempty"`
 	TxResendTimeoutSecs            uint16            `yaml:"tx_resend_timeout_secs" json:"tx_resend_timeout_secs"`
 	ResetSyncForFingerprint        *int              `yaml:"reset_sync_for_fingerprint" json:"reset_sync_for_fingerprint"`
 	SpamFilterAfterNTxs            uint16            `yaml:"spam_filter_after_n_txs" json:"spam_filter_after_n_txs"`
