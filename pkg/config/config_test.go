@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -253,9 +254,9 @@ func TestNetworkConstantsOptionalPointersOmitted(t *testing.T) {
 		"MIN_PLOT_STRENGTH",
 		"MAX_PLOT_STRENGTH",
 		"QUALITY_PROOF_SCAN_FILTER",
-		"PLOT_FILTER_V2_FIRST_ADJUSTMENT_HEIGHT",
-		"PLOT_FILTER_V2_SECOND_ADJUSTMENT_HEIGHT",
-		"PLOT_FILTER_V2_THIRD_ADJUSTMENT_HEIGHT",
+		"PLOT_FILTER_V2_RELATIVE_HEIGHT",
+		"FILTER_WINDOW_SIZE",
+		"MAX_EFFECTIVE_PLOT_FILTER_BITS",
 	} {
 		assert.NotContains(t, outStr, field)
 	}
@@ -272,27 +273,26 @@ func TestNetworkConstantsOptionalPointersIncludedWhenSet(t *testing.T) {
 	}
 
 	nc := config.NetworkConstants{
-		GenesisChallenge:                   "",
-		GenesisPreFarmPoolPuzzleHash:       "",
-		GenesisPreFarmFarmerPuzzleHash:     "",
-		NumberZeroBitsPlotFilterV1:         uint8Zero(),
-		NumberZeroBitsPlotFilterV2:         uint8Zero(),
-		HardForkHeight:                     uint32Zero(),
-		HardFork2Height:                    uint32Zero(),
-		SoftFork4Height:                    uint32Zero(),
-		SoftFork5Height:                    uint32Zero(),
-		SoftFork6Height:                    uint32Zero(),
-		SoftFork8Height:                    uint32Zero(),
-		PlotFilter128Height:                uint32Zero(),
-		PlotFilter64Height:                 uint32Zero(),
-		PlotFilter32Height:                 uint32Zero(),
-		PlotV1PhaseOutEpochBits:            uint8Zero(),
-		MinPlotStrength:                    uint8Zero(),
-		MaxPlotStrength:                    uint8Zero(),
-		QualityProofScanFilter:             uint8Zero(),
-		PlotFilterV2FirstAdjustmentHeight:  uint32Zero(),
-		PlotFilterV2SecondAdjustmentHeight: uint32Zero(),
-		PlotFilterV2ThirdAdjustmentHeight:  uint32Zero(),
+		GenesisChallenge:               "",
+		GenesisPreFarmPoolPuzzleHash:   "",
+		GenesisPreFarmFarmerPuzzleHash: "",
+		NumberZeroBitsPlotFilterV1:     uint8Zero(),
+		NumberZeroBitsPlotFilterV2:     uint8Zero(),
+		HardForkHeight:                 uint32Zero(),
+		HardFork2Height:                uint32Zero(),
+		SoftFork4Height:                uint32Zero(),
+		SoftFork5Height:                uint32Zero(),
+		SoftFork6Height:                uint32Zero(),
+		SoftFork8Height:                uint32Zero(),
+		PlotFilter128Height:            uint32Zero(),
+		PlotFilter64Height:             uint32Zero(),
+		PlotFilter32Height:             uint32Zero(),
+		PlotV1PhaseOutEpochBits:        uint8Zero(),
+		MinPlotStrength:                uint8Zero(),
+		MaxPlotStrength:                uint8Zero(),
+		QualityProofScanFilter:         uint8Zero(),
+		FilterWindowSize:               uint8Zero(),
+		MaxEffectivePlotFilterBits:     uint8Zero(),
 	}
 
 	out, err := yaml.Marshal(nc)
@@ -315,10 +315,33 @@ func TestNetworkConstantsOptionalPointersIncludedWhenSet(t *testing.T) {
 		"MIN_PLOT_STRENGTH: 0",
 		"MAX_PLOT_STRENGTH: 0",
 		"QUALITY_PROOF_SCAN_FILTER: 0",
-		"PLOT_FILTER_V2_FIRST_ADJUSTMENT_HEIGHT: 0",
-		"PLOT_FILTER_V2_SECOND_ADJUSTMENT_HEIGHT: 0",
-		"PLOT_FILTER_V2_THIRD_ADJUSTMENT_HEIGHT: 0",
+		"FILTER_WINDOW_SIZE: 0",
+		"MAX_EFFECTIVE_PLOT_FILTER_BITS: 0",
 	} {
 		assert.Contains(t, outStr, field)
 	}
+}
+
+func TestNetworkConstantsPlotFilterV2RelativeHeightRoundTrip(t *testing.T) {
+	schedule := []uint32{50494000, 45444000, 40394000, 35343000, 30298000, 25247000, 20197000, 15146000, 10101000}
+	require.Len(t, schedule, config.PlotFilterV2RelativeHeightLen)
+
+	nc := config.NetworkConstants{
+		GenesisChallenge:               "",
+		GenesisPreFarmPoolPuzzleHash:   "",
+		GenesisPreFarmFarmerPuzzleHash: "",
+		PlotFilterV2RelativeHeight:     schedule,
+	}
+
+	out, err := yaml.Marshal(nc)
+	require.NoError(t, err)
+	assert.Contains(t, string(out), "PLOT_FILTER_V2_RELATIVE_HEIGHT:\n")
+
+	var parsed config.NetworkConstants
+	require.NoError(t, yaml.Unmarshal(out, &parsed))
+	assert.Equal(t, schedule, parsed.PlotFilterV2RelativeHeight)
+
+	jsonOut, err := json.Marshal(nc)
+	require.NoError(t, err)
+	assert.Contains(t, string(jsonOut), `"PLOT_FILTER_V2_RELATIVE_HEIGHT":[50494000,`)
 }
