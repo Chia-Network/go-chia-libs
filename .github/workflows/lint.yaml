@@ -18,15 +18,12 @@ jobs:
       - name: Get latest chiavdf libs
         run: |
           apt-get update && apt-get install -y unzip libgmp-dev
-          LATEST_CHIAVDF=$(curl -fsSL \
-            -H "Authorization: Bearer ${{ github.token }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/Chia-Network/chiavdf/releases/latest \
-            | sed -n 's/^  "tag_name": "\([^"]*\)",/\1/p')
-          echo "Latest chiavdf is: $LATEST_CHIAVDF"
           mkdir chiavdfc
           cd chiavdfc || exit 1
-          wget "https://github.com/Chia-Network/chiavdf/releases/download/${LATEST_CHIAVDF}/chiavdfc-ubuntu-intel.zip"
+          curl -fsSL -D /tmp/chiavdf-headers -o chiavdfc-ubuntu-intel.zip \
+            https://github.com/Chia-Network/chiavdf/releases/latest/download/chiavdfc-ubuntu-intel.zip
+          LATEST_CHIAVDF=$(sed -n 's#^[Ll]ocation: .*/download/\([^/]*\)/.*#\1#p' /tmp/chiavdf-headers | head -n 1)
+          echo "Latest chiavdf is: $LATEST_CHIAVDF"
           unzip chiavdfc-ubuntu-intel.zip
           echo "CGO_CFLAGS=-I${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel" >> "$GITHUB_ENV"
           echo "CGO_LDFLAGS=-L${GITHUB_WORKSPACE}/chiavdfc/chiavdfc-ubuntu-intel/static" >> "$GITHUB_ENV"
